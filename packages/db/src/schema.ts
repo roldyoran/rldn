@@ -19,7 +19,7 @@ export const canvases = sqliteTable("canvases", {
 });
 
 /**
- * Canvas documents table - Stores tldraw store data (serialized JSON)
+ * Canvas documents table - Stores canvas data (serialized JSON)
  */
 export const canvasDocuments = sqliteTable("canvas_documents", {
   id: text("id").primaryKey(),

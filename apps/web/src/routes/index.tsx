@@ -85,7 +85,7 @@ function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t bg-card py-8 text-center text-sm text-muted-foreground">
-        <p>Built with tldraw, TanStack Start, and Drizzle ORM</p>
+        <p>Built with Fabric.js, TanStack Start, and Drizzle ORM</p>
       </footer>
     </div>
   );
