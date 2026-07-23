@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "include": ["**/*.ts", "**/*.tsx"],
+  "compilerOptions": {
+    "paths": {
+      "#/*": ["./src/*"],
+      "@/*": ["./src/*"],
+      "@repo/db": ["../../packages/db/src"],
+      "@repo/db/*": ["../../packages/db/src/*"],
+      "@repo/auth": ["../../packages/auth/src"],
+      "@repo/ui": ["../../packages/ui/src"]
+    },
+    "types": ["vite/client"]
+  }
+}
