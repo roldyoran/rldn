@@ -115,24 +115,8 @@ function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-card">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-          <h1 className="text-2xl font-bold text-foreground">My Canvases</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">
-              {session.user?.email}
-            </span>
-            <button
-              onClick={() => authClient.signOut()}
-              className="rounded-md border bg-secondary px-3 py-1.5 text-sm font-medium text-secondary-foreground hover:bg-secondary/80"
-            >
-              Sign Out
-            </button>
-          </div>
-        </div>
-      </header>
-
       <main className="mx-auto max-w-7xl px-4 py-8">
+        <h1 className="mb-6 text-2xl font-bold text-foreground">My Canvases</h1>
         <div className="mb-6 flex items-center justify-between">
           <p className="text-muted-foreground">
             {canvases.length} canvas{canvases.length !== 1 ? "es" : ""}
