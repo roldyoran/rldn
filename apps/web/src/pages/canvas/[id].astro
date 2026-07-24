@@ -671,14 +671,20 @@ const { id } = Astro.params;
 			}
 
 			function absBBox(obj) {
-				// Use getBoundingRect for accurate bounds (handles scaling, rotation, origin)
-				const rect = obj.getBoundingRect();
-				return {
-					left: rect.left,
-					top: rect.top,
-					width: rect.width,
-					height: rect.height,
-				};
+				const matrix = obj.calcTransformMatrix();
+				const w = obj.width * (obj.scaleX || 1);
+				const h = obj.height * (obj.scaleY || 1);
+				const corners = [
+					{ x: -w / 2, y: -h / 2 },
+					{ x: w / 2, y: -h / 2 },
+					{ x: w / 2, y: h / 2 },
+					{ x: -w / 2, y: h / 2 },
+				].map((p) => fabric.util.transformPoint(p, matrix));
+				const xs = corners.map((c) => c.x),
+					ys = corners.map((c) => c.y);
+				const left = Math.min(...xs),
+					top = Math.min(...ys);
+				return { left, top, width: Math.max(...xs) - left, height: Math.max(...ys) - top };
 			}
 
 			function findBindTarget(pointer, exclude) {
