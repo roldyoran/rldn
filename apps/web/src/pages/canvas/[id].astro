@@ -674,11 +674,14 @@ const { id } = Astro.params;
 				const matrix = obj.calcTransformMatrix();
 				const w = obj.width * (obj.scaleX || 1);
 				const h = obj.height * (obj.scaleY || 1);
+				// Calculate corners relative to object origin
+				const ox = obj.originX === "center" ? -w / 2 : obj.originX === "right" ? -w : 0;
+				const oy = obj.originY === "center" ? -h / 2 : obj.originY === "bottom" ? -h : 0;
 				const corners = [
-					{ x: -w / 2, y: -h / 2 },
-					{ x: w / 2, y: -h / 2 },
-					{ x: w / 2, y: h / 2 },
-					{ x: -w / 2, y: h / 2 },
+					{ x: ox, y: oy },
+					{ x: ox + w, y: oy },
+					{ x: ox + w, y: oy + h },
+					{ x: ox, y: oy + h },
 				].map((p) => fabric.util.transformPoint(p, matrix));
 				const xs = corners.map((c) => c.x),
 					ys = corners.map((c) => c.y);
