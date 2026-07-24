@@ -171,12 +171,12 @@ import Layout from "../../layouts/Layout.astro";
 			const password = (document.getElementById("login-password") as HTMLInputElement).value;
 
 			try {
-			const res = await fetch("/api/auth/sign-in/email", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email, password }),
-				credentials: "include",
-			});
+				const res = await fetch("/api/auth/sign-in/email", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ email, password }),
+					credentials: "include",
+				});
 				if (!res.ok) {
 					let msg = "Error al iniciar sesión";
 					try {
@@ -206,12 +206,12 @@ import Layout from "../../layouts/Layout.astro";
 			const password = (document.getElementById("register-password") as HTMLInputElement).value;
 
 			try {
-			const res = await fetch("/api/auth/sign-up/email", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ name, email, password }),
-				credentials: "include",
-			});
+				const res = await fetch("/api/auth/sign-up/email", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ name, email, password }),
+					credentials: "include",
+				});
 				if (!res.ok) {
 					let msg = "Error al registrar";
 					try {

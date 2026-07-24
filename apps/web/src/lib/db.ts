@@ -1,14 +1,17 @@
-import { createDb } from "@repo/db";
+import { getDb } from "@repo/db";
 
-let _db: ReturnType<typeof createDb> | null = null;
+let _db: ReturnType<typeof getDb> | null = null;
 
-export function getDb() {
+export function getDbInstance() {
 	if (!_db) {
-		const dbPath = import.meta.env.DATABASE_URL;
-		if (!dbPath) {
-			throw new Error("DATABASE_URL environment variable is not set");
+		const url = import.meta.env.TURSO_DB_URL || import.meta.env.DATABASE_URL;
+		const authToken = import.meta.env.TURSO_SECRET;
+
+		if (!url) {
+			throw new Error("TURSO_DB_URL or DATABASE_URL environment variable is not set");
 		}
-		_db = createDb(dbPath);
+
+		_db = getDb({ url, authToken });
 	}
 	return _db;
 }

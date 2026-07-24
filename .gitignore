@@ -18,3 +18,7 @@ drizzle
 .vscode
 .turbo
 apps/web/.astro
+.agents/
+.commandcode/
+prompt.md
+skills-lock.json

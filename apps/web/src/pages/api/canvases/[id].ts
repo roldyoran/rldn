@@ -2,7 +2,7 @@ import { canvasDocuments, canvases } from "@repo/db/schema";
 import type { APIRoute } from "astro";
 import { and, eq } from "drizzle-orm";
 import { auth } from "@/lib/auth";
-import { getDb } from "@/lib/db";
+import { getDbInstance } from "@/lib/db";
 
 async function getUser(request: Request) {
 	const session = await auth.api.getSession({
@@ -23,8 +23,8 @@ export const GET: APIRoute = async ({ request, params }) => {
 		return new Response("Bad Request", { status: 400 });
 	}
 
-	const db = getDb();
-	const canvas = db
+	const db = getDbInstance();
+	const canvas = await db
 		.select()
 		.from(canvases)
 		.where(and(eq(canvases.id, canvasId), eq(canvases.userId, user.id)))
@@ -34,7 +34,7 @@ export const GET: APIRoute = async ({ request, params }) => {
 		return new Response("Not Found", { status: 404 });
 	}
 
-	const document = db
+	const document = await db
 		.select()
 		.from(canvasDocuments)
 		.where(eq(canvasDocuments.canvasId, canvasId))
@@ -57,8 +57,8 @@ export const PUT: APIRoute = async ({ request, params }) => {
 		return new Response("Bad Request", { status: 400 });
 	}
 
-	const db = getDb();
-	const canvas = db
+	const db = getDbInstance();
+	const canvas = await db
 		.select()
 		.from(canvases)
 		.where(and(eq(canvases.id, canvasId), eq(canvases.userId, user.id)))
@@ -72,25 +72,31 @@ export const PUT: APIRoute = async ({ request, params }) => {
 	const { name, description, storeData } = body;
 
 	if (name !== undefined) {
-		db.update(canvases).set({ name, updatedAt: new Date() }).where(eq(canvases.id, canvasId)).run();
+		await db
+			.update(canvases)
+			.set({ name, updatedAt: new Date() })
+			.where(eq(canvases.id, canvasId))
+			.run();
 	}
 
 	if (description !== undefined) {
-		db.update(canvases)
+		await db
+			.update(canvases)
 			.set({ description, updatedAt: new Date() })
 			.where(eq(canvases.id, canvasId))
 			.run();
 	}
 
 	if (storeData !== undefined) {
-		const doc = db
+		const doc = await db
 			.select()
 			.from(canvasDocuments)
 			.where(eq(canvasDocuments.canvasId, canvasId))
 			.get();
 
 		if (doc) {
-			db.update(canvasDocuments)
+			await db
+				.update(canvasDocuments)
 				.set({
 					storeData: typeof storeData === "string" ? storeData : JSON.stringify(storeData),
 					version: doc.version + 1,
@@ -101,7 +107,7 @@ export const PUT: APIRoute = async ({ request, params }) => {
 		}
 	}
 
-	const updated = db.select().from(canvases).where(eq(canvases.id, canvasId)).get();
+	const updated = await db.select().from(canvases).where(eq(canvases.id, canvasId)).get();
 
 	return new Response(JSON.stringify(updated), {
 		headers: { "Content-Type": "application/json" },
@@ -120,8 +126,8 @@ export const DELETE: APIRoute = async ({ request, params }) => {
 		return new Response("Bad Request", { status: 400 });
 	}
 
-	const db = getDb();
-	const canvas = db
+	const db = getDbInstance();
+	const canvas = await db
 		.select()
 		.from(canvases)
 		.where(and(eq(canvases.id, canvasId), eq(canvases.userId, user.id)))
@@ -132,8 +138,8 @@ export const DELETE: APIRoute = async ({ request, params }) => {
 	}
 
 	// Cascade delete: documents and images
-	db.delete(canvasDocuments).where(eq(canvasDocuments.canvasId, canvasId)).run();
-	db.delete(canvases).where(eq(canvases.id, canvasId)).run();
+	await db.delete(canvasDocuments).where(eq(canvasDocuments.canvasId, canvasId)).run();
+	await db.delete(canvases).where(eq(canvases.id, canvasId)).run();
 
 	return new Response(null, { status: 204 });
 };

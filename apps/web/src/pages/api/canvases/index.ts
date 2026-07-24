@@ -2,7 +2,7 @@ import { canvasDocuments, canvases } from "@repo/db/schema";
 import type { APIRoute } from "astro";
 import { desc, eq } from "drizzle-orm";
 import { auth } from "@/lib/auth";
-import { getDb } from "@/lib/db";
+import { getDbInstance } from "@/lib/db";
 
 async function getUser(request: Request) {
 	const session = await auth.api.getSession({
@@ -18,8 +18,8 @@ export const GET: APIRoute = async ({ request }) => {
 		return new Response("Unauthorized", { status: 401 });
 	}
 
-	const db = getDb();
-	const userCanvases = db
+	const db = getDbInstance();
+	const userCanvases = await db
 		.select()
 		.from(canvases)
 		.where(eq(canvases.userId, user.id))
@@ -45,9 +45,10 @@ export const POST: APIRoute = async ({ request }) => {
 	const canvasId = nanoid();
 	const docId = nanoid();
 
-	const db = getDb();
+	const db = getDbInstance();
 
-	db.insert(canvases)
+	await db
+		.insert(canvases)
 		.values({
 			id: canvasId,
 			name,
@@ -56,7 +57,8 @@ export const POST: APIRoute = async ({ request }) => {
 		})
 		.run();
 
-	db.insert(canvasDocuments)
+	await db
+		.insert(canvasDocuments)
 		.values({
 			id: docId,
 			canvasId,
@@ -64,7 +66,7 @@ export const POST: APIRoute = async ({ request }) => {
 		})
 		.run();
 
-	const canvas = db.select().from(canvases).where(eq(canvases.id, canvasId)).get();
+	const canvas = await db.select().from(canvases).where(eq(canvases.id, canvasId)).get();
 
 	return new Response(JSON.stringify(canvas), {
 		status: 201,

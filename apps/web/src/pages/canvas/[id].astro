@@ -531,18 +531,16 @@ const { id } = Astro.params;
 			const CANVAS_ID = window.location.pathname.split("/").pop();
 
 			const COLORS = [
-				"#EAE8E4",
-				"#C4C0B9",
-				"#928F89",
-				"#6B6862",
-				"#373634",
-				"#A3A099",
-				"#C17A6B",
-				"#7BA38F",
-				"#8B9DAF",
-				"#B8A99A",
-				"#D4C5B5",
-				"#A09080",
+				"#FFFFFF", // Blanco
+				"#FF3B30", // Rojo brillante
+				"#FF9500", // Naranja vibrante
+				"#FFCC00", // Amarillo eléctrico
+				"#34C759", // Verde neón
+				"#00F0FF", // Cian eléctrico
+				"#00A3FF", // Azul vibrante
+				"#AF52DE", // Púrpura brillante
+				"#FF00FF", // Magenta / Fucsia
+				"#FF2D55", // Rosa neón
 			];
 
 			const canvasEl = document.getElementById("c");
@@ -598,6 +596,8 @@ const { id } = Astro.params;
 							"isArrowShape",
 							"startBindingId",
 							"endBindingId",
+							"startPort",
+							"endPort",
 							"rawP1",
 							"rawP2",
 							"rawCP",
@@ -622,6 +622,11 @@ const { id } = Astro.params;
 						if (o.id) {
 							const n = parseInt(String(o.id).replace("obj_", ""), 10);
 							if (!isNaN(n) && n >= idCounter) idCounter = n + 1;
+						}
+					});
+					canvas.getObjects().forEach((o) => {
+						if (o.isArrowShape) {
+							rebuildArrow(o);
 						}
 					});
 					canvas.renderAll();
@@ -696,16 +701,158 @@ const { id } = Astro.params;
 					const o = objs[i];
 					if (o === exclude) continue;
 					if (o.isArrowShape || o.isFreeDraw || o.isUiHelper || o.type === "line") continue;
-					const r = absBBox(o);
-					if (
-						pointer.x >= r.left &&
-						pointer.x <= r.left + r.width &&
-						pointer.y >= r.top &&
-						pointer.y <= r.top + r.height
-					)
+
+					// Check containment first (great for rotated/scaled shapes)
+					if (o.containsPoint && o.containsPoint(pointer)) {
 						return o;
+					}
+
+					// Bounding box check with 15px padding for easier pointer snap/binding
+					const r = absBBox(o);
+					const padding = 15;
+					if (
+						pointer.x >= r.left - padding &&
+						pointer.x <= r.left + r.width + padding &&
+						pointer.y >= r.top - padding &&
+						pointer.y <= r.top + r.height + padding
+					) {
+						return o;
+					}
 				}
 				return null;
+			}
+
+			function lineIntersection(p1, p2, p3, p4) {
+				const denominator = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
+				if (denominator === 0) return null;
+
+				const ua = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denominator;
+				const ub = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denominator;
+
+				if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
+					return {
+						x: p1.x + ua * (p2.x - p1.x),
+						y: p1.y + ua * (p2.y - p1.y),
+					};
+				}
+				return null;
+			}
+
+			function getObjectCenter(obj) {
+				if (obj.getCoords) {
+					const c = obj.getCoords();
+					if (c && c.length === 4) {
+						return {
+							x: (c[0].x + c[1].x + c[2].x + c[3].x) / 4,
+							y: (c[0].y + c[1].y + c[2].y + c[3].y) / 4,
+						};
+					}
+				}
+				const r = absBBox(obj);
+				return {
+					x: r.left + r.width / 2,
+					y: r.top + r.height / 2,
+				};
+			}
+
+			function getObjectPorts(obj) {
+				const w = obj.width;
+				const h = obj.height;
+				const matrix = obj.calcTransformMatrix();
+				const portsLocal = [
+					{ x: 0, y: -h / 2, name: "top" },
+					{ x: w / 2, y: 0, name: "right" },
+					{ x: 0, y: h / 2, name: "bottom" },
+					{ x: -w / 2, y: 0, name: "left" },
+				];
+				return portsLocal.map((p) => {
+					const pt = fabric.util.transformPoint({ x: p.x, y: p.y }, matrix);
+					return { x: pt.x, y: pt.y, name: p.name };
+				});
+			}
+
+			function getObjectPortCoords(obj, portName) {
+				const ports = getObjectPorts(obj);
+				const port = ports.find((p) => p.name === portName);
+				return port ? { x: port.x, y: port.y } : getObjectCenter(obj);
+			}
+
+			function findNearestPort(pointer, obj) {
+				if (!obj) return null;
+				const ports = getObjectPorts(obj);
+				let nearest = null;
+				let minDist = 25; // 25px snapping distance
+				ports.forEach((port) => {
+					const dx = port.x - pointer.x;
+					const dy = port.y - pointer.y;
+					const dist = Math.sqrt(dx * dx + dy * dy);
+					if (dist < minDist) {
+						minDist = dist;
+						nearest = port;
+					}
+				});
+				return nearest;
+			}
+
+			function getEllipseEdgePoint(obj, toPoint) {
+				const center = getObjectCenter(obj);
+				const matrix = obj.calcTransformMatrix();
+				const invertMatrix = fabric.util.invertTransform(matrix);
+
+				const localToPoint = fabric.util.transformPoint(toPoint, invertMatrix);
+
+				const rx = obj.rx;
+				const ry = obj.ry;
+
+				const dx = localToPoint.x;
+				const dy = localToPoint.y;
+
+				if (dx === 0 && dy === 0) return center;
+
+				const denom = Math.sqrt((dx / rx) ** 2 + (dy / ry) ** 2);
+				if (denom === 0) return center;
+
+				const t = 1 / denom;
+				const localIntersect = { x: t * dx, y: t * dy };
+
+				return fabric.util.transformPoint(localIntersect, matrix);
+			}
+
+			let activePortIndicators = [];
+
+			function clearPortIndicators() {
+				suppressHistory = true;
+				activePortIndicators.forEach((indicator) => canvas.remove(indicator));
+				suppressHistory = false;
+				activePortIndicators = [];
+			}
+
+			function showPortIndicators(obj, activePortName = null) {
+				clearPortIndicators();
+				if (!obj) return;
+
+				const ports = getObjectPorts(obj);
+				suppressHistory = true;
+				ports.forEach((port) => {
+					const isSnapped = port.name === activePortName;
+					const indicator = new fabric.Circle({
+						left: port.x,
+						top: port.y,
+						radius: isSnapped ? 6 : 4,
+						originX: "center",
+						originY: "center",
+						fill: "#eae8e4",
+						stroke: isSnapped ? "#a3a099" : "#373634",
+						strokeWidth: isSnapped ? 2.5 : 1.5,
+						selectable: false,
+						evented: false,
+						isUiHelper: true,
+					});
+					canvas.add(indicator);
+					activePortIndicators.push(indicator);
+				});
+				suppressHistory = false;
+				canvas.requestRenderAll();
 			}
 
 			function rectEdgePoint(rect, fromX, fromY, toX, toY) {
@@ -722,6 +869,38 @@ const { id } = Astro.params;
 				return { x: cx + dx * scale, y: cy + dy * scale };
 			}
 
+			function getObjectEdgePoint(obj, toPoint) {
+				if (obj.type === "ellipse") {
+					return getEllipseEdgePoint(obj, toPoint);
+				}
+
+				let coords = [];
+				if (obj.getCoords) {
+					const c = obj.getCoords();
+					if (c && c.length === 4) {
+						coords = c;
+					}
+				}
+
+				if (coords.length !== 4) {
+					const r = absBBox(obj);
+					const cx = r.left + r.width / 2;
+					const cy = r.top + r.height / 2;
+					return rectEdgePoint(r, cx, cy, toPoint.x, toPoint.y);
+				}
+
+				const [tl, tr, br, bl] = coords;
+				const center = getObjectCenter(obj);
+
+				const intersect =
+					lineIntersection(center, toPoint, tl, tr) ||
+					lineIntersection(center, toPoint, tr, br) ||
+					lineIntersection(center, toPoint, br, bl) ||
+					lineIntersection(center, toPoint, bl, tl);
+
+				return intersect || center;
+			}
+
 			function computeArrowPoints(arrow) {
 				const startObj =
 					arrow.startBindingId && canvas.getObjects().find((o) => o.id === arrow.startBindingId);
@@ -735,28 +914,36 @@ const { id } = Astro.params;
 				const cy = arrow.rawCP ? arrow.rawCP.y : null;
 
 				if (startObj) {
-					const r = absBBox(startObj);
-					const scx = r.left + r.width / 2,
-						scy = r.top + r.height / 2;
-					const tx = endObj ? absBBox(endObj).left + absBBox(endObj).width / 2 : arrow.rawP2.x;
-					const ty = endObj ? absBBox(endObj).top + absBBox(endObj).height / 2 : arrow.rawP2.y;
-					const edge = rectEdgePoint(r, scx, scy, tx, ty);
-					sx = edge.x;
-					sy = edge.y;
+					if (arrow.startPort) {
+						const portPt = getObjectPortCoords(startObj, arrow.startPort);
+						sx = portPt.x;
+						sy = portPt.y;
+					} else {
+						const targetPoint = endObj
+							? arrow.endPort
+								? getObjectPortCoords(endObj, arrow.endPort)
+								: getObjectCenter(endObj)
+							: arrow.rawCP || arrow.rawP2;
+						const edge = getObjectEdgePoint(startObj, targetPoint);
+						sx = edge.x;
+						sy = edge.y;
+					}
 				}
 				if (endObj) {
-					const r = absBBox(endObj);
-					const ecx = r.left + r.width / 2,
-						ecy = r.top + r.height / 2;
-					const fx = startObj
-						? absBBox(startObj).left + absBBox(startObj).width / 2
-						: arrow.rawP1.x;
-					const fy = startObj
-						? absBBox(startObj).top + absBBox(startObj).height / 2
-						: arrow.rawP1.y;
-					const edge = rectEdgePoint(r, ecx, ecy, fx, fy);
-					ex = edge.x;
-					ey = edge.y;
+					if (arrow.endPort) {
+						const portPt = getObjectPortCoords(endObj, arrow.endPort);
+						ex = portPt.x;
+						ey = portPt.y;
+					} else {
+						const targetPoint = startObj
+							? arrow.startPort
+								? getObjectPortCoords(startObj, arrow.startPort)
+								: getObjectCenter(startObj)
+							: arrow.rawCP || arrow.rawP1;
+						const edge = getObjectEdgePoint(endObj, targetPoint);
+						ex = edge.x;
+						ey = edge.y;
+					}
 				}
 				return { x1: sx, y1: sy, x2: ex, y2: ey, cx, cy };
 			}
@@ -810,6 +997,8 @@ const { id } = Astro.params;
 				fresh.id = arrow.id;
 				fresh.startBindingId = arrow.startBindingId;
 				fresh.endBindingId = arrow.endBindingId;
+				fresh.startPort = arrow.startPort;
+				fresh.endPort = arrow.endPort;
 				fresh.rawP1 = { x: points.x1, y: points.y1 };
 				fresh.rawP2 = { x: points.x2, y: points.y2 };
 				fresh.rawCP = arrow.rawCP ? { ...arrow.rawCP } : null;
@@ -839,14 +1028,21 @@ const { id } = Astro.params;
 			function showBindHighlight(obj) {
 				clearBindHighlight();
 				if (!obj) return;
-				const r = absBBox(obj);
 				bindHighlight = new fabric.Rect({
-					left: r.left,
-					top: r.top,
-					width: r.width,
-					height: r.height,
+					left: obj.left,
+					top: obj.top,
+					width: obj.width,
+					height: obj.height,
+					scaleX: obj.scaleX,
+					scaleY: obj.scaleY,
+					angle: obj.angle,
+					skewX: obj.skewX,
+					skewY: obj.skewY,
+					originX: obj.originX,
+					originY: obj.originY,
 					fill: "transparent",
 					stroke: "#a3a099",
+					strokeUniform: true,
 					strokeWidth: 2.5,
 					strokeDashArray: [5, 4],
 					selectable: false,
@@ -858,6 +1054,7 @@ const { id } = Astro.params;
 				suppressHistory = false;
 				canvas.requestRenderAll();
 			}
+
 			function clearBindHighlight() {
 				if (!bindHighlight) return;
 				suppressHistory = true;
@@ -982,12 +1179,35 @@ const { id } = Astro.params;
 					}
 					const hoverTarget = findBindTarget(pointer, editingArrow);
 					showBindHighlight(hoverTarget);
-					if (t.arrowEnd === "start") {
-						editingArrow.rawP1 = pointer;
-						editingArrow.startBindingId = hoverTarget ? ensureId(hoverTarget) : null;
+
+					let portName = null;
+					let targetX = pointer.x;
+					let targetY = pointer.y;
+
+					if (hoverTarget) {
+						const nearestPort = findNearestPort(pointer, hoverTarget);
+						if (nearestPort) {
+							targetX = nearestPort.x;
+							targetY = nearestPort.y;
+							portName = nearestPort.name;
+						}
+						showPortIndicators(hoverTarget, portName);
 					} else {
-						editingArrow.rawP2 = pointer;
+						clearPortIndicators();
+					}
+
+					if (t.arrowEnd === "start") {
+						editingArrow.rawP1 = { x: targetX, y: targetY };
+						editingArrow.startBindingId = hoverTarget ? ensureId(hoverTarget) : null;
+						editingArrow.startPort = portName;
+						t.set({ left: targetX, top: targetY });
+						t.setCoords();
+					} else {
+						editingArrow.rawP2 = { x: targetX, y: targetY };
 						editingArrow.endBindingId = hoverTarget ? ensureId(hoverTarget) : null;
+						editingArrow.endPort = portName;
+						t.set({ left: targetX, top: targetY });
+						t.setCoords();
 					}
 					rebuildArrow(editingArrow);
 					return;
@@ -1035,6 +1255,7 @@ const { id } = Astro.params;
 				const t = e.target;
 				if (t.isArrowHandle) {
 					clearBindHighlight();
+					clearPortIndicators();
 					snapshot();
 					return;
 				}
@@ -1045,6 +1266,7 @@ const { id } = Astro.params;
 						arrowBodyDragStart = null;
 					}
 					clearBindHighlight();
+					clearPortIndicators();
 					snapshot();
 					return;
 				}
@@ -1165,19 +1387,34 @@ const { id } = Astro.params;
 						});
 					} else if (currentTool === "arrow") {
 						const startTarget = findBindTarget(pointer, null);
+						let startPortName = null;
+						let startX = pointer.x;
+						let startY = pointer.y;
+
+						if (startTarget) {
+							const nearestPort = findNearestPort(pointer, startTarget);
+							if (nearestPort) {
+								startX = nearestPort.x;
+								startY = nearestPort.y;
+								startPortName = nearestPort.name;
+							}
+							showBindHighlight(startTarget);
+							showPortIndicators(startTarget, startPortName);
+						}
+
 						activeShape = createArrowObject(
-							pointer.x,
-							pointer.y,
-							pointer.x,
-							pointer.y,
+							startX,
+							startY,
+							startX,
+							startY,
 							currentColor,
 							currentStroke,
 						);
-						activeShape.rawP1 = { x: pointer.x, y: pointer.y };
-						activeShape.rawP2 = { x: pointer.x, y: pointer.y };
+						activeShape.rawP1 = { x: startX, y: startY };
+						activeShape.rawP2 = { x: startX, y: startY };
 						activeShape.rawCP = null;
 						activeShape.startBindingId = startTarget ? ensureId(startTarget) : null;
-						if (startTarget) showBindHighlight(startTarget);
+						activeShape.startPort = startPortName;
 					}
 					canvas.add(activeShape);
 					return;
@@ -1230,8 +1467,26 @@ const { id } = Astro.params;
 				} else if (currentTool === "arrow") {
 					const hoverTarget = findBindTarget(pointer, activeShape);
 					showBindHighlight(hoverTarget);
-					activeShape.rawP2 = { x: pointer.x, y: pointer.y };
+
+					let endPortName = null;
+					let targetX = pointer.x;
+					let targetY = pointer.y;
+
+					if (hoverTarget) {
+						const nearestPort = findNearestPort(pointer, hoverTarget);
+						if (nearestPort) {
+							targetX = nearestPort.x;
+							targetY = nearestPort.y;
+							endPortName = nearestPort.name;
+						}
+						showPortIndicators(hoverTarget, endPortName);
+					} else {
+						clearPortIndicators();
+					}
+
+					activeShape.rawP2 = { x: targetX, y: targetY };
 					activeShape.endBindingId = hoverTarget ? ensureId(hoverTarget) : null;
+					activeShape.endPort = endPortName;
 					activeShape = rebuildArrow(activeShape);
 				}
 				canvas.requestRenderAll();
@@ -1245,6 +1500,7 @@ const { id } = Astro.params;
 				}
 				if (isDrawingShape && activeShape) {
 					clearBindHighlight();
+					clearPortIndicators();
 					activeShape.set({ selectable: true, evented: true });
 					canvas.setActiveObject(activeShape);
 					isDrawingShape = false;
@@ -1447,9 +1703,31 @@ const { id } = Astro.params;
 						const blob = new Blob([canvas.toSVG()], { type: "image/svg+xml" });
 						download(URL.createObjectURL(blob), name + ".svg");
 					} else if (type === "json") {
-						const blob = new Blob([JSON.stringify(canvas.toDatalessJSON(), null, 2)], {
-							type: "application/json",
-						});
+						const blob = new Blob(
+							[
+								JSON.stringify(
+									canvas.toDatalessJSON([
+										"selectable",
+										"evented",
+										"id",
+										"isArrowShape",
+										"startBindingId",
+										"endBindingId",
+										"startPort",
+										"endPort",
+										"rawP1",
+										"rawP2",
+										"rawCP",
+										"isFreeDraw",
+									]),
+									null,
+									2,
+								),
+							],
+							{
+								type: "application/json",
+							},
+						);
 						download(URL.createObjectURL(blob), name + ".json");
 					}
 					exportMenu.classList.remove("show");
@@ -1558,6 +1836,8 @@ const { id } = Astro.params;
 							"isArrowShape",
 							"startBindingId",
 							"endBindingId",
+							"startPort",
+							"endPort",
 							"rawP1",
 							"rawP2",
 							"rawCP",
@@ -1599,6 +1879,8 @@ const { id } = Astro.params;
 							"isArrowShape",
 							"startBindingId",
 							"endBindingId",
+							"startPort",
+							"endPort",
 							"rawP1",
 							"rawP2",
 							"rawCP",
