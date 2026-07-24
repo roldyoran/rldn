@@ -531,18 +531,18 @@ const { id } = Astro.params;
 			const CANVAS_ID = window.location.pathname.split("/").pop();
 
 			const COLORS = [
-				"#FF3366",
-				"#FF6633",
-				"#FFCC33",
-				"#33CC66",
-				"#33CCFF",
-				"#3366FF",
-				"#CC33FF",
-				"#FF33CC",
-				"#00CCCC",
-				"#FF9933",
-				"#66CC33",
-				"#9966FF",
+				"#EAE8E4",
+				"#C4C0B9",
+				"#928F89",
+				"#6B6862",
+				"#373634",
+				"#A3A099",
+				"#C17A6B",
+				"#7BA38F",
+				"#8B9DAF",
+				"#B8A99A",
+				"#D4C5B5",
+				"#A09080",
 			];
 
 			const canvasEl = document.getElementById("c");
@@ -1519,6 +1519,9 @@ const { id } = Astro.params;
 
 			document.getElementById("btnBack").onclick = () => history.back();
 
+			// Mark dirty when title changes
+			document.getElementById("docTitle").addEventListener("input", markDirty);
+
 			updateZoomLabel();
 			updateWrapBackground();
 			setTool("select");
@@ -1564,6 +1567,7 @@ const { id } = Astro.params;
 						method: "PUT",
 						headers: { "Content-Type": "application/json" },
 						body: JSON.stringify({ name: title, storeData }),
+						credentials: "include",
 					});
 
 					saveText.textContent = "Guardado";
@@ -1583,7 +1587,9 @@ const { id } = Astro.params;
 
 			async function loadCanvas() {
 				try {
-					const res = await fetch(`/api/canvases/${CANVAS_ID}`);
+					const res = await fetch(`/api/canvases/${CANVAS_ID}`, {
+						credentials: "include",
+					});
 					if (!res.ok) {
 						window.location.href = "/dashboard";
 						return;
@@ -1608,7 +1614,13 @@ const { id } = Astro.params;
 			// Check auth then load
 			(async () => {
 				try {
-					const sessionRes = await fetch("/api/auth/session");
+					const sessionRes = await fetch("/api/auth/get-session", {
+						credentials: "include",
+					});
+					if (!sessionRes.ok) {
+						window.location.href = "/login";
+						return;
+					}
 					const sessionData = await sessionRes.json();
 					if (!sessionData?.user) {
 						window.location.href = "/login";

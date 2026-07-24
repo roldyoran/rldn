@@ -1,13 +1,19 @@
-import { createAuth } from "@repo/auth";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { getDb } from "@/lib/db";
 
-export type { Session, User } from "@repo/auth";
+export const auth = betterAuth({
+	baseURL: import.meta.env.BETTER_AUTH_URL || "http://localhost:4321",
+	database: drizzleAdapter(getDb(), {
+		provider: "sqlite",
+	}),
+	emailAndPassword: {
+		enabled: true,
+	},
+	session: {
+		expiresIn: 60 * 60 * 24 * 7, // 7 days
+		updateAge: 60 * 60 * 24, // 1 day
+	},
+});
 
-let _auth: ReturnType<typeof createAuth> | null = null;
-
-export function getAuth() {
-	if (!_auth) {
-		_auth = createAuth(getDb());
-	}
-	return _auth;
-}
+export type Session = typeof auth.$Infer.Session;

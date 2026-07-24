@@ -1,11 +1,10 @@
 import { canvasDocuments, canvases } from "@repo/db/schema";
 import type { APIRoute } from "astro";
 import { desc, eq } from "drizzle-orm";
-import { getAuth } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 
 async function getUser(request: Request) {
-	const auth = getAuth();
 	const session = await auth.api.getSession({
 		headers: request.headers,
 	});

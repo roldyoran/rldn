@@ -171,11 +171,21 @@ import Layout from "../../layouts/Layout.astro";
 			const password = (document.getElementById("login-password") as HTMLInputElement).value;
 
 			try {
-				const res = await fetch("/api/auth/sign-in", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ email, password }),
-				});
+			const res = await fetch("/api/auth/sign-in/email", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ email, password }),
+				credentials: "include",
+			});
+				if (!res.ok) {
+					let msg = "Error al iniciar sesión";
+					try {
+						const data = await res.json();
+						msg = data.error?.message || data.message || msg;
+					} catch {}
+					showError(loginError, msg);
+					return;
+				}
 				const data = await res.json();
 				if (data.error) {
 					showError(loginError, data.error.message || "Error al iniciar sesión");
@@ -196,11 +206,21 @@ import Layout from "../../layouts/Layout.astro";
 			const password = (document.getElementById("register-password") as HTMLInputElement).value;
 
 			try {
-				const res = await fetch("/api/auth/sign-up", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ name, email, password }),
-				});
+			const res = await fetch("/api/auth/sign-up/email", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ name, email, password }),
+				credentials: "include",
+			});
+				if (!res.ok) {
+					let msg = "Error al registrar";
+					try {
+						const data = await res.json();
+						msg = data.error?.message || data.message || msg;
+					} catch {}
+					showError(registerError, msg);
+					return;
+				}
 				const data = await res.json();
 				if (data.error) {
 					showError(registerError, data.error.message || "Error al registrar");

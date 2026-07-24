@@ -21,12 +21,13 @@
     "apps/web": {
       "name": "@repo/web",
       "dependencies": {
-        "@repo/auth": "workspace:*",
+        "@better-auth/drizzle-adapter": "^1.6.25",
         "@repo/db": "workspace:*",
         "@wyattjoh/astro-bun-adapter": "^2.0.0",
         "astro": "^6.0.0",
         "better-auth": "^1.6.25",
         "drizzle-orm": "^0.45.2",
+        "nanoid": "^6.0.0",
       },
       "devDependencies": {
         "@tailwindcss/vite": "^4.1.18",

@@ -164,7 +164,13 @@ import Layout from "../../layouts/Layout.astro";
 		// Check auth and load canvases
 		async function init() {
 			try {
-				const sessionRes = await fetch("/api/auth/session");
+				const sessionRes = await fetch("/api/auth/get-session", {
+					credentials: "include",
+				});
+				if (!sessionRes.ok) {
+					window.location.href = "/login";
+					return;
+				}
 				const sessionData = await sessionRes.json();
 
 				if (!sessionData?.user) {
@@ -186,7 +192,9 @@ import Layout from "../../layouts/Layout.astro";
 			emptyState.classList.add("hidden");
 
 			try {
-				const res = await fetch("/api/canvases");
+				const res = await fetch("/api/canvases", {
+					credentials: "include",
+				});
 				if (!res.ok) throw new Error("Failed to load");
 				const canvases: CanvasItem[] = await res.json();
 
@@ -264,6 +272,7 @@ import Layout from "../../layouts/Layout.astro";
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ name: "Sin título" }),
+					credentials: "include",
 				});
 				if (!res.ok) throw new Error("Failed");
 				const canvas = await res.json();
@@ -286,7 +295,10 @@ import Layout from "../../layouts/Layout.astro";
 		document.getElementById("btn-confirm-delete")!.addEventListener("click", async () => {
 			if (!deleteTargetId) return;
 			try {
-				await fetch(`/api/canvases/${deleteTargetId}`, { method: "DELETE" });
+				await fetch(`/api/canvases/${deleteTargetId}`, {
+					method: "DELETE",
+					credentials: "include",
+				});
 				deleteModal.classList.add("hidden");
 				deleteTargetId = null;
 				await loadCanvases();
@@ -297,7 +309,10 @@ import Layout from "../../layouts/Layout.astro";
 
 		// Logout
 		document.getElementById("btn-logout")!.addEventListener("click", async () => {
-			await fetch("/api/auth/sign-out", { method: "POST" });
+			await fetch("/api/auth/sign-out", {
+				method: "POST",
+				credentials: "include",
+			});
 			window.location.href = "/";
 		});
 

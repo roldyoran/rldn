@@ -17,3 +17,4 @@ drizzle
 .content-collections
 .vscode
 .turbo
+apps/web/.astro
