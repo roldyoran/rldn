@@ -1,84 +1,81 @@
-import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
-import { sql, relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
+import { integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 /**
  * Canvases table - Stores user canvases
  */
 export const canvases = sqliteTable("canvases", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  description: text("description"),
-  userId: text("user_id").notNull(),
-  thumbnail: text("thumbnail"),
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .notNull()
-    .default(sql`(unixepoch())`),
-  updatedAt: integer("updated_at", { mode: "timestamp" })
-    .notNull()
-    .default(sql`(unixepoch())`),
+	id: text("id").primaryKey(),
+	name: text("name").notNull(),
+	description: text("description"),
+	userId: text("user_id").notNull(),
+	thumbnail: text("thumbnail"),
+	createdAt: integer("created_at", { mode: "timestamp" })
+		.notNull()
+		.default(sql`(unixepoch())`),
+	updatedAt: integer("updated_at", { mode: "timestamp" })
+		.notNull()
+		.default(sql`(unixepoch())`),
 });
 
 /**
  * Canvas documents table - Stores canvas data (serialized JSON)
  */
 export const canvasDocuments = sqliteTable("canvas_documents", {
-  id: text("id").primaryKey(),
-  canvasId: text("canvas_id")
-    .notNull()
-    .references(() => canvases.id, { onDelete: "cascade" })
-    .unique(),
-  storeData: text("store_data").notNull(),
-  version: integer("version").notNull().default(1),
-  updatedAt: integer("updated_at", { mode: "timestamp" })
-    .notNull()
-    .default(sql`(unixepoch())`),
+	id: text("id").primaryKey(),
+	canvasId: text("canvas_id")
+		.notNull()
+		.references(() => canvases.id, { onDelete: "cascade" })
+		.unique(),
+	storeData: text("store_data").notNull(),
+	version: integer("version").notNull().default(1),
+	updatedAt: integer("updated_at", { mode: "timestamp" })
+		.notNull()
+		.default(sql`(unixepoch())`),
 });
 
 /**
  * Images table - Stores external image URLs associated with canvases
  */
 export const images = sqliteTable("images", {
-  id: text("id").primaryKey(),
-  canvasId: text("canvas_id")
-    .notNull()
-    .references(() => canvases.id, { onDelete: "cascade" }),
-  url: text("url").notNull(),
-  name: text("name"),
-  width: integer("width"),
-  height: integer("height"),
-  positionX: real("position_x").notNull().default(0),
-  positionY: real("position_y").notNull().default(0),
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .notNull()
-    .default(sql`(unixepoch())`),
+	id: text("id").primaryKey(),
+	canvasId: text("canvas_id")
+		.notNull()
+		.references(() => canvases.id, { onDelete: "cascade" }),
+	url: text("url").notNull(),
+	name: text("name"),
+	width: integer("width"),
+	height: integer("height"),
+	positionX: real("position_x").notNull().default(0),
+	positionY: real("position_y").notNull().default(0),
+	createdAt: integer("created_at", { mode: "timestamp" })
+		.notNull()
+		.default(sql`(unixepoch())`),
 });
 
 /**
  * Relations
  */
 export const canvasesRelations = relations(canvases, ({ one, many }) => ({
-  document: one(canvasDocuments, {
-    fields: [canvases.id],
-    references: [canvasDocuments.canvasId],
-  }),
-  images: many(images),
+	document: one(canvasDocuments, {
+		fields: [canvases.id],
+		references: [canvasDocuments.canvasId],
+	}),
+	images: many(images),
 }));
 
-export const canvasDocumentsRelations = relations(
-  canvasDocuments,
-  ({ one }) => ({
-    canvas: one(canvases, {
-      fields: [canvasDocuments.canvasId],
-      references: [canvases.id],
-    }),
-  }),
-);
+export const canvasDocumentsRelations = relations(canvasDocuments, ({ one }) => ({
+	canvas: one(canvases, {
+		fields: [canvasDocuments.canvasId],
+		references: [canvases.id],
+	}),
+}));
 
 export const imagesRelations = relations(images, ({ one }) => ({
-  canvas: one(canvases, {
-    fields: [images.canvasId],
-    references: [canvases.id],
-  }),
+	canvas: one(canvases, {
+		fields: [images.canvasId],
+		references: [canvases.id],
+	}),
 }));
 
 // Type exports for use in the application

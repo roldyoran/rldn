@@ -1,0 +1,116 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Canvas App - Tu lienzo infinito">
+	<main class="flex min-h-screen flex-col items-center justify-center px-4">
+		<div class="max-w-2xl text-center">
+			<!-- Logo -->
+			<div
+				class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-foreground text-background"
+			>
+				<svg
+					class="h-10 w-10"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<rect x="3" y="3" width="18" height="18" rx="2"></rect>
+					<circle cx="8.5" cy="8.5" r="1.5"></circle>
+					<polyline points="21 15 16 10 5 21"></polyline>
+				</svg>
+			</div>
+
+			<h1 class="text-5xl font-bold tracking-tight">Canvas App</h1>
+			<p class="mt-4 text-lg text-muted-foreground">
+				Tu lienzo infinito para imágenes, diagramas y anotaciones.
+				<br />Crea, organiza y accede desde cualquier dispositivo.
+			</p>
+
+			<div class="mt-10 flex items-center justify-center gap-4">
+				<a
+					href="/login"
+					class="inline-flex items-center rounded-lg bg-foreground px-6 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90"
+				>
+					Empezar ahora
+				</a>
+				<a
+					href="/login"
+					class="inline-flex items-center rounded-lg border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-muted"
+				>
+					Ya tengo cuenta
+				</a>
+			</div>
+
+			<!-- Features -->
+			<div class="mt-20 grid grid-cols-1 gap-6 text-left sm:grid-cols-3">
+				<div class="rounded-xl border border-border p-5">
+					<div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+						<svg
+							class="h-5 w-5 text-muted-foreground"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<rect x="3" y="3" width="18" height="18" rx="2"></rect><circle
+								cx="8.5"
+								cy="8.5"
+								r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline>
+						</svg>
+					</div>
+					<h3 class="font-semibold">Lienzos ilimitados</h3>
+					<p class="mt-1 text-sm text-muted-foreground">
+						Crea tantos lienzos como necesites para organizar tus ideas.
+					</p>
+				</div>
+				<div class="rounded-xl border border-border p-5">
+					<div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+						<svg
+							class="h-5 w-5 text-muted-foreground"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+						</svg>
+					</div>
+					<h3 class="font-semibold">Seguro y privado</h3>
+					<p class="mt-1 text-sm text-muted-foreground">
+						Tus datos están protegidos con autenticación segura.
+					</p>
+				</div>
+				<div class="rounded-xl border border-border p-5">
+					<div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+						<svg
+							class="h-5 w-5 text-muted-foreground"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"
+							></line><path
+								d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+							></path>
+						</svg>
+					</div>
+					<h3 class="font-semibold">Acceso global</h3>
+					<p class="mt-1 text-sm text-muted-foreground">
+						Accede desde cualquier navegador en cualquier momento.
+					</p>
+				</div>
+			</div>
+		</div>
+	</main>
+</Layout>
