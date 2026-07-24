@@ -1537,7 +1537,7 @@ const { id } = Astro.params;
 
 			function scheduleSave() {
 				if (saveTimeout) clearTimeout(saveTimeout);
-				saveTimeout = setTimeout(saveCanvas, 2000);
+				saveTimeout = setTimeout(saveCanvas, 1200);
 			}
 
 			async function saveCanvas() {
@@ -1584,6 +1584,42 @@ const { id } = Astro.params;
 			}
 
 			document.getElementById("btnSave").onclick = saveCanvas;
+
+			// Save immediately when leaving the page
+			window.addEventListener("beforeunload", () => {
+				if (isDirty) {
+					const title = document.getElementById("docTitle").value || "Sin título";
+					const storeData = JSON.stringify(
+						canvas.toDatalessJSON([
+							"selectable",
+							"evented",
+							"id",
+							"isArrowShape",
+							"startBindingId",
+							"endBindingId",
+							"rawP1",
+							"rawP2",
+							"rawCP",
+							"isFreeDraw",
+						]),
+					);
+					fetch(`/api/canvases/${CANVAS_ID}`, {
+						method: "PUT",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ name: title, storeData }),
+						credentials: "include",
+						keepalive: true,
+					});
+				}
+			});
+
+			// Save when switching tabs or minimizing
+			document.addEventListener("visibilitychange", () => {
+				if (document.hidden && isDirty) {
+					clearTimeout(saveTimeout);
+					saveCanvas();
+				}
+			});
 
 			async function loadCanvas() {
 				try {
