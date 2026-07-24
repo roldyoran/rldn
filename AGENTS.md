@@ -42,19 +42,24 @@ packages/ui/     → shadcn/ui components
 - DB file: `/home/rol2/Desktop/rldn/dev.db`
 - Schema: `canvases`, `canvas_documents`, `images` + auth tables (`user`, `session`, `account`, `verification`)
 - Auth tables use `timestamp_ms` mode; app tables use `timestamp` mode (unixepoch)
+- `nanoid` used for generating canvas/document IDs
 
 ### Auth
 
 - Better Auth with email+password only (no OAuth)
-- API routes: `/api/auth/session`, `/api/auth/sign-in`, `/api/auth/sign-up`, `/api/auth/sign-out`
-- Session check: fetch `/api/auth/session` → returns `null` if not logged in
+- All auth routes consolidated in `/api/auth/[...all].ts` catch-all
+- Session check: fetch `/api/auth/get-session` with `credentials: "include"` → returns user or null
 - Canvas API requires auth — returns 401 if no session
+- Always use `credentials: "include"` on client-side fetch calls for cookie-based sessions
 
 ### Fabric.js Canvas
 
 - Canvas editor at `/canvas/[id]` uses fabric.js 5.3.0 loaded via CDN (`<script is:inline>`)
 - Canvas data saved as JSON to `canvas_documents.store_data`
-- Auto-saves 2s after changes via `PUT /api/canvases/:id`
+- Auto-saves 1.2s after changes via `PUT /api/canvases/:id`
+- Also saves on tab switch (visibilitychange) and page unload (beforeunload)
+- Neutral color palette only — no blue/bright accent colors in canvas UI
+- Canvas name editable from topbar input, auto-saved with changes
 
 ### Formatter
 
