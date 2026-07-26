@@ -478,6 +478,8 @@ const { id: canvasId } = Astro.params;
 			// ===== TOOLBAR =====
 			const toolButtons = document.querySelectorAll(".tool-btn[data-tool]");
 			let currentTool = "selection";
+			// Tools that use two-click creation feel weird when locked
+			const noLockTools = new Set(["arrow", "line", "freedraw"]);
 
 			function setTool(tool) {
 				const api = getAPI();
@@ -487,8 +489,9 @@ const { id: canvasId } = Astro.params;
 					tool = "selection";
 				}
 				currentTool = tool;
-				// Lock the tool so it stays active after creating elements
-				api.setActiveTool({ type: tool, locked: tool !== "selection" });
+				// Lock shape tools so they stay active; arrows/lines/freedraw don't lock
+				const locked = tool !== "selection" && !noLockTools.has(tool);
+				api.setActiveTool({ type: tool, locked });
 				toolButtons.forEach((b) => {
 					b.style.background = b.dataset.tool === currentTool ? "#eae8e4" : "";
 					b.style.color = b.dataset.tool === currentTool ? "#14141f" : "";
