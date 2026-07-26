@@ -6,6 +6,29 @@ import "@excalidraw/excalidraw/index.css";
 // Self-host fonts from public/fonts/
 if (typeof window !== "undefined") {
 	window.EXCALIDRAW_ASSET_PATH = "/";
+
+	// Patch canvas context to override Excalidraw's hardcoded grid colors
+	// Excalidraw v0.18.1 uses Bold:"#dddddd" and Regular:"#e5e5e5" for grid
+	if (!(window as any).__gridColorPatched) {
+		(window as any).__gridColorPatched = true;
+		const desc = Object.getOwnPropertyDescriptor(
+			CanvasRenderingContext2D.prototype,
+			"strokeStyle",
+		)!;
+		Object.defineProperty(CanvasRenderingContext2D.prototype, "strokeStyle", {
+			set(value: string) {
+				// Replace grid grey colors with intense red
+				if (value === "#dddddd" || value === "#e5e5e5") {
+					value = value === "#dddddd" ? "#ff0000" : "#ff3333";
+				}
+				desc.set.call(this, value);
+			},
+			get() {
+				return desc.get.call(this);
+			},
+			configurable: true,
+		});
+	}
 }
 
 export interface ExcalidrawEditorProps {

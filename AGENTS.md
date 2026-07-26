@@ -67,6 +67,7 @@ packages/ui/     → shadcn/ui components
 - Page script (`[id].astro` inline script) polls `window.__excalidrawAPI.get()` for the imperative API
 - Page script communicates with React via `window.__onExcalidrawChange` callback and `window.__serializeExcalidraw` function
 - Excalidraw's built-in UI is hidden via CSS — custom toolbar/topbar in the Astro page
+- **Grid color**: Excalidraw v0.18.1 has NO `gridColor` API — colors are hardcoded as `Bold:"#dddddd"` and `Regular:"#e5e5e5"` in the bundle. Grid color is customized via monkey-patch of `CanvasRenderingContext2D.strokeStyle` in `ExcalidrawEditor.tsx`. The patch intercepts the hardcoded grey hex values and replaces them with red (`#ff0000` for Bold, `#ff3333` for Regular). Runs once on module load. **If Excalidraw is updated, verify the hardcoded hex values still match** — check `dist/prod/chunk-*.js` for the `Ti={Bold:...,Regular:...}` pattern.
 
 ### Formatter
 
