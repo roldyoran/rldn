@@ -364,8 +364,13 @@ const { id: canvasId } = Astro.params;
 		<!-- Save indicator -->
 		<div
 			id="saveIndicator"
-			class="absolute top-14 right-4 z-40 hidden rounded-lg bg-[#232322] border border-[#373634] px-3 py-1.5 text-xs text-[#928f89]"
+			class="absolute top-14 right-4 z-40 hidden items-center gap-2 rounded-lg border border-[#373634] bg-[#232322]/90 px-3 py-2 text-xs text-[#928f89] shadow-lg backdrop-blur-sm transition-all duration-300"
 		>
+			<span id="saveIcon" class="flex h-3.5 w-3.5 items-center justify-center">
+				<span
+					class="save-spinner inline-block h-3 w-3 rounded-full border-2 border-[#928f89] border-t-transparent"
+				></span>
+			</span>
 			<span id="saveText">Guardando...</span>
 		</div>
 
@@ -382,7 +387,34 @@ const { id: canvasId } = Astro.params;
 
 			const saveIndicator = document.getElementById("saveIndicator");
 			const saveText = document.getElementById("saveText");
+			const saveIcon = document.getElementById("saveIcon");
 			const docTitle = document.getElementById("docTitle");
+
+			const ICONS = {
+				saving:
+					'<span class="save-spinner inline-block h-3 w-3 rounded-full border-2 border-[#928f89] border-t-transparent"></span>',
+				saved:
+					'<svg class="h-3.5 w-3.5 text-[#69db7c]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>',
+				error:
+					'<svg class="h-3.5 w-3.5 text-[#ff6b6b]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>',
+			};
+
+			function showSaveState(state, text, duration) {
+				saveIcon.innerHTML = ICONS[state];
+				saveText.textContent = text;
+				saveIndicator.style.display = "flex";
+				saveIndicator.classList.remove("opacity-0");
+				saveIndicator.classList.add("opacity-100");
+				if (duration) {
+					setTimeout(() => {
+						saveIndicator.classList.remove("opacity-100");
+						saveIndicator.classList.add("opacity-0");
+						setTimeout(() => {
+							saveIndicator.style.display = "none";
+						}, 300);
+					}, duration);
+				}
+			}
 
 			// Load saved canvas name
 			fetch(`/api/canvases/${CANVAS_ID}`, { credentials: "include" })
@@ -446,8 +478,7 @@ const { id: canvasId } = Astro.params;
 				if (!isDirty) return;
 
 				isSaving = true;
-				saveText.textContent = "Guardando...";
-				saveIndicator.style.display = "block";
+				showSaveState("saving", "Guardando...");
 
 				try {
 					const { title, storeData } = buildStoreData();
@@ -459,17 +490,11 @@ const { id: canvasId } = Astro.params;
 					});
 					if (!res.ok) throw new Error(`Server ${res.status}`);
 					isDirty = false;
-					saveText.textContent = "Guardado";
-					setTimeout(() => {
-						saveIndicator.style.display = "none";
-					}, 1500);
+					showSaveState("saved", "Guardado", 1500);
 				} catch (err) {
 					console.error("[Canvas] Save FAILED:", err);
-					saveText.textContent = "Error al guardar";
 					isDirty = true;
-					setTimeout(() => {
-						saveIndicator.style.display = "none";
-					}, 3000);
+					showSaveState("error", "Error al guardar", 3000);
 				} finally {
 					isSaving = false;
 				}
@@ -680,5 +705,15 @@ const { id: canvasId } = Astro.params;
 	#toolbar::-webkit-scrollbar-thumb {
 		background: #373634;
 		border-radius: 3px;
+	}
+
+	/* Save indicator spinner */
+	@keyframes save-spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+	.save-spinner {
+		animation: save-spin 0.6s linear infinite;
 	}
 </style>
