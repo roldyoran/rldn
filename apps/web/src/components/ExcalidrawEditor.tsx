@@ -61,6 +61,9 @@ export function ExcalidrawEditor({
 							elements: parsed.elements || [],
 							appState: {
 								...parsed.appState,
+								viewBackgroundColor: "#1b1b1a",
+								currentStrokeColor: "#ffffff",
+								currentBackgroundColor: "transparent",
 								collaborators: [],
 							},
 							files: parsed.files || {},
@@ -79,7 +82,11 @@ export function ExcalidrawEditor({
 					console.log("[ExcalidrawEditor] No document, starting empty");
 					setInitialData({
 						elements: [],
-						appState: {},
+						appState: {
+							viewBackgroundColor: "#1b1b1a",
+							currentStrokeColor: "#ffffff",
+							currentBackgroundColor: "transparent",
+						},
 						files: {},
 						scrollToContent: false,
 					});
@@ -151,7 +158,7 @@ export function ExcalidrawEditor({
 			<Excalidraw
 				excalidrawAPI={handleAPI}
 				initialData={initialData}
-				theme="dark"
+				theme="light"
 				viewModeEnabled={viewModeEnabled}
 				onChange={handleChange}
 				gridModeEnabled

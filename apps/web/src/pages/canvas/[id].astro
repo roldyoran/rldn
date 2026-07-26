@@ -205,6 +205,161 @@ const { id: canvasId } = Astro.params;
 					></path></svg
 				>
 			</button>
+
+			<!-- Color Pickers -->
+			<div class="my-1 h-px bg-[#373634] mx-1"></div>
+
+			<!-- Stroke Color -->
+			<div class="flex flex-col items-center gap-1 py-1" title="Color de trazo">
+				<label class="text-[9px] text-[#928f89] uppercase tracking-wider">Trazo</label>
+				<div class="relative">
+					<input
+						type="color"
+						id="strokeColor"
+						value="#ffffff"
+						class="h-[24px] w-[24px] cursor-pointer rounded-md border border-[#373634] bg-transparent p-0"
+					/>
+				</div>
+				<!-- Stroke color presets -->
+				<div class="flex flex-wrap gap-0.5 justify-center max-w-[38px]">
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#ffffff"
+						data-type="stroke"
+						style="background:#ffffff"
+						title="Blanco"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#ff6b6b"
+						data-type="stroke"
+						style="background:#ff6b6b"
+						title="Rojo"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#ffa94d"
+						data-type="stroke"
+						style="background:#ffa94d"
+						title="Naranja"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#ffd43b"
+						data-type="stroke"
+						style="background:#ffd43b"
+						title="Amarillo"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#69db7c"
+						data-type="stroke"
+						style="background:#69db7c"
+						title="Verde"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#4dabf7"
+						data-type="stroke"
+						style="background:#4dabf7"
+						title="Azul"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#b197fc"
+						data-type="stroke"
+						style="background:#b197fc"
+						title="Morado"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#f783ac"
+						data-type="stroke"
+						style="background:#f783ac"
+						title="Rosa"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#928f89"
+						data-type="stroke"
+						style="background:#928f89"
+						title="Gris"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#1e1e1e"
+						data-type="stroke"
+						style="background:#1e1e1e"
+						title="Negro"></button>
+				</div>
+			</div>
+
+			<!-- Fill Color -->
+			<div class="flex flex-col items-center gap-1 py-1" title="Color de relleno">
+				<label class="text-[9px] text-[#928f89] uppercase tracking-wider">Relleno</label>
+				<div class="relative">
+					<input
+						type="color"
+						id="bgColor"
+						value="#ffffff"
+						class="h-[24px] w-[24px] cursor-pointer rounded-md border border-[#373634] bg-transparent p-0"
+					/>
+				</div>
+				<!-- Fill color presets -->
+				<div class="flex flex-wrap gap-0.5 justify-center max-w-[38px]">
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="transparent"
+						data-type="bg"
+						title="Sin relleno"
+					>
+						<span class="block h-full w-full relative"
+							><span
+								class="absolute inset-0 border border-[#ff4747] rotate-45 transform origin-center"
+								style="border-width:1px"></span></span
+						>
+					</button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#ffffff"
+						data-type="bg"
+						style="background:#ffffff"
+						title="Blanco"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#ff6b6b"
+						data-type="bg"
+						style="background:#ff6b6b"
+						title="Rojo"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#ffa94d"
+						data-type="bg"
+						style="background:#ffa94d"
+						title="Naranja"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#ffd43b"
+						data-type="bg"
+						style="background:#ffd43b"
+						title="Amarillo"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#69db7c"
+						data-type="bg"
+						style="background:#69db7c"
+						title="Verde"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#4dabf7"
+						data-type="bg"
+						style="background:#4dabf7"
+						title="Azul"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#b197fc"
+						data-type="bg"
+						style="background:#b197fc"
+						title="Morado"></button>
+					<button
+						class="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
+						data-color="#f783ac"
+						data-type="bg"
+						style="background:#f783ac"
+						title="Rosa"></button>
+				</div>
+			</div>
 		</div>
 
 		<!-- Canvas -->
@@ -233,6 +388,15 @@ const { id: canvasId } = Astro.params;
 
 			const saveIndicator = document.getElementById("saveIndicator");
 			const saveText = document.getElementById("saveText");
+			const docTitle = document.getElementById("docTitle");
+
+			// Load saved canvas name
+			fetch(`/api/canvases/${CANVAS_ID}`, { credentials: "include" })
+				.then((r) => r.json())
+				.then((data) => {
+					if (data.name) docTitle.value = data.name;
+				})
+				.catch(() => {});
 
 			// Poll for excalidrawAPI (React sets window.__excalidrawAPI.get())
 			function getAPI() {
@@ -330,6 +494,59 @@ const { id: canvasId } = Astro.params;
 			}
 			toolButtons.forEach((btn) => btn.addEventListener("click", () => setTool(btn.dataset.tool)));
 
+			// ===== COLOR PICKERS =====
+			const strokeColorInput = document.getElementById("strokeColor");
+			const bgColorInput = document.getElementById("bgColor");
+
+			function setStrokeColor(color) {
+				const api = getAPI();
+				if (!api) return;
+				// Set for new elements
+				api.updateScene({ appState: { currentStrokeColor: color } });
+				strokeColorInput.value = color === "transparent" ? "#ffffff" : color;
+				// Update selected elements
+				const elements = api.getSceneElements();
+				const selected = elements.filter((el) => el.selected);
+				if (selected.length > 0) {
+					api.updateScene({
+						elements: elements.map((el) =>
+							selected.some((s) => s.id === el.id) ? { ...el, strokeColor: color } : el,
+						),
+					});
+				}
+			}
+
+			function setBackgroundColor(color) {
+				const api = getAPI();
+				if (!api) return;
+				// Set for new elements
+				api.updateScene({ appState: { currentBackgroundColor: color } });
+				bgColorInput.value = color === "transparent" ? "#ffffff" : color;
+				// Update selected elements
+				const elements = api.getSceneElements();
+				const selected = elements.filter((el) => el.selected);
+				if (selected.length > 0) {
+					api.updateScene({
+						elements: elements.map((el) =>
+							selected.some((s) => s.id === el.id) ? { ...el, backgroundColor: color } : el,
+						),
+					});
+				}
+			}
+
+			strokeColorInput.addEventListener("input", (e) => setStrokeColor(e.target.value));
+			bgColorInput.addEventListener("input", (e) => setBackgroundColor(e.target.value));
+
+			// Color preset buttons
+			document.querySelectorAll(".color-preset").forEach((btn) => {
+				btn.addEventListener("click", () => {
+					const color = btn.dataset.color;
+					const type = btn.dataset.type;
+					if (type === "stroke") setStrokeColor(color);
+					else if (type === "bg") setBackgroundColor(color);
+				});
+			});
+
 			// ===== TOPBAR =====
 			document.getElementById("btnBack").onclick = () => {
 				window.location.href = "/dashboard";
@@ -381,11 +598,10 @@ const { id: canvasId } = Astro.params;
 </Layout>
 
 <style is:global>
-	/* Excalidraw fills the canvas area */
-	#canvas-wrap .excalidraw-wrapper {
-		width: 100%;
-		height: 100%;
-	}
+	/* ========================================
+	   Page-specific styles for canvas page.
+	   Excalidraw variable overrides live in global.css.
+	   ======================================== */
 
 	/* Hide ALL Excalidraw built-in UI - we use our own */
 	#canvas-wrap .excalidraw .App-menu_top,
@@ -396,12 +612,52 @@ const { id: canvasId } = Astro.params;
 	#canvas-wrap .excalidraw .ColorPicker,
 	#canvas-wrap .excalidraw .ActionManager,
 	#canvas-wrap .excalidraw .HintViewer,
-	#canvas-wrap .excalidraw .welcome-screen {
+	#canvas-wrap .excalidraw .welcome-screen,
+	#canvas-wrap .excalidraw .App-bottom-bar,
+	#canvas-wrap .excalidraw .App-mobile-menu {
 		display: none !important;
 	}
 
 	/* Ensure Excalidraw's canvas is below our UI */
 	#canvas-wrap .excalidraw .layer-ui__wrapper {
 		z-index: 5 !important;
+	}
+
+	/* Color input styling */
+	#strokeColor,
+	#bgColor {
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+		background: none;
+		cursor: pointer;
+	}
+	#strokeColor::-webkit-color-swatch-wrapper,
+	#bgColor::-webkit-color-swatch-wrapper {
+		padding: 0;
+	}
+	#strokeColor::-webkit-color-swatch,
+	#bgColor::-webkit-color-swatch {
+		border: none;
+		border-radius: 4px;
+	}
+	#strokeColor::-moz-color-swatch,
+	#bgColor::-moz-color-swatch {
+		border: none;
+		border-radius: 4px;
+	}
+
+	/* Toolbar scrollable if too tall */
+	#toolbar {
+		max-height: calc(100vh - 100px);
+		overflow-y: auto;
+		overflow-x: hidden;
+	}
+	#toolbar::-webkit-scrollbar {
+		width: 3px;
+	}
+	#toolbar::-webkit-scrollbar-thumb {
+		background: #373634;
+		border-radius: 3px;
 	}
 </style>

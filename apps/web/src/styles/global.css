@@ -46,7 +46,10 @@
 
 /* ========================================
    Excalidraw Theme Overrides
-   Match warm neutral palette: #1b1b1a, #232322, #373634, #eae8e4, #928f89
+   We use theme="light" to preserve image colors (dark mode applies
+   CSS filter: invert() + hue-rotate() which desaturates images).
+   Then override ALL variables for our warm dark palette.
+   Palette: #141414, #1b1b1a, #232322, #2a2926, #373634, #4a4846, #5a5856, #928f89, #eae8e4
    ======================================== */
 
 .excalidraw-wrapper {
@@ -55,91 +58,155 @@
 }
 
 .excalidraw-wrapper .excalidraw {
-	--color-primary: #eae8e4;
-	--color-primary-darker: #d6d4d0;
-	--color-primary-darkest: #c5c3bf;
-	--color-primary-light: #373634;
-	--color-primary-light-darker: #2a2926;
-	--color-primary-hover: #ffffff;
-}
-
-.excalidraw-wrapper .excalidraw.theme--dark {
-	/* Backgrounds */
+	/* === Core backgrounds === */
+	--default-bg-color: #1b1b1a;
 	--island-bg-color: #232322;
 	--island-bg-color-alt: #1b1b1a;
-	--default-bg-color: #1b1b1a;
 	--input-bg-color: #1b1b1a;
-	--popup-secondary-bg-color: #232322;
+	--input-hover-bg-color: #2a2926;
+	--popup-bg-color: #232322;
+	--popup-secondary-bg-color: #1b1b1a;
+	--overlay-bg-color: rgba(20, 20, 20, 0.88);
 	--mobile-action-button-bg: #232322;
 
-	/* Borders */
+	/* === Borders === */
+	--default-border-color: #2a2926;
 	--dialog-border-color: #373634;
 	--input-border-color: #373634;
 	--color-border-outline: #373634;
 	--color-border-outline-variant: #373634;
 	--mobile-color-border: #373634;
+	--list-border-color: #373634;
+	--avatar-border-color: #373634;
+	--sidebar-border-color: #2a2926;
 
-	/* Text */
+	/* === Text === */
 	--color-on-surface: #eae8e4;
+	--text-primary-color: #eae8e4;
 	--input-label-color: #928f89;
 	--popup-text-color: #928f89;
-	--text-primary-color: #eae8e4;
+	--popup-text-inverted-color: #1b1b1a;
 	--keybinding-color: #928f89;
 	--color-on-primary-container: #eae8e4;
+	--color-text-warning: #eae8e4;
 
-	/* Buttons */
+	/* === Buttons === */
 	--button-gray-1: #2a2926;
 	--button-gray-2: #232322;
 	--button-gray-3: #1b1b1a;
 	--button-destructive-bg-color: #3d1f1f;
 	--button-destructive-color: #eae8e4;
+	--button-hover-bg: #2a2926;
+	--button-active-bg: #373634;
 
-	/* Primary color (tool highlights, selection) */
+	/* === Primary color (tool highlights, selection) === */
 	--color-primary: #eae8e4;
 	--color-primary-darker: #d6d4d0;
 	--color-primary-darkest: #c5c3bf;
 	--color-primary-light: #373634;
 	--color-primary-light-darker: #2a2926;
 	--color-primary-hover: #ffffff;
+	--color-primary-contrast-offset: #d6d4d0;
 
-	/* Surfaces */
+	/* === Surfaces === */
 	--color-surface-high: #2a2926;
 	--color-surface-mid: #232322;
 	--color-surface-low: #1b1b1a;
 	--color-surface-lowest: #141414;
 	--color-surface-primary-container: #373634;
 
-	/* Icons */
+	/* === Icons === */
 	--icon-fill-color: #eae8e4;
+	--icon-green-fill-color: #5a8f6a;
 
-	/* Focus / Selection */
+	/* === Focus / Selection === */
 	--focus-highlight-color: #eae8e4;
 	--select-highlight-color: #928f89;
 	--color-selection: #928f89;
 
-	/* Brand / Active */
-	--color-brand-hover: #eae8e4;
-	--color-brand-active: #d6d4d0;
+	/* === Brand / Active === */
+	--color-brand-hover: #d6d4d0;
+	--color-brand-active: #c5c3bf;
 
-	/* Disabled */
+	/* === Disabled === */
 	--color-disabled: #5a5856;
 
-	/* Logo text */
+	/* === Logo text === */
 	--color-logo-text: #eae8e4;
 
-	/* Dropdown */
-	--popup-text-inverted-color: #1b1b1a;
+	/* === Gray scale (dark-appropriate) === */
+	--color-gray-10: #2a2926;
+	--color-gray-20: #373634;
+	--color-gray-30: #4a4846;
+	--color-gray-40: #5a5856;
+	--color-gray-50: #706e6a;
+	--color-gray-60: #888580;
+	--color-gray-70: #928f89;
+	--color-gray-80: #c5c3bf;
+	--color-gray-85: #d6d4d0;
+	--color-gray-90: #eae8e4;
+	--color-gray-100: #ffffff;
 
-	/* Danger / Warning (keep distinguishable) */
+	/* === Muted === */
+	--color-muted: #4a4846;
+	--color-muted-darker: #373634;
+	--color-muted-darkest: #232322;
+	--color-muted-background: #5a5856;
+	--color-muted-background-darker: #373634;
+
+	/* === Danger / Warning (keep distinguishable) === */
 	--color-danger: #ffa8a5;
 	--color-danger-dark: #672120;
 	--color-danger-darker: #8f2625;
 	--color-danger-darkest: #ac2b29;
 	--color-danger-text: #fbcbcc;
+	--color-danger-background: #3d1f1f;
+	--color-danger-icon-background: #672120;
+	--color-danger-color: #fbcbcc;
+	--color-danger-icon-color: #fbcbcc;
 
-	/* Scrollbar */
+	--color-warning: #3d2f10;
+	--color-warning-dark: #b8860b;
+	--color-warning-darker: #996b09;
+	--color-warning-darkest: #7a5507;
+	--color-warning-background: #3d2f10;
+	--color-warning-icon-background: #b8860b;
+	--color-warning-color: #eae8e4;
+	--color-warning-icon-color: #eae8e4;
+
+	/* === Success === */
+	--color-success: #1a3d20;
+	--color-success-darker: #153318;
+	--color-success-darkest: #102910;
+	--color-success-text: #a5d6a7;
+	--color-success-contrast: #4caf50;
+	--color-success-contrast-hover: #66bb6a;
+	--color-success-contrast-active: #81c784;
+
+	/* === Badge === */
+	--color-badge: #a5d6a7;
+	--background-color-badge: #1a3d20;
+
+	/* === Scrollbar === */
 	--scrollbar-thumb: #373634;
 	--scrollbar-thumb-hover: #4a4846;
+
+	/* === Shadows (softer for dark) === */
+	--shadow-island:
+		0px 0px 1px 0px rgba(0, 0, 0, 0.3), 0px 0px 3px 0px rgba(0, 0, 0, 0.2),
+		0px 7px 14px 0px rgba(0, 0, 0, 0.15);
+	--shadow-island-stronger:
+		0px 0px 1px 0px rgba(0, 0, 0, 0.4), 0px 0px 3px 0px rgba(0, 0, 0, 0.25),
+		0px 7px 14px 0px rgba(0, 0, 0, 0.2);
+
+	/* === Misc === */
+	--link-color: #8ab4f8;
+	--link-color-hover: #aecbfa;
+	--link-color-active: #669df6;
+	--color-icon-white: #eae8e4;
+	--color-logo-icon: #eae8e4;
+	--color-promo: #eae8e4;
+	--theme-filter: none;
 }
 
 /* Make Excalidraw fill its container */
@@ -153,7 +220,7 @@
 	display: none !important;
 }
 
-/* Adjust the welcome screen for dark theme */
-.excalidraw-wrapper .excalidraw.theme--dark .welcome-screen {
-	color: #eae8e4;
+/* Adjust the welcome screen colors */
+.excalidraw-wrapper .excalidraw .welcome-screen {
+	color: #928f89;
 }
