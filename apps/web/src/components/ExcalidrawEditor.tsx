@@ -3,6 +3,7 @@ import { Excalidraw, serializeAsJSON } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
 import { ColorPickerPopup } from "./ColorPickerPopup";
+import { ImageUrlDialog } from "./ImageUrlDialog";
 
 // Self-host fonts from public/fonts/
 if (typeof window !== "undefined") {
@@ -59,6 +60,11 @@ export function ExcalidrawEditor({
 		type: "stroke" | "bg";
 		color: string;
 	}>({ open: false, type: "stroke", color: "#ffffff" });
+	const [imageDialog, setImageDialog] = useState<{
+		open: boolean;
+		error: string | null;
+		loading: boolean;
+	}>({ open: false, error: null, loading: false });
 
 	// Fetch canvas data and set as initialData (Promise pattern for Excalidraw)
 	useEffect(() => {
@@ -171,6 +177,11 @@ export function ExcalidrawEditor({
 				setColorPicker((prev) => ({ ...prev, open: false }));
 			};
 
+			// Expose image dialog controls for toolbar
+			(window as any).__showImageUrlDialog = () => {
+				setImageDialog({ open: true, error: null, loading: false });
+			};
+
 			// Update toolbar swatch button backgrounds
 			(window as any).__updateToolbarSwatch = (type: "stroke" | "bg", color: string) => {
 				const btn = document.getElementById(type === "stroke" ? "strokeColorBtn" : "bgColorBtn");
@@ -243,6 +254,183 @@ export function ExcalidrawEditor({
 		[colorPicker.type],
 	);
 
+	// Handle image URL insertion
+	const handleImageInsert = useCallback(async (url: string) => {
+		const api = apiRef.current;
+		if (!api) return;
+
+		setImageDialog((prev) => ({ ...prev, loading: true, error: null }));
+
+		try {
+			// Validate URL format
+			let fetchUrl = url;
+			if (!url.startsWith("data:") && !url.startsWith("blob:")) {
+				try {
+					new URL(url);
+				} catch {
+					setImageDialog((prev) => ({
+						...prev,
+						loading: false,
+						error: "URL invalida. Pega un link completo.",
+					}));
+					return;
+				}
+				fetchUrl = url;
+			}
+
+			// Fetch the image
+			let blob: Blob;
+			if (url.startsWith("data:")) {
+				// Data URL: convert to blob
+				const res = await fetch(url);
+				if (!res.ok) throw new Error("Failed to convert data URL");
+				blob = await res.blob();
+			} else {
+				const res = await fetch(fetchUrl, { mode: "cors" });
+				if (!res.ok) throw new Error(`HTTP ${res.status}`);
+				blob = await res.blob();
+			}
+
+			// Validate MIME type
+			if (!blob.type.startsWith("image/")) {
+				setImageDialog((prev) => ({
+					...prev,
+					loading: false,
+					error: `No es una imagen valida (${blob.type || "tipo desconocido"}).`,
+				}));
+				return;
+			}
+
+			// Supported image types
+			const supportedTypes = [
+				"image/png",
+				"image/jpeg",
+				"image/gif",
+				"image/svg+xml",
+				"image/webp",
+			];
+			if (!supportedTypes.some((t) => blob.type.startsWith(t))) {
+				setImageDialog((prev) => ({
+					...prev,
+					loading: false,
+					error: `Formato no soportado: ${blob.type}. Usa PNG, JPG, GIF, SVG o WebP.`,
+				}));
+				return;
+			}
+
+			// Convert to data URL
+			const dataURL = await new Promise<string>((resolve, reject) => {
+				const reader = new FileReader();
+				reader.onloadend = () => {
+					if (typeof reader.result === "string") resolve(reader.result);
+					else reject(new Error("No se pudo leer la imagen"));
+				};
+				reader.onerror = () => reject(new Error("Error al leer la imagen"));
+				reader.readAsDataURL(blob);
+			});
+
+			// Get natural dimensions
+			const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+				const image = new Image();
+				image.onload = () => resolve(image);
+				image.onerror = () => reject(new Error("No se pudo cargar la imagen"));
+				image.src = dataURL;
+			});
+
+			// Scale down if too large (max 500px on longest side)
+			let { width, height } = img;
+			const maxDim = 500;
+			if (width > maxDim || height > maxDim) {
+				const scale = maxDim / Math.max(width, height);
+				width = Math.round(width * scale);
+				height = Math.round(height * scale);
+			}
+
+			// Find nearest image element to avoid overlap
+			const elements = api.getSceneElements();
+			const imageElements = elements.filter((el: any) => el.type === "image" && !el.isDeleted);
+
+			let x = 100;
+			let y = 100;
+
+			if (imageElements.length > 0) {
+				// Find the rightmost image and place new one to its right with gap
+				const sorted = [...imageElements].sort((a: any, b: any) => a.x - b.x);
+				const rightmost = sorted[sorted.length - 1];
+				x = rightmost.x + rightmost.width + 20;
+				y = rightmost.y;
+			}
+
+			// Create file ID and image element
+			const fileId = `img-${Date.now()}-${Math.random().toString(36).slice(2, 8)}` as any;
+			const elementId = `el-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+			const imageElement = {
+				id: elementId,
+				type: "image" as const,
+				fileId,
+				x,
+				y,
+				width,
+				height,
+				angle: 0,
+				strokeColor: "transparent",
+				backgroundColor: "transparent",
+				fillStyle: "hachure" as const,
+				strokeWidth: 1,
+				strokeStyle: "solid" as const,
+				roughness: 1,
+				opacity: 100,
+				groupIds: [],
+				frameId: null,
+				roundness: null,
+				status: "saved" as const,
+				scale: [1, 1] as [number, number],
+				seed: Date.now(),
+				version: 1,
+				versionNonce: Date.now(),
+				isDeleted: false,
+				boundElements: null,
+				updated: Date.now(),
+				locked: false,
+				link: null,
+			};
+
+			// Add file data and element
+			api.addFiles([
+				{
+					id: fileId,
+					dataURL,
+					mimeType: blob.type,
+					created: Date.now(),
+					lastRetrieved: Date.now(),
+				},
+			]);
+
+			api.updateScene({
+				elements: [...elements, imageElement] as any,
+			});
+
+			// Scroll to the new image
+			setTimeout(() => {
+				api.scrollToContent([imageElement as any], {
+					fitToViewport: true,
+					viewportZoomFactor: 0.8,
+				});
+			}, 50);
+
+			// Close dialog
+			setImageDialog({ open: false, error: null, loading: false });
+		} catch (err: any) {
+			console.error("[ImageInsert] Failed:", err);
+			setImageDialog((prev) => ({
+				...prev,
+				loading: false,
+				error: err.message || "Error al insertar la imagen.",
+			}));
+		}
+	}, []);
+
 	// Notify page script on changes
 	const handleChange = useCallback(
 		(_elements: readonly any[], appState: Record<string, any>, _files: Record<string, any>) => {
@@ -297,6 +485,17 @@ export function ExcalidrawEditor({
 						initialColor={colorPicker.color}
 						onColorChange={handleColorChange}
 						onClose={() => setColorPicker((prev) => ({ ...prev, open: false }))}
+					/>
+				</div>
+			)}
+			{/* Image URL Dialog */}
+			{imageDialog.open && (
+				<div className="absolute left-[70px] top-[280px] z-50">
+					<ImageUrlDialog
+						onInsert={handleImageInsert}
+						onClose={() => setImageDialog({ open: false, error: null, loading: false })}
+						error={imageDialog.error}
+						loading={imageDialog.loading}
 					/>
 				</div>
 			)}
