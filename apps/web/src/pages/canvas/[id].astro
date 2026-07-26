@@ -477,13 +477,21 @@ const { id: canvasId } = Astro.params;
 
 			// ===== TOOLBAR =====
 			const toolButtons = document.querySelectorAll(".tool-btn[data-tool]");
+			let currentTool = "selection";
+
 			function setTool(tool) {
 				const api = getAPI();
 				if (!api) return;
-				api.setActiveTool({ type: tool });
+				// Toggle: if clicking same tool, switch back to selection
+				if (currentTool === tool && tool !== "selection") {
+					tool = "selection";
+				}
+				currentTool = tool;
+				// Lock the tool so it stays active after creating elements
+				api.setActiveTool({ type: tool, locked: tool !== "selection" });
 				toolButtons.forEach((b) => {
-					b.style.background = b.dataset.tool === tool ? "#eae8e4" : "";
-					b.style.color = b.dataset.tool === tool ? "#14141f" : "";
+					b.style.background = b.dataset.tool === currentTool ? "#eae8e4" : "";
+					b.style.color = b.dataset.tool === currentTool ? "#14141f" : "";
 				});
 			}
 			toolButtons.forEach((btn) => btn.addEventListener("click", () => setTool(btn.dataset.tool)));
