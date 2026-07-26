@@ -623,6 +623,12 @@ const { id: canvasId } = Astro.params;
 			};
 			document.getElementById("btnSave").onclick = saveCanvas;
 			document.getElementById("docTitle").addEventListener("input", markDirty);
+			document.getElementById("docTitle").addEventListener("keydown", (e) => {
+				if (e.key === "Enter") {
+					e.preventDefault();
+					e.target.blur();
+				}
+			});
 
 			// ===== SAVE TRIGGERS =====
 			window.addEventListener("beforeunload", () => {
