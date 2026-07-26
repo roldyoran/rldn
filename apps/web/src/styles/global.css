@@ -43,3 +43,117 @@
 		@apply bg-background text-foreground;
 	}
 }
+
+/* ========================================
+   Excalidraw Theme Overrides
+   Match warm neutral palette: #1b1b1a, #232322, #373634, #eae8e4, #928f89
+   ======================================== */
+
+.excalidraw-wrapper {
+	width: 100%;
+	height: 100%;
+}
+
+.excalidraw-wrapper .excalidraw {
+	--color-primary: #eae8e4;
+	--color-primary-darker: #d6d4d0;
+	--color-primary-darkest: #c5c3bf;
+	--color-primary-light: #373634;
+	--color-primary-light-darker: #2a2926;
+	--color-primary-hover: #ffffff;
+}
+
+.excalidraw-wrapper .excalidraw.theme--dark {
+	/* Backgrounds */
+	--island-bg-color: #232322;
+	--island-bg-color-alt: #1b1b1a;
+	--default-bg-color: #1b1b1a;
+	--input-bg-color: #1b1b1a;
+	--popup-secondary-bg-color: #232322;
+	--mobile-action-button-bg: #232322;
+
+	/* Borders */
+	--dialog-border-color: #373634;
+	--input-border-color: #373634;
+	--color-border-outline: #373634;
+	--color-border-outline-variant: #373634;
+	--mobile-color-border: #373634;
+
+	/* Text */
+	--color-on-surface: #eae8e4;
+	--input-label-color: #928f89;
+	--popup-text-color: #928f89;
+	--text-primary-color: #eae8e4;
+	--keybinding-color: #928f89;
+	--color-on-primary-container: #eae8e4;
+
+	/* Buttons */
+	--button-gray-1: #2a2926;
+	--button-gray-2: #232322;
+	--button-gray-3: #1b1b1a;
+	--button-destructive-bg-color: #3d1f1f;
+	--button-destructive-color: #eae8e4;
+
+	/* Primary color (tool highlights, selection) */
+	--color-primary: #eae8e4;
+	--color-primary-darker: #d6d4d0;
+	--color-primary-darkest: #c5c3bf;
+	--color-primary-light: #373634;
+	--color-primary-light-darker: #2a2926;
+	--color-primary-hover: #ffffff;
+
+	/* Surfaces */
+	--color-surface-high: #2a2926;
+	--color-surface-mid: #232322;
+	--color-surface-low: #1b1b1a;
+	--color-surface-lowest: #141414;
+	--color-surface-primary-container: #373634;
+
+	/* Icons */
+	--icon-fill-color: #eae8e4;
+
+	/* Focus / Selection */
+	--focus-highlight-color: #eae8e4;
+	--select-highlight-color: #928f89;
+	--color-selection: #928f89;
+
+	/* Brand / Active */
+	--color-brand-hover: #eae8e4;
+	--color-brand-active: #d6d4d0;
+
+	/* Disabled */
+	--color-disabled: #5a5856;
+
+	/* Logo text */
+	--color-logo-text: #eae8e4;
+
+	/* Dropdown */
+	--popup-text-inverted-color: #1b1b1a;
+
+	/* Danger / Warning (keep distinguishable) */
+	--color-danger: #ffa8a5;
+	--color-danger-dark: #672120;
+	--color-danger-darker: #8f2625;
+	--color-danger-darkest: #ac2b29;
+	--color-danger-text: #fbcbcc;
+
+	/* Scrollbar */
+	--scrollbar-thumb: #373634;
+	--scrollbar-thumb-hover: #4a4846;
+}
+
+/* Make Excalidraw fill its container */
+.excalidraw-wrapper .excalidraw,
+.excalidraw-wrapper .excalidraw .layer-ui__wrapper {
+	height: 100% !important;
+}
+
+/* Hide the top menu bar since we have our own topbar */
+.excalidraw-wrapper .excalidraw .App-menu_top {
+	display: none !important;
+}
+
+/* Adjust the welcome screen for dark theme */
+.excalidraw-wrapper .excalidraw.theme--dark .welcome-screen {
+	color: #eae8e4;
+}

@@ -1,7 +1,8 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import { ExcalidrawEditor } from "../../components/ExcalidrawEditor";
 
-const { id } = Astro.params;
+const { id: canvasId } = Astro.params;
 ---
 
 <Layout title="Lienzo - Canvas App">
@@ -13,7 +14,7 @@ const { id } = Astro.params;
 		<!-- Topbar -->
 		<div
 			id="topbar"
-			class="absolute top-0 left-0 right-0 z-20 flex h-[52px] items-center justify-between border-b border-[#373634] bg-[#232322] px-3"
+			class="absolute top-0 left-0 right-0 z-30 flex h-[52px] items-center justify-between border-b border-[#373634] bg-[#232322] px-3"
 		>
 			<div class="flex items-center gap-1.5">
 				<button
@@ -38,228 +39,6 @@ const { id } = Astro.params;
 			</div>
 			<div class="flex items-center gap-1.5">
 				<button
-					class="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4] disabled:opacity-30 disabled:cursor-not-allowed"
-					id="btnUndo"
-					title="Deshacer (Ctrl+Z)"
-					disabled
-				>
-					<svg
-						class="h-[18px] w-[18px]"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						><path d="M9 14L4 9l5-5"></path><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"></path></svg
-					>
-				</button>
-				<button
-					class="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4] disabled:opacity-30 disabled:cursor-not-allowed"
-					id="btnRedo"
-					title="Rehacer (Ctrl+Shift+Z)"
-					disabled
-				>
-					<svg
-						class="h-[18px] w-[18px]"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						><path d="M15 14l5-5-5-5"></path><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"></path></svg
-					>
-				</button>
-				<div class="h-[22px] w-px bg-[#373634] mx-1"></div>
-				<button
-					class="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-					id="btnCopy"
-					title="Copiar (Ctrl+C)"
-				>
-					<svg
-						class="h-[18px] w-[18px]"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						><rect x="9" y="9" width="13" height="13" rx="2"></rect><path
-							d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg
-					>
-				</button>
-				<button
-					class="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-					id="btnPaste"
-					title="Pegar (Ctrl+V)"
-				>
-					<svg
-						class="h-[18px] w-[18px]"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
-						></path><rect x="8" y="2" width="8" height="4" rx="1"></rect></svg
-					>
-				</button>
-				<div class="h-[22px] w-px bg-[#373634] mx-1"></div>
-				<button
-					class="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-					id="btnGroup"
-					title="Agrupar (Ctrl+G)"
-				>
-					<svg
-						class="h-[18px] w-[18px]"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect
-							x="14"
-							y="14"
-							width="7"
-							height="7"
-							rx="1"></rect><path d="M10 6.5h5A2.5 2.5 0 0 1 17.5 9v5"></path></svg
-					>
-				</button>
-				<button
-					class="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-					id="btnUngroup"
-					title="Desagrupar"
-				>
-					<svg
-						class="h-[18px] w-[18px]"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect
-							x="14"
-							y="3"
-							width="7"
-							height="7"
-							rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect
-							x="14"
-							y="14"
-							width="7"
-							height="7"
-							rx="1"></rect></svg
-					>
-				</button>
-				<div class="h-[22px] w-px bg-[#373634] mx-1"></div>
-				<button
-					class="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-					id="btnZoomOut"
-					title="Alejar"
-				>
-					<svg
-						class="h-[18px] w-[18px]"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.3-4.3M8 11h6"></path></svg
-					>
-				</button>
-				<span id="zoomLabel" class="w-[44px] text-center text-xs text-[#928f89]">100%</span>
-				<button
-					class="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-					id="btnZoomIn"
-					title="Acercar"
-				>
-					<svg
-						class="h-[18px] w-[18px]"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"
-						></path></svg
-					>
-				</button>
-				<button
-					class="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-					id="btnZoomReset"
-					title="Ajustar / 100%"
-				>
-					<svg
-						class="h-[18px] w-[18px]"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						><path
-							d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"
-						></path></svg
-					>
-				</button>
-				<div class="h-[22px] w-px bg-[#373634] mx-1"></div>
-				<button
-					class="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-					id="btnGrid"
-					title="Alternar puntos de fondo"
-				>
-					<svg
-						class="h-[18px] w-[18px]"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						><rect x="3" y="3" width="18" height="18" rx="2"></rect><path
-							d="M3 9h18M3 15h18M9 3v18M15 3v18"></path></svg
-					>
-				</button>
-				<button
-					class="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-					id="btnExport"
-					title="Exportar / Descargar"
-				>
-					<svg
-						class="h-[18px] w-[18px]"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path
-							d="M7 10l5 5 5-5M12 15V3"></path></svg
-					>
-				</button>
-				<button
-					class="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-					id="btnDelete"
-					title="Eliminar (Supr)"
-				>
-					<svg
-						class="h-[18px] w-[18px]"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						><path
-							d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z"
-						></path></svg
-					>
-				</button>
-				<div class="h-[22px] w-px bg-[#373634] mx-1"></div>
-				<button
 					class="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
 					id="btnSave"
 					title="Guardar (Ctrl+S)"
@@ -280,37 +59,14 @@ const { id } = Astro.params;
 			</div>
 		</div>
 
-		<!-- Export Menu -->
-		<div
-			id="exportMenu"
-			class="absolute right-3 top-[52px] z-30 hidden flex-col rounded-xl border border-[#373634] bg-[#232322] p-1.5 shadow-[0_10px_30px_rgba(0,0,0,.4)]"
-			style="min-width:170px;"
-		>
-			<button
-				data-export="png"
-				class="rounded-md px-2.5 py-2 text-left text-[13.5px] text-[#eae8e4] hover:bg-[#2a2926]"
-				>Exportar como PNG</button
-			>
-			<button
-				data-export="svg"
-				class="rounded-md px-2.5 py-2 text-left text-[13.5px] text-[#eae8e4] hover:bg-[#2a2926]"
-				>Exportar como SVG</button
-			>
-			<button
-				data-export="json"
-				class="rounded-md px-2.5 py-2 text-left text-[13.5px] text-[#eae8e4] hover:bg-[#2a2926]"
-				>Exportar como JSON</button
-			>
-		</div>
-
 		<!-- Toolbar -->
 		<div
 			id="toolbar"
-			class="absolute left-3 top-[70px] z-20 flex flex-col gap-0.5 rounded-xl border border-[#373634] bg-[#232322] p-1.5"
+			class="absolute left-3 top-[70px] z-30 flex flex-col gap-0.5 rounded-xl border border-[#373634] bg-[#232322] p-1.5"
 		>
 			<button
 				class="tool-btn flex h-[38px] w-[38px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4] active:bg-[#eae8e4] active:text-[#14141f]"
-				data-tool="select"
+				data-tool="selection"
 				title="Seleccionar (V)"
 			>
 				<svg
@@ -325,7 +81,7 @@ const { id } = Astro.params;
 			</button>
 			<button
 				class="tool-btn flex h-[38px] w-[38px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-				data-tool="pan"
+				data-tool="hand"
 				title="Mover lienzo (H)"
 			>
 				<svg
@@ -343,7 +99,7 @@ const { id } = Astro.params;
 			</button>
 			<button
 				class="tool-btn flex h-[38px] w-[38px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-				data-tool="draw"
+				data-tool="freedraw"
 				title="Lápiz (P)"
 			>
 				<svg
@@ -376,7 +132,7 @@ const { id } = Astro.params;
 			</button>
 			<button
 				class="tool-btn flex h-[38px] w-[38px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-				data-tool="rect"
+				data-tool="rectangle"
 				title="Rectángulo (R)"
 			>
 				<svg
@@ -389,8 +145,8 @@ const { id } = Astro.params;
 			</button>
 			<button
 				class="tool-btn flex h-[38px] w-[38px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-				data-tool="circle"
-				title="Elipse (C)"
+				data-tool="ellipse"
+				title="Elipse (O)"
 			>
 				<svg
 					class="h-[18px] w-[18px]"
@@ -435,7 +191,7 @@ const { id } = Astro.params;
 			<button
 				class="tool-btn flex h-[38px] w-[38px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
 				data-tool="frame"
-				title="Página / marco"
+				title="Marco (F)"
 			>
 				<svg
 					class="h-[18px] w-[18px]"
@@ -445,74 +201,21 @@ const { id } = Astro.params;
 					stroke-width="2"
 					stroke-linecap="round"
 					stroke-linejoin="round"
-					><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline
-						points="14 2 14 8 20 8"></polyline></svg
+					><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18M9 3v18"
+					></path></svg
 				>
 			</button>
-			<button
-				class="tool-btn flex h-[38px] w-[38px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-				data-tool="image"
-				title="Insertar imagen (I)"
-			>
-				<svg
-					class="h-[18px] w-[18px]"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"
-					></circle><polyline points="21 15 16 10 5 21"></polyline></svg
-				>
-			</button>
-		</div>
-
-		<!-- Properties Panel -->
-		<div
-			id="propPanel"
-			class="absolute left-[70px] top-[70px] z-20 hidden flex-col gap-2.5 rounded-xl border border-[#373634] bg-[#232322] p-2.5"
-			style="min-width:150px;"
-		>
-			<div>
-				<label class="mb-1 block text-[11px] uppercase tracking-wide text-[#928f89]">Color</label>
-				<div class="flex flex-wrap gap-1.5" id="colorSwatches"></div>
-			</div>
-			<div>
-				<label class="mb-1 block text-[11px] uppercase tracking-wide text-[#928f89]">Grosor</label>
-				<input type="range" id="strokeWidth" min="1" max="20" value="3" class="w-full" />
-			</div>
 		</div>
 
 		<!-- Canvas -->
-		<div
-			id="canvas-wrap"
-			class="absolute inset-0 top-[52px] bg-[#1b1b1a]"
-			style="background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1.6px, transparent 1.6px); background-size: 24px 24px;"
-		>
-			<canvas id="c"></canvas>
-			<div
-				id="dropHint"
-				class="pointer-events-none absolute inset-0 z-50 hidden items-center justify-center rounded-2xl border-3 border-dashed border-[#a3a099] bg-[rgba(20,20,31,.75)] text-lg text-[#eae8e4] backdrop-blur-[2px] m-3.5"
-			>
-				Suelta la imagen para pegarla ⬇
-			</div>
-		</div>
-
-		<!-- Status bar -->
-		<div
-			id="statusbar"
-			class="pointer-events-none absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-[rgba(14,14,20,.9)] to-transparent px-4 pb-2 pt-1 text-center text-[11px] text-[#928f89]"
-		>
-			V seleccionar · H mover · P dibujar · T texto · R rectángulo · C elipse · L línea · A flecha ·
-			I imagen · Supr eliminar · Ctrl+C/V copiar/pegar · Ctrl+G agrupar · Ctrl+S guardar · Rueda
-			zoom · Espacio+arrastrar mover
+		<div id="canvas-wrap" class="absolute inset-0 top-[52px] bg-[#1b1b1a]">
+			<ExcalidrawEditor client:only="react" canvasId={canvasId!} />
 		</div>
 
 		<!-- Save indicator -->
 		<div
 			id="saveIndicator"
-			class="absolute top-14 right-4 z-20 hidden rounded-lg bg-[#232322] border border-[#373634] px-3 py-1.5 text-xs text-[#928f89]"
+			class="absolute top-14 right-4 z-40 hidden rounded-lg bg-[#232322] border border-[#373634] px-3 py-1.5 text-xs text-[#928f89]"
 		>
 			<span id="saveText">Guardando...</span>
 		</div>
@@ -520,1295 +223,37 @@ const { id } = Astro.params;
 		<input type="file" id="fileInput" accept="image/*" multiple style="display:none" />
 	</div>
 
-	<script is:inline define:vars={{ canvasId: id }}>
-		const CANVAS_ID = canvasId;
-	</script>
-
-	<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"
-	></script>
 	<script is:inline>
 		(function () {
 			const CANVAS_ID = window.location.pathname.split("/").pop();
-
-			const COLORS = [
-				"#FFFFFF", // Blanco
-				"#FF3B30", // Rojo brillante
-				"#FF9500", // Naranja vibrante
-				"#FFCC00", // Amarillo eléctrico
-				"#34C759", // Verde neón
-				"#00F0FF", // Cian eléctrico
-				"#00A3FF", // Azul vibrante
-				"#AF52DE", // Púrpura brillante
-				"#FF00FF", // Magenta / Fucsia
-				"#FF2D55", // Rosa neón
-			];
-
-			const canvasEl = document.getElementById("c");
-			const wrap = document.getElementById("canvas-wrap");
-
-			function wrapSize() {
-				return { w: wrap.clientWidth, h: wrap.clientHeight };
-			}
-
-			const { w, h } = wrapSize();
-			const canvas = new fabric.Canvas("c", {
-				width: w,
-				height: h,
-				backgroundColor: null,
-				selection: true,
-				preserveObjectStacking: true,
-			});
-
-			window.addEventListener("resize", () => {
-				const s = wrapSize();
-				canvas.setWidth(s.w);
-				canvas.setHeight(s.h);
-				canvas.renderAll();
-			});
-
-			// ---------------- State ----------------
-			let currentTool = "select";
-			let currentColor = COLORS[0];
-			let currentStroke = 3;
-			let isPanning = false;
-			let isDrawingShape = false;
-			let shapeOrigin = null;
-			let activeShape = null;
-			let spaceDown = false;
-			let idCounter = 1;
-			let bindHighlight = null;
 			let isDirty = false;
 			let saveTimeout = null;
+			let excalidrawAPI = null;
+			let isSaving = false;
 
-			const undoStack = [];
-			const redoStack = [];
-			let restoring = false;
-			let suppressHistory = false;
-
-			function snapshot() {
-				if (restoring || suppressHistory) return;
-				undoStack.push(
-					JSON.stringify(
-						canvas.toDatalessJSON([
-							"selectable",
-							"evented",
-							"id",
-							"isArrowShape",
-							"startBindingId",
-							"endBindingId",
-							"startPort",
-							"endPort",
-							"rawP1",
-							"rawP2",
-							"rawCP",
-							"isFreeDraw",
-						]),
-					),
-				);
-				if (undoStack.length > 60) undoStack.shift();
-				redoStack.length = 0;
-				updateHistoryButtons();
-				markDirty();
-			}
-			function updateHistoryButtons() {
-				document.getElementById("btnUndo").disabled = undoStack.length <= 1;
-				document.getElementById("btnRedo").disabled = redoStack.length === 0;
-			}
-			function loadState(json) {
-				restoring = true;
-				clearArrowHandles();
-				canvas.loadFromJSON(json, () => {
-					canvas.getObjects().forEach((o) => {
-						if (o.id) {
-							const n = parseInt(String(o.id).replace("obj_", ""), 10);
-							if (!isNaN(n) && n >= idCounter) idCounter = n + 1;
-						}
-					});
-					canvas.getObjects().forEach((o) => {
-						if (o.isArrowShape) {
-							rebuildArrow(o);
-						}
-					});
-					canvas.renderAll();
-					restoring = false;
-				});
-			}
-			document.getElementById("btnUndo").onclick = () => {
-				if (undoStack.length <= 1) return;
-				redoStack.push(undoStack.pop());
-				loadState(undoStack[undoStack.length - 1]);
-				updateHistoryButtons();
-			};
-			document.getElementById("btnRedo").onclick = () => {
-				if (!redoStack.length) return;
-				const state = redoStack.pop();
-				undoStack.push(state);
-				loadState(state);
-				updateHistoryButtons();
-			};
-
-			canvas.on("object:added", snapshot);
-			canvas.on("object:modified", (e) => {
-				if (e.target && (e.target.isArrowShape || e.target.isArrowHandle)) return;
-				snapshot();
-			});
-			canvas.on("object:removed", snapshot);
-			snapshot();
-
-			canvas.on("path:created", (e) => {
-				e.path.isFreeDraw = true;
-			});
-
-			canvas.on("object:removed", (e) => {
-				const obj = e.target;
-				if (!obj || !obj.id) return;
-				canvas.getObjects().forEach((o) => {
-					if (!o.isArrowShape) return;
-					if (o.startBindingId === obj.id) o.startBindingId = null;
-					if (o.endBindingId === obj.id) o.endBindingId = null;
-				});
-			});
-
-			// ==================== SISTEMA DE FLECHAS ====================
-			function ensureId(obj) {
-				if (!obj.id) obj.id = "obj_" + idCounter++;
-				return obj.id;
-			}
-
-			function absBBox(obj) {
-				const matrix = obj.calcTransformMatrix();
-				const w = obj.width * (obj.scaleX || 1);
-				const h = obj.height * (obj.scaleY || 1);
-				// Calculate corners relative to object origin
-				const ox = obj.originX === "center" ? -w / 2 : obj.originX === "right" ? -w : 0;
-				const oy = obj.originY === "center" ? -h / 2 : obj.originY === "bottom" ? -h : 0;
-				const corners = [
-					{ x: ox, y: oy },
-					{ x: ox + w, y: oy },
-					{ x: ox + w, y: oy + h },
-					{ x: ox, y: oy + h },
-				].map((p) => fabric.util.transformPoint(p, matrix));
-				const xs = corners.map((c) => c.x),
-					ys = corners.map((c) => c.y);
-				const left = Math.min(...xs),
-					top = Math.min(...ys);
-				return { left, top, width: Math.max(...xs) - left, height: Math.max(...ys) - top };
-			}
-
-			function findBindTarget(pointer, exclude) {
-				const objs = canvas.getObjects();
-				for (let i = objs.length - 1; i >= 0; i--) {
-					const o = objs[i];
-					if (o === exclude) continue;
-					if (o.isArrowShape || o.isFreeDraw || o.isUiHelper || o.type === "line") continue;
-
-					// Check containment first (great for rotated/scaled shapes)
-					if (o.containsPoint && o.containsPoint(pointer)) {
-						return o;
-					}
-
-					// Bounding box check with 15px padding for easier pointer snap/binding
-					const r = absBBox(o);
-					const padding = 15;
-					if (
-						pointer.x >= r.left - padding &&
-						pointer.x <= r.left + r.width + padding &&
-						pointer.y >= r.top - padding &&
-						pointer.y <= r.top + r.height + padding
-					) {
-						return o;
-					}
-				}
-				return null;
-			}
-
-			function lineIntersection(p1, p2, p3, p4) {
-				const denominator = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
-				if (denominator === 0) return null;
-
-				const ua = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denominator;
-				const ub = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denominator;
-
-				if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-					return {
-						x: p1.x + ua * (p2.x - p1.x),
-						y: p1.y + ua * (p2.y - p1.y),
-					};
-				}
-				return null;
-			}
-
-			function getObjectCenter(obj) {
-				if (obj.getCoords) {
-					const c = obj.getCoords();
-					if (c && c.length === 4) {
-						return {
-							x: (c[0].x + c[1].x + c[2].x + c[3].x) / 4,
-							y: (c[0].y + c[1].y + c[2].y + c[3].y) / 4,
-						};
-					}
-				}
-				const r = absBBox(obj);
-				return {
-					x: r.left + r.width / 2,
-					y: r.top + r.height / 2,
-				};
-			}
-
-			function getObjectPorts(obj) {
-				const w = obj.width;
-				const h = obj.height;
-				const matrix = obj.calcTransformMatrix();
-				const portsLocal = [
-					{ x: 0, y: -h / 2, name: "top" },
-					{ x: w / 2, y: 0, name: "right" },
-					{ x: 0, y: h / 2, name: "bottom" },
-					{ x: -w / 2, y: 0, name: "left" },
-				];
-				return portsLocal.map((p) => {
-					const pt = fabric.util.transformPoint({ x: p.x, y: p.y }, matrix);
-					return { x: pt.x, y: pt.y, name: p.name };
-				});
-			}
-
-			function getObjectPortCoords(obj, portName) {
-				const ports = getObjectPorts(obj);
-				const port = ports.find((p) => p.name === portName);
-				return port ? { x: port.x, y: port.y } : getObjectCenter(obj);
-			}
-
-			function findNearestPort(pointer, obj) {
-				if (!obj) return null;
-				const ports = getObjectPorts(obj);
-				let nearest = null;
-				let minDist = 25; // 25px snapping distance
-				ports.forEach((port) => {
-					const dx = port.x - pointer.x;
-					const dy = port.y - pointer.y;
-					const dist = Math.sqrt(dx * dx + dy * dy);
-					if (dist < minDist) {
-						minDist = dist;
-						nearest = port;
-					}
-				});
-				return nearest;
-			}
-
-			function getEllipseEdgePoint(obj, toPoint) {
-				const center = getObjectCenter(obj);
-				const matrix = obj.calcTransformMatrix();
-				const invertMatrix = fabric.util.invertTransform(matrix);
-
-				const localToPoint = fabric.util.transformPoint(toPoint, invertMatrix);
-
-				const rx = obj.rx;
-				const ry = obj.ry;
-
-				const dx = localToPoint.x;
-				const dy = localToPoint.y;
-
-				if (dx === 0 && dy === 0) return center;
-
-				const denom = Math.sqrt((dx / rx) ** 2 + (dy / ry) ** 2);
-				if (denom === 0) return center;
-
-				const t = 1 / denom;
-				const localIntersect = { x: t * dx, y: t * dy };
-
-				return fabric.util.transformPoint(localIntersect, matrix);
-			}
-
-			let activePortIndicators = [];
-
-			function clearPortIndicators() {
-				suppressHistory = true;
-				activePortIndicators.forEach((indicator) => canvas.remove(indicator));
-				suppressHistory = false;
-				activePortIndicators = [];
-			}
-
-			function showPortIndicators(obj, activePortName = null) {
-				clearPortIndicators();
-				if (!obj) return;
-
-				const ports = getObjectPorts(obj);
-				suppressHistory = true;
-				ports.forEach((port) => {
-					const isSnapped = port.name === activePortName;
-					const indicator = new fabric.Circle({
-						left: port.x,
-						top: port.y,
-						radius: isSnapped ? 6 : 4,
-						originX: "center",
-						originY: "center",
-						fill: "#eae8e4",
-						stroke: isSnapped ? "#a3a099" : "#373634",
-						strokeWidth: isSnapped ? 2.5 : 1.5,
-						selectable: false,
-						evented: false,
-						isUiHelper: true,
-					});
-					canvas.add(indicator);
-					activePortIndicators.push(indicator);
-				});
-				suppressHistory = false;
-				canvas.requestRenderAll();
-			}
-
-			function rectEdgePoint(rect, fromX, fromY, toX, toY) {
-				const cx = fromX,
-					cy = fromY;
-				const dx = toX - cx,
-					dy = toY - cy;
-				if (dx === 0 && dy === 0) return { x: cx, y: cy };
-				const halfW = rect.width / 2,
-					halfH = rect.height / 2;
-				const scaleX = halfW / (Math.abs(dx) || 1e-6);
-				const scaleY = halfH / (Math.abs(dy) || 1e-6);
-				const scale = Math.min(scaleX, scaleY);
-				return { x: cx + dx * scale, y: cy + dy * scale };
-			}
-
-			function getObjectEdgePoint(obj, toPoint) {
-				if (obj.type === "ellipse") {
-					return getEllipseEdgePoint(obj, toPoint);
-				}
-
-				let coords = [];
-				if (obj.getCoords) {
-					const c = obj.getCoords();
-					if (c && c.length === 4) {
-						coords = c;
-					}
-				}
-
-				if (coords.length !== 4) {
-					const r = absBBox(obj);
-					const cx = r.left + r.width / 2;
-					const cy = r.top + r.height / 2;
-					return rectEdgePoint(r, cx, cy, toPoint.x, toPoint.y);
-				}
-
-				const [tl, tr, br, bl] = coords;
-				const center = getObjectCenter(obj);
-
-				const intersect =
-					lineIntersection(center, toPoint, tl, tr) ||
-					lineIntersection(center, toPoint, tr, br) ||
-					lineIntersection(center, toPoint, br, bl) ||
-					lineIntersection(center, toPoint, bl, tl);
-
-				return intersect || center;
-			}
-
-			function computeArrowPoints(arrow) {
-				const startObj =
-					arrow.startBindingId && canvas.getObjects().find((o) => o.id === arrow.startBindingId);
-				const endObj =
-					arrow.endBindingId && canvas.getObjects().find((o) => o.id === arrow.endBindingId);
-				let sx = arrow.rawP1.x,
-					sy = arrow.rawP1.y;
-				let ex = arrow.rawP2.x,
-					ey = arrow.rawP2.y;
-				const cx = arrow.rawCP ? arrow.rawCP.x : null;
-				const cy = arrow.rawCP ? arrow.rawCP.y : null;
-
-				if (startObj) {
-					if (arrow.startPort) {
-						const portPt = getObjectPortCoords(startObj, arrow.startPort);
-						sx = portPt.x;
-						sy = portPt.y;
-					} else {
-						const targetPoint = endObj
-							? arrow.endPort
-								? getObjectPortCoords(endObj, arrow.endPort)
-								: getObjectCenter(endObj)
-							: arrow.rawCP || arrow.rawP2;
-						const edge = getObjectEdgePoint(startObj, targetPoint);
-						sx = edge.x;
-						sy = edge.y;
-					}
-				}
-				if (endObj) {
-					if (arrow.endPort) {
-						const portPt = getObjectPortCoords(endObj, arrow.endPort);
-						ex = portPt.x;
-						ey = portPt.y;
-					} else {
-						const targetPoint = startObj
-							? arrow.startPort
-								? getObjectPortCoords(startObj, arrow.startPort)
-								: getObjectCenter(startObj)
-							: arrow.rawCP || arrow.rawP1;
-						const edge = getObjectEdgePoint(endObj, targetPoint);
-						ex = edge.x;
-						ey = edge.y;
-					}
-				}
-				return { x1: sx, y1: sy, x2: ex, y2: ey, cx, cy };
-			}
-
-			function arrowPathD(x1, y1, x2, y2, cx, cy) {
-				const headLen = 14;
-				if (cx !== null && cy !== null) {
-					const angle = Math.atan2(y2 - cy, x2 - cx);
-					return `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2} M ${x2 - headLen * Math.cos(angle - Math.PI / 6)} ${y2 - headLen * Math.sin(angle - Math.PI / 6)} L ${x2} ${y2} L ${x2 - headLen * Math.cos(angle + Math.PI / 6)} ${y2 - headLen * Math.sin(angle + Math.PI / 6)}`;
-				} else {
-					const angle = Math.atan2(y2 - y1, x2 - x1);
-					return `M ${x1} ${y1} L ${x2} ${y2} M ${x2 - headLen * Math.cos(angle - Math.PI / 6)} ${y2 - headLen * Math.sin(angle - Math.PI / 6)} L ${x2} ${y2} L ${x2 - headLen * Math.cos(angle + Math.PI / 6)} ${y2 - headLen * Math.sin(angle + Math.PI / 6)}`;
-				}
-			}
-
-			function createArrowObject(x1, y1, x2, y2, color, width, cx, cy) {
-				return new fabric.Path(arrowPathD(x1, y1, x2, y2, cx, cy), {
-					stroke: color,
-					strokeWidth: width,
-					fill: "",
-					selectable: false,
-					evented: false,
-					strokeLineCap: "round",
-					strokeLineJoin: "round",
-					isArrowShape: true,
-					hasControls: false,
-					hasBorders: false,
-					perPixelTargetFind: true,
-					padding: 8,
-				});
-			}
-
-			function rebuildArrow(arrow) {
-				const points = computeArrowPoints(arrow);
-				const idx = canvas.getObjects().indexOf(arrow);
-				if (idx === -1) return arrow;
-				const wasActive = canvas.getActiveObject() === arrow;
-				const wasEditing = editingArrow === arrow;
-				suppressHistory = true;
-				canvas.remove(arrow);
-				const fresh = createArrowObject(
-					points.x1,
-					points.y1,
-					points.x2,
-					points.y2,
-					arrow.stroke,
-					arrow.strokeWidth,
-					points.cx,
-					points.cy,
-				);
-				fresh.id = arrow.id;
-				fresh.startBindingId = arrow.startBindingId;
-				fresh.endBindingId = arrow.endBindingId;
-				fresh.startPort = arrow.startPort;
-				fresh.endPort = arrow.endPort;
-				fresh.rawP1 = { x: points.x1, y: points.y1 };
-				fresh.rawP2 = { x: points.x2, y: points.y2 };
-				fresh.rawCP = arrow.rawCP ? { ...arrow.rawCP } : null;
-				fresh.selectable = arrow.selectable;
-				fresh.evented = arrow.evented;
-				canvas.insertAt(fresh, idx, false);
-				if (wasActive) canvas.setActiveObject(fresh);
-				suppressHistory = false;
-				if (wasEditing) {
-					editingArrow = fresh;
-					syncArrowHandlePositions();
-				}
-				return fresh;
-			}
-
-			function updateArrowsBoundTo(obj) {
-				if (!obj || !obj.id) return;
-				canvas
-					.getObjects()
-					.filter(
-						(o) => o.isArrowShape && (o.startBindingId === obj.id || o.endBindingId === obj.id),
-					)
-					.forEach(rebuildArrow);
-				canvas.requestRenderAll();
-			}
-
-			function showBindHighlight(obj) {
-				clearBindHighlight();
-				if (!obj) return;
-				bindHighlight = new fabric.Rect({
-					left: obj.left,
-					top: obj.top,
-					width: obj.width,
-					height: obj.height,
-					scaleX: obj.scaleX,
-					scaleY: obj.scaleY,
-					angle: obj.angle,
-					skewX: obj.skewX,
-					skewY: obj.skewY,
-					originX: obj.originX,
-					originY: obj.originY,
-					fill: "transparent",
-					stroke: "#a3a099",
-					strokeUniform: true,
-					strokeWidth: 2.5,
-					strokeDashArray: [5, 4],
-					selectable: false,
-					evented: false,
-					isUiHelper: true,
-				});
-				suppressHistory = true;
-				canvas.add(bindHighlight);
-				suppressHistory = false;
-				canvas.requestRenderAll();
-			}
-
-			function clearBindHighlight() {
-				if (!bindHighlight) return;
-				suppressHistory = true;
-				canvas.remove(bindHighlight);
-				suppressHistory = false;
-				bindHighlight = null;
-			}
-
-			// ==================== HANDLES DE EDICIÓN ====================
-			let editingArrow = null;
-			let handleStart = null,
-				handleEnd = null,
-				handleMid = null;
-			let arrowBodyDragStart = null;
-
-			function makeHandle(x, y, color = "#a3a099") {
-				return new fabric.Circle({
-					left: x,
-					top: y,
-					radius: 7,
-					originX: "center",
-					originY: "center",
-					fill: color,
-					stroke: "#ffffff",
-					strokeWidth: 2,
-					hasControls: false,
-					hasBorders: false,
-					hoverCursor: "grab",
-					moveCursor: "grabbing",
-					isUiHelper: true,
-					isArrowHandle: true,
-				});
-			}
-
-			function clearArrowHandles() {
-				suppressHistory = true;
-				if (handleStart) canvas.remove(handleStart);
-				if (handleEnd) canvas.remove(handleEnd);
-				if (handleMid) canvas.remove(handleMid);
-				suppressHistory = false;
-				handleStart = handleEnd = handleMid = null;
-				editingArrow = null;
-				clearBindHighlight();
-				canvas.requestRenderAll();
-			}
-
-			function createArrowHandles(arrow) {
-				clearArrowHandles();
-				editingArrow = arrow;
-				const points = computeArrowPoints(arrow);
-				handleStart = makeHandle(points.x1, points.y1);
-				handleEnd = makeHandle(points.x2, points.y2);
-				const midX = points.cx !== null ? points.cx : (points.x1 + points.x2) / 2;
-				const midY = points.cy !== null ? points.cy : (points.y1 + points.y2) / 2;
-				handleMid = makeHandle(midX, midY, "#c4c0b9");
-				handleStart.arrowEnd = "start";
-				handleEnd.arrowEnd = "end";
-				handleMid.arrowEnd = "mid";
-				suppressHistory = true;
-				canvas.add(handleStart);
-				canvas.add(handleEnd);
-				canvas.add(handleMid);
-				suppressHistory = false;
-				canvas.bringToFront(handleStart);
-				canvas.bringToFront(handleEnd);
-				canvas.bringToFront(handleMid);
-				canvas.requestRenderAll();
-			}
-
-			function syncArrowHandlePositions() {
-				if (!editingArrow) return;
-				const points = computeArrowPoints(editingArrow);
-				if (handleStart) {
-					handleStart.set({ left: points.x1, top: points.y1 });
-					handleStart.setCoords();
-				}
-				if (handleEnd) {
-					handleEnd.set({ left: points.x2, top: points.y2 });
-					handleEnd.setCoords();
-				}
-				if (handleMid) {
-					const midX = points.cx !== null ? points.cx : (points.x1 + points.x2) / 2;
-					const midY = points.cy !== null ? points.cy : (points.y1 + points.y2) / 2;
-					handleMid.set({ left: midX, top: midY });
-					handleMid.setCoords();
-				}
-				canvas.requestRenderAll();
-			}
-
-			function onSelectionChanged() {
-				const target = canvas.getActiveObject();
-				if (target && target.isArrowHandle) return;
-				clearArrowHandles();
-				if (target && target.isArrowShape) createArrowHandles(target);
-			}
-			canvas.on("selection:created", onSelectionChanged);
-			canvas.on("selection:updated", onSelectionChanged);
-			canvas.on("selection:cleared", onSelectionChanged);
-
-			// ==================== EVENTOS DE RATÓN PARA FLECHAS ====================
-			canvas.on("mouse:down", (opt) => {
-				if (currentTool === "select" && opt.target && opt.target.isArrowShape) {
-					const arrow = opt.target;
-					arrowBodyDragStart = {
-						arrow: arrow,
-						rawP1: { ...arrow.rawP1 },
-						rawP2: { ...arrow.rawP2 },
-						rawCP: arrow.rawCP ? { ...arrow.rawCP } : null,
-					};
-				}
-			});
-
-			canvas.on("object:moving", (e) => {
-				const t = e.target;
-
-				if (t.isArrowHandle && editingArrow) {
-					const pointer = { x: t.left, y: t.top };
-					if (t.arrowEnd === "mid") {
-						editingArrow.rawCP = { x: pointer.x, y: pointer.y };
-						rebuildArrow(editingArrow);
-						return;
-					}
-					const hoverTarget = findBindTarget(pointer, editingArrow);
-					showBindHighlight(hoverTarget);
-
-					let portName = null;
-					let targetX = pointer.x;
-					let targetY = pointer.y;
-
-					if (hoverTarget) {
-						const nearestPort = findNearestPort(pointer, hoverTarget);
-						if (nearestPort) {
-							targetX = nearestPort.x;
-							targetY = nearestPort.y;
-							portName = nearestPort.name;
-						}
-						showPortIndicators(hoverTarget, portName);
-					} else {
-						clearPortIndicators();
-					}
-
-					if (t.arrowEnd === "start") {
-						editingArrow.rawP1 = { x: targetX, y: targetY };
-						editingArrow.startBindingId = hoverTarget ? ensureId(hoverTarget) : null;
-						editingArrow.startPort = portName;
-						t.set({ left: targetX, top: targetY });
-						t.setCoords();
-					} else {
-						editingArrow.rawP2 = { x: targetX, y: targetY };
-						editingArrow.endBindingId = hoverTarget ? ensureId(hoverTarget) : null;
-						editingArrow.endPort = portName;
-						t.set({ left: targetX, top: targetY });
-						t.setCoords();
-					}
-					rebuildArrow(editingArrow);
-					return;
-				}
-
-				if (t.isArrowShape && arrowBodyDragStart && arrowBodyDragStart.arrow === t) {
-					const dx = t.left - (arrowBodyDragStart.arrow._prevLeft || arrowBodyDragStart.arrow.left);
-					const dy = t.top - (arrowBodyDragStart.arrow._prevTop || arrowBodyDragStart.arrow.top);
-					t.rawP1 = {
-						x: arrowBodyDragStart.rawP1.x + dx,
-						y: arrowBodyDragStart.rawP1.y + dy,
-					};
-					t.rawP2 = {
-						x: arrowBodyDragStart.rawP2.x + dx,
-						y: arrowBodyDragStart.rawP2.y + dy,
-					};
-					if (arrowBodyDragStart.rawCP) {
-						t.rawCP = {
-							x: arrowBodyDragStart.rawCP.x + dx,
-							y: arrowBodyDragStart.rawCP.y + dy,
-						};
-					}
-					rebuildArrow(t);
-					t._prevLeft = t.left;
-					t._prevTop = t.top;
-					arrowBodyDragStart.arrow._prevLeft = t.left;
-					arrowBodyDragStart.arrow._prevTop = t.top;
-					return;
-				}
-
-				if (t.type === "activeSelection") {
-					t._objects.forEach(updateArrowsBoundTo);
-				} else {
-					updateArrowsBoundTo(t);
-				}
-			});
-
-			canvas.on("object:scaling", (e) =>
-				updateArrowsBoundTo(e.target.type === "activeSelection" ? null : e.target),
-			);
-			canvas.on("object:rotating", (e) => updateArrowsBoundTo(e.target));
-			canvas.on("object:skewing", (e) => updateArrowsBoundTo(e.target));
-
-			canvas.on("object:modified", (e) => {
-				const t = e.target;
-				if (t.isArrowHandle) {
-					clearBindHighlight();
-					clearPortIndicators();
-					snapshot();
-					return;
-				}
-				if (t.isArrowShape) {
-					if (arrowBodyDragStart?.arrow === t) {
-						delete t._prevLeft;
-						delete t._prevTop;
-						arrowBodyDragStart = null;
-					}
-					clearBindHighlight();
-					clearPortIndicators();
-					snapshot();
-					return;
-				}
-				if (t.type === "activeSelection") {
-					t._objects.forEach(updateArrowsBoundTo);
-				} else {
-					updateArrowsBoundTo(t);
-				}
-			});
-
-			// ==================== HERRAMIENTAS Y DIBUJO ====================
-			const toolButtons = document.querySelectorAll(".tool-btn[data-tool]");
-			function setTool(tool) {
-				currentTool = tool;
-				if (tool !== "select") clearArrowHandles();
-				toolButtons.forEach((b) => {
-					const isActive = b.dataset.tool === tool;
-					b.classList.toggle("active", isActive);
-					if (isActive) {
-						b.style.background = "#eae8e4";
-						b.style.color = "#14141f";
-					} else {
-						b.style.background = "";
-						b.style.color = "";
-					}
-				});
-				canvas.isDrawingMode = tool === "draw";
-				canvas.selection = tool === "select";
-				canvas.defaultCursor =
-					tool === "pan" ? "grab" : tool === "select" ? "default" : "crosshair";
-				canvas.forEachObject((o) => (o.selectable = tool === "select"));
-				if (tool === "draw") {
-					canvas.freeDrawingBrush.color = currentColor;
-					canvas.freeDrawingBrush.width = currentStroke;
-				}
-				const showProps = ["draw", "rect", "circle", "line", "arrow", "text"].includes(tool);
-				document.getElementById("propPanel").classList.toggle("show", showProps);
-				document.getElementById("propPanel").style.display = showProps ? "flex" : "none";
-				if (tool === "image") document.getElementById("fileInput").click();
-			}
-			toolButtons.forEach((btn) => btn.addEventListener("click", () => setTool(btn.dataset.tool)));
-
-			// colores
-			const swatchWrap = document.getElementById("colorSwatches");
-			COLORS.forEach((c, i) => {
-				const el = document.createElement("div");
-				el.className = "swatch" + (i === 0 ? " active" : "");
-				el.style.cssText = `width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;${i === 0 ? "border-color:#fff;" : ""}background:${c};`;
-				el.addEventListener("click", () => {
-					currentColor = c;
-					[...swatchWrap.children].forEach((s) => {
-						s.style.borderColor = "transparent";
-					});
-					el.style.borderColor = "#fff";
-					canvas.freeDrawingBrush.color = c;
-					const active = canvas.getActiveObject();
-					if (active) {
-						if (active.type === "i-text" || active.type === "text") active.set("fill", c);
-						else active.set("stroke", c);
-						canvas.renderAll();
-						snapshot();
-					}
-				});
-				swatchWrap.appendChild(el);
-			});
-			document.getElementById("strokeWidth").addEventListener("input", (e) => {
-				currentStroke = parseInt(e.target.value, 10);
-				canvas.freeDrawingBrush.width = currentStroke;
-				const active = canvas.getActiveObject();
-				if (active && active.set) {
-					active.set("strokeWidth", currentStroke);
-					canvas.renderAll();
-				}
-			});
-
-			// dibujo de formas
-			canvas.on("mouse:down", (opt) => {
-				const pointer = canvas.getPointer(opt.e);
-				if (currentTool === "pan" || spaceDown) {
-					isPanning = true;
-					canvas.selection = false;
-					canvas.lastPosX = opt.e.clientX;
-					canvas.lastPosY = opt.e.clientY;
-					canvas.defaultCursor = "grabbing";
-					return;
-				}
-				if (["rect", "circle", "line", "arrow"].includes(currentTool)) {
-					isDrawingShape = true;
-					shapeOrigin = pointer;
-					const common = {
-						stroke: currentColor,
-						strokeWidth: currentStroke,
-						fill: "transparent",
-						selectable: false,
-						evented: false,
-					};
-					if (currentTool === "rect") {
-						activeShape = new fabric.Rect({
-							...common,
-							left: pointer.x,
-							top: pointer.y,
-							width: 1,
-							height: 1,
-							rx: 4,
-							ry: 4,
-						});
-					} else if (currentTool === "circle") {
-						activeShape = new fabric.Ellipse({
-							...common,
-							left: pointer.x,
-							top: pointer.y,
-							rx: 1,
-							ry: 1,
-						});
-					} else if (currentTool === "line") {
-						activeShape = new fabric.Line([pointer.x, pointer.y, pointer.x, pointer.y], {
-							...common,
-						});
-					} else if (currentTool === "arrow") {
-						const startTarget = findBindTarget(pointer, null);
-						let startPortName = null;
-						let startX = pointer.x;
-						let startY = pointer.y;
-
-						if (startTarget) {
-							const nearestPort = findNearestPort(pointer, startTarget);
-							if (nearestPort) {
-								startX = nearestPort.x;
-								startY = nearestPort.y;
-								startPortName = nearestPort.name;
-							}
-							showBindHighlight(startTarget);
-							showPortIndicators(startTarget, startPortName);
-						}
-
-						activeShape = createArrowObject(
-							startX,
-							startY,
-							startX,
-							startY,
-							currentColor,
-							currentStroke,
-						);
-						activeShape.rawP1 = { x: startX, y: startY };
-						activeShape.rawP2 = { x: startX, y: startY };
-						activeShape.rawCP = null;
-						activeShape.startBindingId = startTarget ? ensureId(startTarget) : null;
-						activeShape.startPort = startPortName;
-					}
-					canvas.add(activeShape);
-					return;
-				}
-				if (currentTool === "text") {
-					const t = new fabric.IText("Escribe aquí", {
-						left: pointer.x,
-						top: pointer.y,
-						fill: currentColor,
-						fontSize: 22,
-						fontFamily: "Segoe UI, sans-serif",
-					});
-					canvas.add(t);
-					canvas.setActiveObject(t);
-					t.enterEditing();
-					setTool("select");
-				}
-			});
-
-			canvas.on("mouse:move", (opt) => {
-				if (isPanning) {
-					const e = opt.e;
-					const vpt = canvas.viewportTransform;
-					vpt[4] += e.clientX - canvas.lastPosX;
-					vpt[5] += e.clientY - canvas.lastPosY;
-					canvas.requestRenderAll();
-					canvas.lastPosX = e.clientX;
-					canvas.lastPosY = e.clientY;
-					return;
-				}
-				if (!isDrawingShape || !activeShape) return;
-				const pointer = canvas.getPointer(opt.e);
-				const o = shapeOrigin;
-				if (currentTool === "rect") {
-					activeShape.set({
-						left: Math.min(o.x, pointer.x),
-						top: Math.min(o.y, pointer.y),
-						width: Math.abs(pointer.x - o.x),
-						height: Math.abs(pointer.y - o.y),
-					});
-				} else if (currentTool === "circle") {
-					activeShape.set({
-						left: Math.min(o.x, pointer.x),
-						top: Math.min(o.y, pointer.y),
-						rx: Math.abs(pointer.x - o.x) / 2,
-						ry: Math.abs(pointer.y - o.y) / 2,
-					});
-				} else if (currentTool === "line") {
-					activeShape.set({ x2: pointer.x, y2: pointer.y });
-				} else if (currentTool === "arrow") {
-					const hoverTarget = findBindTarget(pointer, activeShape);
-					showBindHighlight(hoverTarget);
-
-					let endPortName = null;
-					let targetX = pointer.x;
-					let targetY = pointer.y;
-
-					if (hoverTarget) {
-						const nearestPort = findNearestPort(pointer, hoverTarget);
-						if (nearestPort) {
-							targetX = nearestPort.x;
-							targetY = nearestPort.y;
-							endPortName = nearestPort.name;
-						}
-						showPortIndicators(hoverTarget, endPortName);
-					} else {
-						clearPortIndicators();
-					}
-
-					activeShape.rawP2 = { x: targetX, y: targetY };
-					activeShape.endBindingId = hoverTarget ? ensureId(hoverTarget) : null;
-					activeShape.endPort = endPortName;
-					activeShape = rebuildArrow(activeShape);
-				}
-				canvas.requestRenderAll();
-			});
-
-			canvas.on("mouse:up", () => {
-				if (isPanning) {
-					isPanning = false;
-					canvas.defaultCursor = currentTool === "pan" ? "grab" : "default";
-					return;
-				}
-				if (isDrawingShape && activeShape) {
-					clearBindHighlight();
-					clearPortIndicators();
-					activeShape.set({ selectable: true, evented: true });
-					canvas.setActiveObject(activeShape);
-					isDrawingShape = false;
-					activeShape = null;
-					setTool("select");
-					snapshot();
-				}
-			});
-
-			// zoom
-			canvas.on("mouse:wheel", (opt) => {
-				const delta = opt.e.deltaY;
-				let zoom = canvas.getZoom();
-				zoom *= 0.999 ** delta;
-				zoom = Math.min(Math.max(zoom, 0.1), 5);
-				canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
-				updateZoomLabel();
-				opt.e.preventDefault();
-				opt.e.stopPropagation();
-			});
-			function updateZoomLabel() {
-				document.getElementById("zoomLabel").textContent = Math.round(canvas.getZoom() * 100) + "%";
-			}
-			document.getElementById("btnZoomIn").onclick = () => {
-				canvas.setZoom(Math.min(canvas.getZoom() * 1.15, 5));
-				updateZoomLabel();
-			};
-			document.getElementById("btnZoomOut").onclick = () => {
-				canvas.setZoom(Math.max(canvas.getZoom() / 1.15, 0.1));
-				updateZoomLabel();
-			};
-			document.getElementById("btnZoomReset").onclick = () => {
-				canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-				updateZoomLabel();
-			};
-
-			// fondo de puntos
-			let gridOn = true;
-			function updateWrapBackground() {
-				wrap.style.backgroundImage = gridOn
-					? "radial-gradient(circle, rgba(255,255,255,0.08) 1.6px, transparent 1.6px)"
-					: "none";
-				wrap.style.backgroundSize = "24px 24px";
-			}
-			document.getElementById("btnGrid").onclick = () => {
-				gridOn = !gridOn;
-				updateWrapBackground();
-			};
-
-			// eliminar, copiar, pegar
-			let clipboardObj = null;
-			function deleteSelection() {
-				const objs = canvas.getActiveObjects();
-				if (!objs.length) return;
-				clearArrowHandles();
-				objs.forEach((o) => canvas.remove(o));
-				canvas.discardActiveObject();
-				canvas.requestRenderAll();
-			}
-			document.getElementById("btnDelete").onclick = deleteSelection;
-			document.getElementById("btnCopy").onclick = () => {
-				const active = canvas.getActiveObject();
-				if (!active) return;
-				active.clone((cloned) => {
-					clipboardObj = cloned;
-				});
-			};
-			document.getElementById("btnPaste").onclick = () => {
-				if (!clipboardObj) return;
-				clipboardObj.clone((cloned) => {
-					canvas.discardActiveObject();
-					cloned.set({ left: cloned.left + 20, top: cloned.top + 20, evented: true });
-					if (cloned.type === "activeSelection") {
-						cloned.canvas = canvas;
-						cloned.forEachObject((o) => canvas.add(o));
-						cloned.setCoords();
-					} else {
-						canvas.add(cloned);
-					}
-					canvas.setActiveObject(cloned);
-					canvas.requestRenderAll();
-					snapshot();
-				});
-			};
-			document.getElementById("btnGroup").onclick = () => {
-				const active = canvas.getActiveObject();
-				if (!active || active.type !== "activeSelection") return;
-				active.toGroup();
-				canvas.requestRenderAll();
-				snapshot();
-			};
-			document.getElementById("btnUngroup").onclick = () => {
-				const active = canvas.getActiveObject();
-				if (!active || active.type !== "group") return;
-				active.toActiveSelection();
-				canvas.requestRenderAll();
-				snapshot();
-			};
-
-			// imágenes
-			const fileInput = document.getElementById("fileInput");
-			fileInput.addEventListener("change", (e) => {
-				[...e.target.files].forEach(loadImageFile);
-				fileInput.value = "";
-				setTool("select");
-			});
-			function loadImageFile(file) {
-				if (!file || !file.type.startsWith("image/")) return;
-				const reader = new FileReader();
-				reader.onload = (evt) => addImageFromURL(evt.target.result);
-				reader.readAsDataURL(file);
-			}
-			function addImageFromURL(url, atPointer) {
-				fabric.Image.fromURL(
-					url,
-					(img) => {
-						const maxDim = 420;
-						if (img.width > maxDim || img.height > maxDim) {
-							const scale = maxDim / Math.max(img.width, img.height);
-							img.scale(scale);
-						}
-						const center =
-							atPointer || canvas.getVpCenter
-								? canvas.getVpCenter()
-								: { x: canvas.width / 2, y: canvas.height / 2 };
-						img.set({
-							left: center.x - img.getScaledWidth() / 2,
-							top: center.y - img.getScaledHeight() / 2,
-						});
-						canvas.add(img);
-						canvas.setActiveObject(img);
-						canvas.requestRenderAll();
-						snapshot();
-					},
-					{ crossOrigin: "anonymous" },
-				);
-			}
-			const dropHint = document.getElementById("dropHint");
-			["dragenter", "dragover"].forEach((evt) =>
-				wrap.addEventListener(evt, (e) => {
-					e.preventDefault();
-					dropHint.classList.remove("hidden");
-					dropHint.style.display = "flex";
-				}),
-			);
-			["dragleave", "drop"].forEach((evt) =>
-				wrap.addEventListener(evt, (e) => {
-					e.preventDefault();
-					dropHint.classList.add("hidden");
-					dropHint.style.display = "none";
-				}),
-			);
-			wrap.addEventListener("drop", (e) => {
-				const files = [...(e.dataTransfer.files || [])].filter((f) => f.type.startsWith("image/"));
-				files.forEach(loadImageFile);
-			});
-			window.addEventListener("paste", (e) => {
-				const items = (e.clipboardData || window.clipboardData).items;
-				let handledImage = false;
-				for (const item of items) {
-					if (item.type.indexOf("image") !== -1) {
-						const blob = item.getAsFile();
-						loadImageFile(blob);
-						handledImage = true;
-					}
-				}
-				if (!handledImage && document.activeElement !== document.getElementById("docTitle")) {
-					document.getElementById("btnPaste").click();
-				}
-			});
-
-			// exportar
-			const exportMenu = document.getElementById("exportMenu");
-			document.getElementById("btnExport").onclick = (e) => {
-				exportMenu.classList.toggle("show");
-				exportMenu.style.display = exportMenu.classList.contains("show") ? "flex" : "none";
-				e.stopPropagation();
-			};
-			document.addEventListener("click", (e) => {
-				if (!exportMenu.contains(e.target) && e.target.id !== "btnExport") {
-					exportMenu.classList.remove("show");
-					exportMenu.style.display = "none";
-				}
-			});
-			function download(dataUrl, filename) {
-				const a = document.createElement("a");
-				a.href = dataUrl;
-				a.download = filename;
-				document.body.appendChild(a);
-				a.click();
-				a.remove();
-			}
-			exportMenu.querySelectorAll("button").forEach((btn) => {
-				btn.addEventListener("click", () => {
-					const name = document.getElementById("docTitle").value.trim() || "lienzo";
-					const type = btn.dataset.export;
-					if (type === "png")
-						download(canvas.toDataURL({ format: "png", multiplier: 2 }), name + ".png");
-					else if (type === "svg") {
-						const blob = new Blob([canvas.toSVG()], { type: "image/svg+xml" });
-						download(URL.createObjectURL(blob), name + ".svg");
-					} else if (type === "json") {
-						const blob = new Blob(
-							[
-								JSON.stringify(
-									canvas.toDatalessJSON([
-										"selectable",
-										"evented",
-										"id",
-										"isArrowShape",
-										"startBindingId",
-										"endBindingId",
-										"startPort",
-										"endPort",
-										"rawP1",
-										"rawP2",
-										"rawCP",
-										"isFreeDraw",
-									]),
-									null,
-									2,
-								),
-							],
-							{
-								type: "application/json",
-							},
-						);
-						download(URL.createObjectURL(blob), name + ".json");
-					}
-					exportMenu.classList.remove("show");
-					exportMenu.style.display = "none";
-				});
-			});
-
-			// atajos de teclado
-			window.addEventListener("keydown", (e) => {
-				const tag = document.activeElement.tagName;
-				if (
-					tag === "INPUT" ||
-					tag === "TEXTAREA" ||
-					(canvas.getActiveObject() && canvas.getActiveObject().isEditing)
-				)
-					return;
-				if (e.code === "Space") {
-					spaceDown = true;
-					canvas.defaultCursor = "grab";
-					return;
-				}
-				if (e.ctrlKey || e.metaKey) {
-					if (e.key.toLowerCase() === "z") {
-						e.preventDefault();
-						e.shiftKey
-							? document.getElementById("btnRedo").click()
-							: document.getElementById("btnUndo").click();
-						return;
-					}
-					if (e.key.toLowerCase() === "g") {
-						e.preventDefault();
-						document.getElementById("btnGroup").click();
-						return;
-					}
-					if (e.key.toLowerCase() === "c") {
-						document.getElementById("btnCopy").click();
-						return;
-					}
-					if (e.key.toLowerCase() === "s") {
-						e.preventDefault();
-						document.getElementById("btnSave").click();
-						return;
-					}
-					return;
-				}
-				const map = {
-					v: "select",
-					h: "pan",
-					p: "draw",
-					t: "text",
-					r: "rect",
-					c: "circle",
-					l: "line",
-					a: "arrow",
-					i: "image",
-				};
-				if (map[e.key.toLowerCase()]) {
-					setTool(map[e.key.toLowerCase()]);
-					return;
-				}
-				if (e.key === "Delete" || e.key === "Backspace") deleteSelection();
-			});
-			window.addEventListener("keyup", (e) => {
-				if (e.code === "Space") {
-					spaceDown = false;
-					canvas.defaultCursor = currentTool === "pan" ? "grab" : "default";
-				}
-			});
-
-			document.getElementById("btnBack").onclick = () => history.back();
-
-			// Mark dirty when title changes
-			document.getElementById("docTitle").addEventListener("input", markDirty);
-
-			updateZoomLabel();
-			updateWrapBackground();
-			setTool("select");
-
-			// ==================== SAVE / LOAD ====================
 			const saveIndicator = document.getElementById("saveIndicator");
 			const saveText = document.getElementById("saveText");
+
+			// Poll for excalidrawAPI (React sets window.__excalidrawAPI.get())
+			function getAPI() {
+				if (excalidrawAPI) return excalidrawAPI;
+				const w = window.__excalidrawAPI;
+				if (w && typeof w.get === "function") {
+					excalidrawAPI = w.get();
+					if (excalidrawAPI) return excalidrawAPI;
+				}
+				return null;
+			}
+
+			(function waitForAPI() {
+				if (getAPI()) return;
+				const interval = setInterval(() => {
+					if (getAPI()) {
+						clearInterval(interval);
+					}
+				}, 100);
+				setTimeout(() => clearInterval(interval), 15000);
+			})();
 
 			function markDirty() {
 				isDirty = true;
@@ -1820,84 +265,99 @@ const { id } = Astro.params;
 				saveTimeout = setTimeout(saveCanvas, 1200);
 			}
 
+			function buildStoreData() {
+				const api = getAPI();
+				if (!api) throw new Error("API not ready");
+				const elements = api.getSceneElements();
+				const appState = api.getAppState();
+				const files = api.getFiles();
+				const title = document.getElementById("docTitle").value || "Sin título";
+				const storeData = window.__serializeExcalidraw
+					? window.__serializeExcalidraw(elements, appState, files)
+					: JSON.stringify({ elements, appState, files });
+				return { title, storeData };
+			}
+
 			async function saveCanvas() {
+				if (isSaving) return;
+				const api = getAPI();
+				if (!api) {
+					setTimeout(saveCanvas, 500);
+					return;
+				}
 				if (!isDirty) return;
-				isDirty = false;
+
+				isSaving = true;
 				saveText.textContent = "Guardando...";
 				saveIndicator.style.display = "block";
 
 				try {
-					const title = document.getElementById("docTitle").value || "Sin título";
-					const storeData = JSON.stringify(
-						canvas.toDatalessJSON([
-							"selectable",
-							"evented",
-							"id",
-							"isArrowShape",
-							"startBindingId",
-							"endBindingId",
-							"startPort",
-							"endPort",
-							"rawP1",
-							"rawP2",
-							"rawCP",
-							"isFreeDraw",
-						]),
-					);
-
-					await fetch(`/api/canvases/${CANVAS_ID}`, {
+					const { title, storeData } = buildStoreData();
+					const res = await fetch(`/api/canvases/${CANVAS_ID}`, {
 						method: "PUT",
 						headers: { "Content-Type": "application/json" },
 						body: JSON.stringify({ name: title, storeData }),
 						credentials: "include",
 					});
-
+					if (!res.ok) throw new Error(`Server ${res.status}`);
+					isDirty = false;
 					saveText.textContent = "Guardado";
 					setTimeout(() => {
 						saveIndicator.style.display = "none";
 					}, 1500);
-				} catch {
+				} catch (err) {
+					console.error("[Canvas] Save FAILED:", err);
 					saveText.textContent = "Error al guardar";
 					isDirty = true;
 					setTimeout(() => {
 						saveIndicator.style.display = "none";
 					}, 3000);
+				} finally {
+					isSaving = false;
 				}
 			}
 
-			document.getElementById("btnSave").onclick = saveCanvas;
+			// ===== TOOLBAR =====
+			const toolButtons = document.querySelectorAll(".tool-btn[data-tool]");
+			function setTool(tool) {
+				const api = getAPI();
+				if (!api) return;
+				api.setActiveTool({ type: tool });
+				toolButtons.forEach((b) => {
+					b.style.background = b.dataset.tool === tool ? "#eae8e4" : "";
+					b.style.color = b.dataset.tool === tool ? "#14141f" : "";
+				});
+			}
+			toolButtons.forEach((btn) => btn.addEventListener("click", () => setTool(btn.dataset.tool)));
 
-			// Save immediately when leaving the page
+			// ===== TOPBAR =====
+			document.getElementById("btnBack").onclick = () => {
+				window.location.href = "/dashboard";
+			};
+			document.getElementById("btnSave").onclick = saveCanvas;
+			document.getElementById("docTitle").addEventListener("input", markDirty);
+
+			// ===== SAVE TRIGGERS =====
 			window.addEventListener("beforeunload", () => {
 				if (isDirty) {
-					const title = document.getElementById("docTitle").value || "Sin título";
-					const storeData = JSON.stringify(
-						canvas.toDatalessJSON([
-							"selectable",
-							"evented",
-							"id",
-							"isArrowShape",
-							"startBindingId",
-							"endBindingId",
-							"startPort",
-							"endPort",
-							"rawP1",
-							"rawP2",
-							"rawCP",
-							"isFreeDraw",
-						]),
-					);
-					fetch(`/api/canvases/${CANVAS_ID}`, {
-						method: "PUT",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ name: title, storeData }),
-						credentials: "include",
-						keepalive: true,
-					});
+					try {
+						const { title, storeData } = buildStoreData();
+						const payload = JSON.stringify({ name: title, storeData });
+						if (payload.length < 64000) {
+							fetch(`/api/canvases/${CANVAS_ID}`, {
+								method: "PUT",
+								headers: { "Content-Type": "application/json" },
+								body: payload,
+								credentials: "include",
+								keepalive: true,
+							});
+						}
+					} catch (e) {
+						/* ignore */
+					}
 				}
 			});
 
-			// Save when switching tabs or minimizing
 			document.addEventListener("visibilitychange", () => {
 				if (document.hidden && isDirty) {
 					clearTimeout(saveTimeout);
@@ -1905,52 +365,43 @@ const { id } = Astro.params;
 				}
 			});
 
-			async function loadCanvas() {
-				try {
-					const res = await fetch(`/api/canvases/${CANVAS_ID}`, {
-						credentials: "include",
-					});
-					if (!res.ok) {
-						window.location.href = "/dashboard";
-						return;
-					}
-					const data = await res.json();
-
-					document.getElementById("docTitle").value = data.name || "Sin título";
-
-					if (data.document?.storeData) {
-						try {
-							const storeData = JSON.parse(data.document.storeData);
-							loadState(JSON.stringify(storeData));
-						} catch {
-							// empty canvas
-						}
-					}
-				} catch {
-					window.location.href = "/dashboard";
+			document.addEventListener("keydown", (e) => {
+				if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+					e.preventDefault();
+					saveCanvas();
 				}
-			}
+			});
 
-			// Check auth then load
-			(async () => {
-				try {
-					const sessionRes = await fetch("/api/auth/get-session", {
-						credentials: "include",
-					});
-					if (!sessionRes.ok) {
-						window.location.href = "/login";
-						return;
-					}
-					const sessionData = await sessionRes.json();
-					if (!sessionData?.user) {
-						window.location.href = "/login";
-						return;
-					}
-					await loadCanvas();
-				} catch {
-					window.location.href = "/login";
-				}
-			})();
+			// React calls this on Excalidraw onChange
+			window.__onExcalidrawChange = () => {
+				markDirty();
+			};
 		})();
 	</script>
 </Layout>
+
+<style is:global>
+	/* Excalidraw fills the canvas area */
+	#canvas-wrap .excalidraw-wrapper {
+		width: 100%;
+		height: 100%;
+	}
+
+	/* Hide ALL Excalidraw built-in UI - we use our own */
+	#canvas-wrap .excalidraw .App-menu_top,
+	#canvas-wrap .excalidraw .App-menu__left,
+	#canvas-wrap .excalidraw .App-menu__right,
+	#canvas-wrap .excalidraw .ToolIcon,
+	#canvas-wrap .excalidraw .SelectedShapeActions,
+	#canvas-wrap .excalidraw .ColorPicker,
+	#canvas-wrap .excalidraw .ActionManager,
+	#canvas-wrap .excalidraw .HintViewer,
+	#canvas-wrap .excalidraw .welcome-screen {
+		display: none !important;
+	}
+
+	/* Ensure Excalidraw's canvas is below our UI */
+	#canvas-wrap .excalidraw .layer-ui__wrapper {
+		z-index: 5 !important;
+	}
+</style>

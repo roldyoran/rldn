@@ -62,7 +62,7 @@ export const POST: APIRoute = async ({ request }) => {
 		.values({
 			id: docId,
 			canvasId,
-			storeData: JSON.stringify({ objects: [], version: "5.3.0" }),
+			storeData: JSON.stringify({ elements: [], appState: {}, files: {} }),
 		})
 		.run();
 

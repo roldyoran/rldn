@@ -52,14 +52,21 @@ packages/ui/     → shadcn/ui components
 - Canvas API requires auth — returns 401 if no session
 - Always use `credentials: "include"` on client-side fetch calls for cookie-based sessions
 
-### Fabric.js Canvas
+### Excalidraw Canvas
 
-- Canvas editor at `/canvas/[id]` uses fabric.js 5.3.0 loaded via CDN (`<script is:inline>`)
-- Canvas data saved as JSON to `canvas_documents.store_data`
+- Canvas editor at `/canvas/[id]` uses `@excalidraw/excalidraw` v0.18+ (React component)
+- `ExcalidrawEditor` component (`apps/web/src/components/ExcalidrawEditor.tsx`) handles data loading internally via fetch, passes data as `initialData` on first render
+- **IMPORTANT**: Excalidraw's `initialData` prop is mount-only. Do NOT try to pass data via React re-renders — it will be ignored. Use the component's internal fetch pattern instead.
+- `gridModeEnabled` prop enables Excalidraw's built-in dot grid (v0.18 renders dots by default)
+- Canvas data saved as JSON string to `canvas_documents.store_data` via `serializeAsJSON(elements, appState, files, "local")`
+- The `"local"` serialization format embeds image data as base64 data URLs (self-contained but large)
 - Auto-saves 1.2s after changes via `PUT /api/canvases/:id`
-- Also saves on tab switch (visibilitychange) and page unload (beforeunload)
+- Also saves on tab switch (visibilitychange) and page unload (beforeunload) with 64KB keepalive limit
 - Neutral color palette only — no blue/bright accent colors in canvas UI
 - Canvas name editable from topbar input, auto-saved with changes
+- Page script (`[id].astro` inline script) polls `window.__excalidrawAPI.get()` for the imperative API
+- Page script communicates with React via `window.__onExcalidrawChange` callback and `window.__serializeExcalidraw` function
+- Excalidraw's built-in UI is hidden via CSS — custom toolbar/topbar in the Astro page
 
 ### Formatter
 
