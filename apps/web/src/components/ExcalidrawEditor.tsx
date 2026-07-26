@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback, useState } from "react";
 import { Excalidraw, serializeAsJSON } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
+import { ColorPickerPopup } from "./ColorPickerPopup";
 
 // Self-host fonts from public/fonts/
 if (typeof window !== "undefined") {
@@ -53,6 +54,11 @@ export function ExcalidrawEditor({
 		| undefined
 	>(undefined);
 	const [loading, setLoading] = useState(true);
+	const [colorPicker, setColorPicker] = useState<{
+		open: boolean;
+		type: "stroke" | "bg";
+		color: string;
+	}>({ open: false, type: "stroke", color: "#ffffff" });
 
 	// Fetch canvas data and set as initialData (Promise pattern for Excalidraw)
 	useEffect(() => {
@@ -85,8 +91,8 @@ export function ExcalidrawEditor({
 							appState: {
 								...parsed.appState,
 								viewBackgroundColor: "#1b1b1a",
-								currentStrokeColor: "#ffffff",
-								currentBackgroundColor: "transparent",
+								currentItemStrokeColor: "#ffffff",
+								currentItemBackgroundColor: "transparent",
 								collaborators: [],
 							},
 							files: parsed.files || {},
@@ -107,8 +113,8 @@ export function ExcalidrawEditor({
 						elements: [],
 						appState: {
 							viewBackgroundColor: "#1b1b1a",
-							currentStrokeColor: "#ffffff",
-							currentBackgroundColor: "transparent",
+							currentItemStrokeColor: "#ffffff",
+							currentItemBackgroundColor: "transparent",
 						},
 						files: {},
 						scrollToContent: false,
@@ -151,14 +157,99 @@ export function ExcalidrawEditor({
 				set: () => {},
 				get: () => apiInstance,
 			};
+
+			// Expose color picker controls for toolbar
+			(window as any).__showColorPicker = (type: "stroke" | "bg") => {
+				const appState = apiInstance.getAppState();
+				const color =
+					type === "stroke"
+						? appState.currentItemStrokeColor || "#ffffff"
+						: appState.currentItemBackgroundColor || "transparent";
+				setColorPicker({ open: true, type, color });
+			};
+			(window as any).__hideColorPicker = () => {
+				setColorPicker((prev) => ({ ...prev, open: false }));
+			};
+
+			// Update toolbar swatch button backgrounds
+			(window as any).__updateToolbarSwatch = (type: "stroke" | "bg", color: string) => {
+				const btn = document.getElementById(type === "stroke" ? "strokeColorBtn" : "bgColorBtn");
+				if (btn) {
+					btn.style.background =
+						color === "transparent"
+							? "repeating-conic-gradient(#373634 0% 25%, #1b1b1a 0% 50%) 50% / 8px 8px"
+							: color;
+				}
+			};
+
+			// Sync toolbar swatches from selected element colors
+			(window as any).__syncSwatchesFromSelection = () => {
+				const api = apiInstance;
+				const appState = api.getAppState();
+				const selectedIds = appState.selectedElementIds || {};
+				const elements = api.getSceneElements();
+				const selected = elements.find((el: any) => selectedIds[el.id]);
+
+				if (selected) {
+					(window as any).__updateToolbarSwatch("stroke", selected.strokeColor || "#ffffff");
+					(window as any).__updateToolbarSwatch("bg", selected.backgroundColor || "transparent");
+				} else {
+					// No selection: show current defaults
+					(window as any).__updateToolbarSwatch(
+						"stroke",
+						appState.currentItemStrokeColor || "#ffffff",
+					);
+					(window as any).__updateToolbarSwatch(
+						"bg",
+						appState.currentItemBackgroundColor || "transparent",
+					);
+				}
+			};
 		}
 	}, []);
 
+	// Handle color change from picker
+	const handleColorChange = useCallback(
+		(color: string) => {
+			const api = apiRef.current;
+			if (!api) return;
+
+			const colorProp = colorPicker.type === "stroke" ? "strokeColor" : "backgroundColor";
+			const appStateProp =
+				colorPicker.type === "stroke" ? "currentItemStrokeColor" : "currentItemBackgroundColor";
+
+			// Set default for new elements
+			api.updateScene({ appState: { [appStateProp]: color } });
+
+			// Update selected elements (Excalidraw v0.18+ uses selectedElementIds in appState)
+			const appState = api.getAppState();
+			const selectedIds = appState.selectedElementIds || {};
+			const elements = api.getSceneElements();
+			const hasSelected = elements.some((el: any) => selectedIds[el.id]);
+
+			if (hasSelected) {
+				api.updateScene({
+					elements: elements.map((el: any) =>
+						selectedIds[el.id] ? { ...el, [colorProp]: color, version: (el.version || 0) + 1 } : el,
+					),
+				});
+			}
+
+			// Update toolbar swatch
+			if (typeof window !== "undefined" && (window as any).__updateToolbarSwatch) {
+				(window as any).__updateToolbarSwatch(colorPicker.type, color);
+			}
+		},
+		[colorPicker.type],
+	);
+
 	// Notify page script on changes
 	const handleChange = useCallback(
-		(_elements: readonly any[], _appState: Record<string, any>, _files: Record<string, any>) => {
-			if (typeof window !== "undefined" && (window as any).__onExcalidrawChange) {
-				(window as any).__onExcalidrawChange();
+		(_elements: readonly any[], appState: Record<string, any>, _files: Record<string, any>) => {
+			if (typeof window !== "undefined") {
+				(window as any).__onExcalidrawChange?.();
+				// Sync toolbar swatches when selection changes
+				(window as any).__syncSwatchesFromSelection?.();
 			}
 			onChange?.();
 		},
@@ -177,7 +268,7 @@ export function ExcalidrawEditor({
 	}
 
 	return (
-		<div className="excalidraw-wrapper">
+		<div className="excalidraw-wrapper relative">
 			<Excalidraw
 				excalidrawAPI={handleAPI}
 				initialData={initialData}
@@ -198,6 +289,17 @@ export function ExcalidrawEditor({
 				}}
 				autoFocus
 			/>
+			{/* Professional Color Picker Popup */}
+			{colorPicker.open && (
+				<div className="absolute left-[70px] top-[160px] z-50">
+					<ColorPickerPopup
+						type={colorPicker.type}
+						initialColor={colorPicker.color}
+						onColorChange={handleColorChange}
+						onClose={() => setColorPicker((prev) => ({ ...prev, open: false }))}
+					/>
+				</div>
+			)}
 		</div>
 	);
 }

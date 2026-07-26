@@ -212,14 +212,11 @@ const { id: canvasId } = Astro.params;
 			<!-- Stroke Color -->
 			<div class="flex flex-col items-center gap-1 py-1" title="Color de trazo">
 				<label class="text-[9px] text-[#928f89] uppercase tracking-wider">Trazo</label>
-				<div class="relative">
-					<input
-						type="color"
-						id="strokeColor"
-						value="#ffffff"
-						class="h-[24px] w-[24px] cursor-pointer rounded-md border border-[#373634] bg-transparent p-0"
-					/>
-				</div>
+				<button
+					id="strokeColorBtn"
+					class="h-[24px] w-[24px] cursor-pointer rounded-md border border-[#373634] p-0 hover:ring-1 hover:ring-[#928f89] transition-all"
+					style="background:#ffffff"
+					title="Seleccionar color de trazo"></button>
 				<!-- Stroke color presets -->
 				<div class="flex flex-wrap gap-0.5 justify-center max-w-[38px]">
 					<button
@@ -288,14 +285,11 @@ const { id: canvasId } = Astro.params;
 			<!-- Fill Color -->
 			<div class="flex flex-col items-center gap-1 py-1" title="Color de relleno">
 				<label class="text-[9px] text-[#928f89] uppercase tracking-wider">Relleno</label>
-				<div class="relative">
-					<input
-						type="color"
-						id="bgColor"
-						value="#ffffff"
-						class="h-[24px] w-[24px] cursor-pointer rounded-md border border-[#373634] bg-transparent p-0"
-					/>
-				</div>
+				<button
+					id="bgColorBtn"
+					class="h-[24px] w-[24px] cursor-pointer rounded-md border border-[#373634] p-0 hover:ring-1 hover:ring-[#928f89] transition-all"
+					style="background:repeating-conic-gradient(#373634 0% 25%, #1b1b1a 0% 50%) 50% / 8px 8px"
+					title="Seleccionar color de relleno"></button>
 				<!-- Fill color presets -->
 				<div class="flex flex-wrap gap-0.5 justify-center max-w-[38px]">
 					<button
@@ -495,22 +489,34 @@ const { id: canvasId } = Astro.params;
 			toolButtons.forEach((btn) => btn.addEventListener("click", () => setTool(btn.dataset.tool)));
 
 			// ===== COLOR PICKERS =====
-			const strokeColorInput = document.getElementById("strokeColor");
-			const bgColorInput = document.getElementById("bgColor");
+			const strokeColorBtn = document.getElementById("strokeColorBtn");
+			const bgColorBtn = document.getElementById("bgColorBtn");
+
+			// Open professional color picker popup
+			strokeColorBtn.addEventListener("click", () => {
+				if (window.__showColorPicker) window.__showColorPicker("stroke");
+			});
+			bgColorBtn.addEventListener("click", () => {
+				if (window.__showColorPicker) window.__showColorPicker("bg");
+			});
 
 			function setStrokeColor(color) {
 				const api = getAPI();
 				if (!api) return;
 				// Set for new elements
-				api.updateScene({ appState: { currentStrokeColor: color } });
-				strokeColorInput.value = color === "transparent" ? "#ffffff" : color;
-				// Update selected elements
+				api.updateScene({ appState: { currentItemStrokeColor: color } });
+				strokeColorBtn.style.background = color === "transparent" ? "#ffffff" : color;
+				// Update selected elements (v0.18+ uses selectedElementIds)
+				const appState = api.getAppState();
+				const selectedIds = appState.selectedElementIds || {};
 				const elements = api.getSceneElements();
-				const selected = elements.filter((el) => el.selected);
-				if (selected.length > 0) {
+				const hasSelected = elements.some((el) => selectedIds[el.id]);
+				if (hasSelected) {
 					api.updateScene({
 						elements: elements.map((el) =>
-							selected.some((s) => s.id === el.id) ? { ...el, strokeColor: color } : el,
+							selectedIds[el.id]
+								? { ...el, strokeColor: color, version: (el.version || 0) + 1 }
+								: el,
 						),
 					});
 				}
@@ -520,22 +526,26 @@ const { id: canvasId } = Astro.params;
 				const api = getAPI();
 				if (!api) return;
 				// Set for new elements
-				api.updateScene({ appState: { currentBackgroundColor: color } });
-				bgColorInput.value = color === "transparent" ? "#ffffff" : color;
-				// Update selected elements
+				api.updateScene({ appState: { currentItemBackgroundColor: color } });
+				bgColorBtn.style.background =
+					color === "transparent"
+						? "repeating-conic-gradient(#373634 0% 25%, #1b1b1a 0% 50%) 50% / 8px 8px"
+						: color;
+				// Update selected elements (v0.18+ uses selectedElementIds)
+				const appState = api.getAppState();
+				const selectedIds = appState.selectedElementIds || {};
 				const elements = api.getSceneElements();
-				const selected = elements.filter((el) => el.selected);
-				if (selected.length > 0) {
+				const hasSelected = elements.some((el) => selectedIds[el.id]);
+				if (hasSelected) {
 					api.updateScene({
 						elements: elements.map((el) =>
-							selected.some((s) => s.id === el.id) ? { ...el, backgroundColor: color } : el,
+							selectedIds[el.id]
+								? { ...el, backgroundColor: color, version: (el.version || 0) + 1 }
+								: el,
 						),
 					});
 				}
 			}
-
-			strokeColorInput.addEventListener("input", (e) => setStrokeColor(e.target.value));
-			bgColorInput.addEventListener("input", (e) => setBackgroundColor(e.target.value));
 
 			// Color preset buttons
 			document.querySelectorAll(".color-preset").forEach((btn) => {
