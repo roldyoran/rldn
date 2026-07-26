@@ -19,7 +19,7 @@ if (typeof window !== "undefined") {
 			set(value: string) {
 				// Replace grid grey colors with intense red
 				if (value === "#dddddd" || value === "#e5e5e5") {
-					value = value === "#dddddd" ? "#ff0000" : "#ff3333";
+					value = value === "#dddddd" ? "#808080" : "#a0a0a0";
 				}
 				desc.set.call(this, value);
 			},
