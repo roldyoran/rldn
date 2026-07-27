@@ -61,7 +61,9 @@ import Layout from "@/layouts/Layout.astro";
 							stroke-linecap="round"
 							stroke-linejoin="round"
 						>
-							<path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+							<path
+								d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"
+							></path>
 						</svg>
 						API Keys
 					</button>
@@ -77,7 +79,8 @@ import Layout from "@/layouts/Layout.astro";
 							stroke-width="2"
 							stroke-linecap="round"
 						>
-							<line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+							<line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"
+							></line>
 						</svg>
 						Nuevo lienzo
 					</button>
@@ -184,14 +187,22 @@ import Layout from "@/layouts/Layout.astro";
 		id="api-keys-modal"
 		class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50"
 	>
-		<div class="mx-4 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl border border-border bg-background p-6 shadow-lg">
+		<div
+			class="mx-4 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl border border-border bg-background p-6 shadow-lg"
+		>
 			<div class="flex items-center justify-between mb-6">
 				<h3 class="text-lg font-semibold">Gestionar API Keys</h3>
 				<button
 					id="btn-close-api-modal"
 					class="rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
 				>
-					<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<svg
+						class="h-5 w-5"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+					>
 						<line x1="18" y1="6" x2="6" y2="18"></line>
 						<line x1="6" y1="6" x2="18" y2="18"></line>
 					</svg>
@@ -203,7 +214,9 @@ import Layout from "@/layouts/Layout.astro";
 				<h4 class="text-sm font-medium mb-4">Crear nueva API Key</h4>
 				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 					<div>
-						<label for="api-key-name" class="block text-xs font-medium text-muted-foreground mb-1">Nombre</label>
+						<label for="api-key-name" class="block text-xs font-medium text-muted-foreground mb-1"
+							>Nombre</label
+						>
 						<input
 							type="text"
 							id="api-key-name"
@@ -212,7 +225,9 @@ import Layout from "@/layouts/Layout.astro";
 						/>
 					</div>
 					<div>
-						<label for="api-key-expiry" class="block text-xs font-medium text-muted-foreground mb-1">Expiración</label>
+						<label for="api-key-expiry" class="block text-xs font-medium text-muted-foreground mb-1"
+							>Expiración</label
+						>
 						<select
 							id="api-key-expiry"
 							class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
@@ -227,7 +242,9 @@ import Layout from "@/layouts/Layout.astro";
 						</select>
 					</div>
 					<div>
-						<label for="api-key-prefix" class="block text-xs font-medium text-muted-foreground mb-1">Prefijo</label>
+						<label for="api-key-prefix" class="block text-xs font-medium text-muted-foreground mb-1"
+							>Prefijo</label
+						>
 						<input
 							type="text"
 							id="api-key-prefix"
@@ -236,7 +253,10 @@ import Layout from "@/layouts/Layout.astro";
 						/>
 					</div>
 					<div>
-						<label for="api-key-metadata" class="block text-xs font-medium text-muted-foreground mb-1">Metadata (JSON)</label>
+						<label
+							for="api-key-metadata"
+							class="block text-xs font-medium text-muted-foreground mb-1">Metadata (JSON)</label
+						>
 						<input
 							type="text"
 							id="api-key-metadata"
@@ -259,7 +279,9 @@ import Layout from "@/layouts/Layout.astro";
 							<label for="api-key-rate-limit-enabled" class="text-xs">Habilitar rate limit</label>
 						</div>
 						<div>
-							<label for="api-key-rate-limit-max" class="block text-xs text-muted-foreground mb-1">Max requests</label>
+							<label for="api-key-rate-limit-max" class="block text-xs text-muted-foreground mb-1"
+								>Max requests</label
+							>
 							<input
 								type="number"
 								id="api-key-rate-limit-max"
@@ -268,7 +290,10 @@ import Layout from "@/layouts/Layout.astro";
 							/>
 						</div>
 						<div>
-							<label for="api-key-rate-limit-window" class="block text-xs text-muted-foreground mb-1">Ventana (ms)</label>
+							<label
+								for="api-key-rate-limit-window"
+								class="block text-xs text-muted-foreground mb-1">Ventana (ms)</label
+							>
 							<input
 								type="number"
 								id="api-key-rate-limit-window"
@@ -284,7 +309,9 @@ import Layout from "@/layouts/Layout.astro";
 					<h5 class="text-xs font-medium text-muted-foreground mb-3">Límites de uso (Opcional)</h5>
 					<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 						<div>
-							<label for="api-key-remaining" class="block text-xs text-muted-foreground mb-1">Requests restantes</label>
+							<label for="api-key-remaining" class="block text-xs text-muted-foreground mb-1"
+								>Requests restantes</label
+							>
 							<input
 								type="number"
 								id="api-key-remaining"
@@ -293,7 +320,9 @@ import Layout from "@/layouts/Layout.astro";
 							/>
 						</div>
 						<div>
-							<label for="api-key-refill-amount" class="block text-xs text-muted-foreground mb-1">Refill amount</label>
+							<label for="api-key-refill-amount" class="block text-xs text-muted-foreground mb-1"
+								>Refill amount</label
+							>
 							<input
 								type="number"
 								id="api-key-refill-amount"
@@ -302,7 +331,9 @@ import Layout from "@/layouts/Layout.astro";
 							/>
 						</div>
 						<div>
-							<label for="api-key-refill-interval" class="block text-xs text-muted-foreground mb-1">Refill interval (ms)</label>
+							<label for="api-key-refill-interval" class="block text-xs text-muted-foreground mb-1"
+								>Refill interval (ms)</label
+							>
 							<input
 								type="number"
 								id="api-key-refill-interval"
@@ -341,7 +372,13 @@ import Layout from "@/layouts/Layout.astro";
 						id="btn-create-api-key"
 						class="flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
 					>
-						<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<svg
+							class="h-4 w-4"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+						>
 							<line x1="12" y1="5" x2="12" y2="19"></line>
 							<line x1="5" y1="12" x2="19" y2="12"></line>
 						</svg>
@@ -351,22 +388,32 @@ import Layout from "@/layouts/Layout.astro";
 			</div>
 
 			<!-- New API Key Display -->
-			<div id="new-api-key-display" class="hidden mb-6 rounded-lg border border-green-500/50 bg-green-500/10 p-4">
+			<div
+				id="new-api-key-display"
+				class="hidden mb-6 rounded-lg border border-green-500/50 bg-green-500/10 p-4"
+			>
 				<div class="flex items-center justify-between mb-2">
 					<h4 class="text-sm font-medium text-green-600">API Key generada</h4>
-					<button
-						id="btn-close-new-key"
-						class="rounded p-1 text-muted-foreground hover:bg-muted"
-					>
-						<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<button id="btn-close-new-key" class="rounded p-1 text-muted-foreground hover:bg-muted">
+						<svg
+							class="h-4 w-4"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+						>
 							<line x1="18" y1="6" x2="6" y2="18"></line>
 							<line x1="6" y1="6" x2="18" y2="18"></line>
 						</svg>
 					</button>
 				</div>
-				<p class="text-xs text-muted-foreground mb-3">Guarda esta clave. No podrás verla de nuevo.</p>
+				<p class="text-xs text-muted-foreground mb-3">
+					Guarda esta clave. No podrás verla de nuevo.
+				</p>
 				<div class="flex items-center gap-2">
-					<code id="new-api-key-value" class="flex-1 rounded bg-muted px-3 py-2 text-sm font-mono break-all"></code>
+					<code
+						id="new-api-key-value"
+						class="flex-1 rounded bg-muted px-3 py-2 text-sm font-mono break-all"></code>
 					<button
 						id="btn-copy-api-key"
 						class="rounded-lg border border-border px-3 py-2 text-sm hover:bg-muted"
@@ -621,12 +668,15 @@ import Layout from "@/layouts/Layout.astro";
 		document.getElementById("btn-create-api-key")!.addEventListener("click", async () => {
 			const btn = document.getElementById("btn-create-api-key")! as HTMLButtonElement;
 			btn.disabled = true;
-			btn.innerHTML = '<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-dasharray="30 60" /></svg> Creando...';
+			btn.innerHTML =
+				'<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-dasharray="30 60" /></svg> Creando...';
 
 			try {
-				const name = (document.getElementById("api-key-name") as HTMLInputElement).value || "API Key";
+				const name =
+					(document.getElementById("api-key-name") as HTMLInputElement).value || "API Key";
 				const expiresIn = (document.getElementById("api-key-expiry") as HTMLSelectElement).value;
-				const prefix = (document.getElementById("api-key-prefix") as HTMLInputElement).value || undefined;
+				const prefix =
+					(document.getElementById("api-key-prefix") as HTMLInputElement).value || undefined;
 				const metadataStr = (document.getElementById("api-key-metadata") as HTMLInputElement).value;
 
 				// Parse metadata
@@ -675,11 +725,14 @@ import Layout from "@/layouts/Layout.astro";
 				}
 
 				// Rate limiting
-				const rateLimitEnabled = (document.getElementById("api-key-rate-limit-enabled") as HTMLInputElement).checked;
+				const rateLimitEnabled = (
+					document.getElementById("api-key-rate-limit-enabled") as HTMLInputElement
+				).checked;
 				if (rateLimitEnabled) {
 					createOptions.rateLimitEnabled = true;
 					const max = (document.getElementById("api-key-rate-limit-max") as HTMLInputElement).value;
-					const window = (document.getElementById("api-key-rate-limit-window") as HTMLInputElement).value;
+					const window = (document.getElementById("api-key-rate-limit-window") as HTMLInputElement)
+						.value;
 					if (max) createOptions.rateLimitMax = parseInt(max);
 					if (window) createOptions.rateLimitTimeWindow = parseInt(window);
 				}
@@ -688,8 +741,11 @@ import Layout from "@/layouts/Layout.astro";
 				const remaining = (document.getElementById("api-key-remaining") as HTMLInputElement).value;
 				if (remaining) createOptions.remaining = parseInt(remaining);
 
-				const refillAmount = (document.getElementById("api-key-refill-amount") as HTMLInputElement).value;
-				const refillInterval = (document.getElementById("api-key-refill-interval") as HTMLInputElement).value;
+				const refillAmount = (document.getElementById("api-key-refill-amount") as HTMLInputElement)
+					.value;
+				const refillInterval = (
+					document.getElementById("api-key-refill-interval") as HTMLInputElement
+				).value;
 				if (refillAmount) createOptions.refillAmount = parseInt(refillAmount);
 				if (refillInterval) createOptions.refillInterval = parseInt(refillInterval);
 
@@ -709,7 +765,8 @@ import Layout from "@/layouts/Layout.astro";
 					(document.getElementById("api-key-expiry") as HTMLSelectElement).value = "";
 					(document.getElementById("api-key-prefix") as HTMLInputElement).value = "";
 					(document.getElementById("api-key-metadata") as HTMLInputElement).value = "";
-					(document.getElementById("api-key-rate-limit-enabled") as HTMLInputElement).checked = false;
+					(document.getElementById("api-key-rate-limit-enabled") as HTMLInputElement).checked =
+						false;
 					(document.getElementById("api-key-rate-limit-max") as HTMLInputElement).value = "";
 					(document.getElementById("api-key-rate-limit-window") as HTMLInputElement).value = "";
 					(document.getElementById("api-key-remaining") as HTMLInputElement).value = "";
@@ -722,7 +779,8 @@ import Layout from "@/layouts/Layout.astro";
 				alert("Error al crear la API key");
 			} finally {
 				btn.disabled = false;
-				btn.innerHTML = '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Generar API Key';
+				btn.innerHTML =
+					'<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Generar API Key';
 			}
 		});
 
@@ -732,12 +790,14 @@ import Layout from "@/layouts/Layout.astro";
 				const { data, error } = await authClient.apiKey.list({});
 
 				if (error) {
-					apiKeysList.innerHTML = '<p class="text-sm text-destructive">Error al cargar API keys</p>';
+					apiKeysList.innerHTML =
+						'<p class="text-sm text-destructive">Error al cargar API keys</p>';
 					return;
 				}
 
 				if (!data?.apiKeys || data.apiKeys.length === 0) {
-					apiKeysList.innerHTML = '<p class="text-sm text-muted-foreground">No hay API keys creadas.</p>';
+					apiKeysList.innerHTML =
+						'<p class="text-sm text-muted-foreground">No hay API keys creadas.</p>';
 					return;
 				}
 

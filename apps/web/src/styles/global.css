@@ -224,3 +224,8 @@
 .excalidraw-wrapper .excalidraw .welcome-screen {
 	color: #928f89;
 }
+
+/* Button cursor */
+.button {
+	cursor: pointer;
+}

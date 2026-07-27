@@ -12,16 +12,18 @@ bun run typecheck        # Typecheck all packages
 bun run typecheck:web    # Typecheck web only
 bun run lint             # Biome lint all
 bun run format           # Biome format all
-bun run db:push          # Push Drizzle schema to SQLite
+bun run db:push          # Push Drizzle schema to Turso
 bun run db:generate      # Generate Drizzle migrations
+bun run db:migrate       # Apply Drizzle migrations to Turso
 bun run db:studio        # Open Drizzle Studio
+bash scripts/db-setup.sh # Full DB setup: generate + migrate + push (safe, stops on error)
 ```
 
 ## Architecture
 
 ```
 apps/web/        → Astro 6 (SSR, Bun adapter, TailwindCSS 4)
-packages/db/     → Drizzle ORM + better-sqlite3 (SQLite)
+packages/db/     → Drizzle ORM + @libsql/client (Turso)
 packages/auth/   → Better Auth (drizzle-adapter)
 packages/ui/     → shadcn/ui components
 ```
@@ -32,17 +34,20 @@ packages/ui/     → shadcn/ui components
 
 - **Two `.env` files**: root `.env` and `apps/web/.env` — keep both in sync
 - `apps/web/.env` has `BETTER_AUTH_URL=http://localhost:4321` (dev port)
-- Root `.env` has Turso config for future migration
-- `packages/db/src/index.ts` uses `process.env.DATABASE_URL` — NOT `import.meta.env`
-- `apps/web/src/lib/db.ts` uses `import.meta.env.DATABASE_URL` (Vite-injected)
+- Root `.env` has Turso config for local dev
+- `packages/db/src/index.ts` uses `process.env.TURSO_DB_URL || process.env.DATABASE_URL` — NOT `import.meta.env`
+- `apps/web/src/lib/db.ts` uses `import.meta.env.TURSO_DB_URL || import.meta.env.DATABASE_URL` (Vite-injected)
 - `@repo/auth` exports `createAuth(db)` — lazy init, accepts db instance. Do NOT call at import time.
 
 ### Database
 
-- DB file: `/home/rol2/Desktop/rldn/dev.db`
+- DB: Turso (libSQL) — `libsql://rldn-db-roldyoran.aws-us-east-1.turso.io`
+- `drizzle.config.ts` uses `dialect: "turso"` with `authToken` in `dbCredentials`
 - Schema: `canvases`, `canvas_documents`, `images` + auth tables (`user`, `session`, `account`, `verification`)
 - Auth tables use `timestamp_ms` mode; app tables use `timestamp` mode (unixepoch)
 - `nanoid` used for generating canvas/document IDs
+- **IMPORTANT**: `@libsql/client` cannot handle local SQLite file paths (e.g. `/path/to/dev.db`) — it requires `libsql://` URLs. Use only Turso.
+- **IMPORTANT**: `db:push` alone does NOT create tables from scratch. Always run `db:generate` → `db:migrate` → `db:push` in order. Use `bash scripts/db-setup.sh` for a safe full setup.
 
 ### Auth
 
