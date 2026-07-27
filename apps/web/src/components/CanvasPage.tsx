@@ -13,6 +13,8 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 	const [docTitle, setDocTitle] = useState("Sin título");
 	const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
 	const [currentTool, setCurrentTool] = useState("selection");
+	const [currentStrokeColor, setCurrentStrokeColor] = useState("#ffffff");
+	const [currentBackgroundColor, setCurrentBackgroundColor] = useState("transparent");
 	const [initialStoreData, setInitialStoreData] = useState<string | null | undefined>(undefined); // undefined = loading
 
 	// Refs for save logic (avoid re-render loops)
@@ -111,10 +113,12 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 	// ===== EXCALIDRAW CALLBACKS =====
 	const handleAPIReady = useCallback((apiInstance: ExcalidrawImperativeAPI) => {
 		setApi(apiInstance);
-		// Snapshot current state so the first real save can diff against it
+		// Sync color state from Excalidraw's appState
 		try {
-			const elements = apiInstance.getSceneElements();
 			const appState = apiInstance.getAppState();
+			if (appState.currentItemStrokeColor) setCurrentStrokeColor(appState.currentItemStrokeColor);
+			if (appState.currentItemBackgroundColor) setCurrentBackgroundColor(appState.currentItemBackgroundColor);
+			const elements = apiInstance.getSceneElements();
 			const files = apiInstance.getFiles();
 			lastSavedStoreDataRef.current = serializeAsJSON(elements, appState, files, "local");
 		} catch {
@@ -123,6 +127,13 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 	}, []);
 
 	const handleChange = useCallback(() => {
+		// Sync color state from Excalidraw's appState on every change
+		const currentApi = apiRef.current;
+		if (currentApi) {
+			const appState = currentApi.getAppState();
+			if (appState.currentItemStrokeColor) setCurrentStrokeColor(appState.currentItemStrokeColor);
+			if (appState.currentItemBackgroundColor) setCurrentBackgroundColor(appState.currentItemBackgroundColor);
+		}
 		// Skip onChange fired during initial render (Excalidraw fires onChange
 		// immediately when it mounts with initialData, causing a useless save)
 		if (suppressNextChangeRef.current) {
@@ -187,6 +198,7 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 	}, []);
 	const setStrokeColor = useCallback(
 		(color: string) => {
+			setCurrentStrokeColor(color);
 			if (!api) return;
 			api.updateScene({ appState: { currentItemStrokeColor: color } });
 			const appState = api.getAppState();
@@ -206,6 +218,7 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 
 	const setBackgroundColor = useCallback(
 		(color: string) => {
+			setCurrentBackgroundColor(color);
 			if (!api) return;
 			api.updateScene({ appState: { currentItemBackgroundColor: color } });
 			const appState = api.getAppState();
@@ -497,7 +510,7 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 					<label className="text-[9px] text-[#928f89] uppercase tracking-wider">Trazo</label>
 					<button
 						className="h-[24px] w-[24px] cursor-pointer rounded-md border border-[#373634] p-0 hover:ring-1 hover:ring-[#928f89] transition-all"
-						style={{ background: "#ffffff" }}
+						style={{ background: currentStrokeColor }}
 						onClick={() => {
 							excalidrawRef.current?.openColorPicker("stroke");
 							refocusCanvas();
@@ -537,7 +550,10 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 					<button
 						className="h-[24px] w-[24px] cursor-pointer rounded-md border border-[#373634] p-0 hover:ring-1 hover:ring-[#928f89] transition-all"
 						style={{
-							background: "repeating-conic-gradient(#373634 0% 25%, #1b1b1a 0% 50%) 50% / 8px 8px",
+							background:
+								currentBackgroundColor === "transparent"
+									? "repeating-conic-gradient(#373634 0% 25%, #1b1b1a 0% 50%) 50% / 8px 8px"
+									: currentBackgroundColor,
 						}}
 						onClick={() => {
 							excalidrawRef.current?.openColorPicker("bg");
