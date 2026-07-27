@@ -13,6 +13,7 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 	const [docTitle, setDocTitle] = useState("Sin título");
 	const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
 	const [currentTool, setCurrentTool] = useState("selection");
+	const [initialStoreData, setInitialStoreData] = useState<string | null | undefined>(undefined); // undefined = loading
 
 	// Refs for save logic (avoid re-render loops)
 	const isDirtyRef = useRef(false);
@@ -20,6 +21,8 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 	const apiRef = useRef<ExcalidrawImperativeAPI | null>(null);
 	const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const docTitleRef = useRef(docTitle);
+	const lastSavedStoreDataRef = useRef<string | null>(null); // content-hash dedup
+	const suppressNextChangeRef = useRef(true); // skip onChange during initial load
 
 	// Keep refs in sync
 	useEffect(() => {
@@ -30,14 +33,17 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 		docTitleRef.current = docTitle;
 	}, [docTitle]);
 
-	// Load saved canvas name
+	// Single fetch: get canvas name + storeData in one request
 	useEffect(() => {
 		fetch(`/api/canvases/${canvasId}`, { credentials: "include" })
 			.then((r) => r.json())
 			.then((data) => {
 				if (data.name) setDocTitle(data.name);
+				setInitialStoreData(data.document?.storeData ?? null);
 			})
-			.catch(() => {});
+			.catch(() => {
+				setInitialStoreData(null);
+			});
 	}, [canvasId]);
 
 	// ===== SAVE LOGIC =====
@@ -62,6 +68,15 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 
 		try {
 			const { storeData } = buildStoreData();
+
+			// Content-hash dedup: skip save if storeData hasn't changed
+			if (storeData === lastSavedStoreDataRef.current) {
+				isDirtyRef.current = false;
+				isSavingRef.current = false;
+				setSaveState("idle");
+				return;
+			}
+
 			const res = await fetch(`/api/canvases/${canvasId}`, {
 				method: "PUT",
 				headers: { "Content-Type": "application/json" },
@@ -69,6 +84,7 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 				credentials: "include",
 			});
 			if (!res.ok) throw new Error(`Server ${res.status}`);
+			lastSavedStoreDataRef.current = storeData;
 			isDirtyRef.current = false;
 			setSaveState("saved");
 			setTimeout(() => setSaveState("idle"), 1500);
@@ -95,9 +111,24 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 	// ===== EXCALIDRAW CALLBACKS =====
 	const handleAPIReady = useCallback((apiInstance: ExcalidrawImperativeAPI) => {
 		setApi(apiInstance);
+		// Snapshot current state so the first real save can diff against it
+		try {
+			const elements = apiInstance.getSceneElements();
+			const appState = apiInstance.getAppState();
+			const files = apiInstance.getFiles();
+			lastSavedStoreDataRef.current = serializeAsJSON(elements, appState, files, "local");
+		} catch {
+			/* ignore */
+		}
 	}, []);
 
 	const handleChange = useCallback(() => {
+		// Skip onChange fired during initial render (Excalidraw fires onChange
+		// immediately when it mounts with initialData, causing a useless save)
+		if (suppressNextChangeRef.current) {
+			suppressNextChangeRef.current = false;
+			return;
+		}
 		markDirty();
 	}, [markDirty]);
 
@@ -218,6 +249,9 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 				saveCanvas();
 				return;
 			}
+
+			// Don't intercept keyboard shortcuts (Ctrl/Cmd combos like Ctrl+V paste)
+			if (e.ctrlKey || e.metaKey) return;
 
 			const tool = toolShortcuts.current[e.key.toLowerCase()];
 			if (tool) {
@@ -557,6 +591,7 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 				<ExcalidrawEditor
 					ref={excalidrawRef}
 					canvasId={canvasId}
+					initialStoreData={initialStoreData}
 					onAPIReady={handleAPIReady}
 					onChange={handleChange}
 				/>

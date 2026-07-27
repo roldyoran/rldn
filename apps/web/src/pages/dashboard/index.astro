@@ -66,8 +66,23 @@ import Layout from "@/layouts/Layout.astro";
 			</div>
 
 			<!-- Loading State -->
-			<div id="loading-state" class="flex items-center justify-center py-20">
-				<div class="text-sm text-muted-foreground">Cargando lienzos...</div>
+			<div id="loading-state" class="flex flex-col items-center justify-center py-20">
+				<div class="loader-canvas">
+					<svg
+						viewBox="0 0 48 48"
+						fill="none"
+						stroke="#928f89"
+						stroke-width="1.5"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="h-12 w-12"
+					>
+						<rect x="6" y="6" width="36" height="36" rx="4" class="loader-border"></rect>
+						<circle cx="15" cy="15" r="2" class="loader-dot loader-dot-1"></circle>
+						<polyline points="30 20 22 28 14 36" class="loader-stroke"></polyline>
+					</svg>
+				</div>
+				<p class="mt-4 text-sm text-muted-foreground loader-text">Cargando lienzos...</p>
 			</div>
 
 			<!-- Empty State -->
@@ -333,4 +348,68 @@ import Layout from "@/layouts/Layout.astro";
 
 		init();
 	</script>
+
+	<style>
+		.loader-canvas {
+			animation: loader-float 2s ease-in-out infinite;
+		}
+		.loader-border {
+			stroke-dasharray: 144;
+			stroke-dashoffset: 144;
+			animation: loader-draw 1.8s ease-in-out infinite;
+		}
+		.loader-dot-1 {
+			animation: loader-pulse 1.4s ease-in-out infinite;
+		}
+		.loader-stroke {
+			stroke-dasharray: 40;
+			stroke-dashoffset: 40;
+			animation: loader-draw 1.8s ease-in-out 0.3s infinite;
+		}
+		.loader-text {
+			animation: loader-fade 1.4s ease-in-out infinite alternate;
+		}
+		@keyframes loader-float {
+			0%,
+			100% {
+				transform: translateY(0);
+			}
+			50% {
+				transform: translateY(-4px);
+			}
+		}
+		@keyframes loader-draw {
+			0% {
+				stroke-dashoffset: 144;
+				opacity: 0.3;
+			}
+			50% {
+				stroke-dashoffset: 0;
+				opacity: 1;
+			}
+			100% {
+				stroke-dashoffset: -144;
+				opacity: 0.3;
+			}
+		}
+		@keyframes loader-pulse {
+			0%,
+			100% {
+				opacity: 0.3;
+				r: 1.5;
+			}
+			50% {
+				opacity: 1;
+				r: 2.5;
+			}
+		}
+		@keyframes loader-fade {
+			0% {
+				opacity: 0.4;
+			}
+			100% {
+				opacity: 1;
+			}
+		}
+	</style>
 </Layout>

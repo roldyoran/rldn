@@ -43,13 +43,17 @@ export interface ExcalidrawEditorHandle {
 
 export interface ExcalidrawEditorProps {
 	canvasId: string;
+	initialStoreData?: string | null;
 	onAPIReady?: (api: ExcalidrawImperativeAPI) => void;
 	onChange?: () => void;
 	viewModeEnabled?: boolean;
 }
 
 export const ExcalidrawEditor = forwardRef<ExcalidrawEditorHandle, ExcalidrawEditorProps>(
-	function ExcalidrawEditor({ canvasId, onAPIReady, onChange, viewModeEnabled = false }, ref) {
+	function ExcalidrawEditor(
+		{ canvasId, initialStoreData, onAPIReady, onChange, viewModeEnabled = false },
+		ref,
+	) {
 		const apiRef = useRef<ExcalidrawImperativeAPI | null>(null);
 		const [initialData, setInitialData] = useState<
 			| {
@@ -92,71 +96,50 @@ export const ExcalidrawEditor = forwardRef<ExcalidrawEditorHandle, ExcalidrawEdi
 			[],
 		);
 
-		// Fetch canvas data and set as initialData
+		// Parse storeData from prop (fetched by parent) instead of fetching independently
 		useEffect(() => {
-			let cancelled = false;
-
-			async function loadCanvas() {
-				try {
-					const res = await fetch(`/api/canvases/${canvasId}`, {
-						credentials: "include",
-					});
-					if (!res.ok) {
-						console.error("[ExcalidrawEditor] Failed to load canvas:", res.status);
-						return;
-					}
-					const data = await res.json();
-
-					if (cancelled) return;
-
-					if (data.document?.storeData) {
-						try {
-							const parsed = JSON.parse(data.document.storeData);
-							setInitialData({
-								elements: parsed.elements || [],
-								appState: {
-									...parsed.appState,
-									viewBackgroundColor: "#1b1b1a",
-									currentItemStrokeColor: "#ffffff",
-									currentItemBackgroundColor: "transparent",
-									collaborators: [],
-								},
-								files: parsed.files || {},
-								scrollToContent: true,
-							});
-						} catch (e) {
-							console.error("[ExcalidrawEditor] Failed to parse storeData:", e);
-							setInitialData({
-								elements: [],
-								appState: {},
-								files: {},
-								scrollToContent: false,
-							});
-						}
-					} else {
-						setInitialData({
-							elements: [],
-							appState: {
-								viewBackgroundColor: "#1b1b1a",
-								currentItemStrokeColor: "#ffffff",
-								currentItemBackgroundColor: "transparent",
-							},
-							files: {},
-							scrollToContent: false,
-						});
-					}
-				} catch (e) {
-					console.error("[ExcalidrawEditor] Load error:", e);
-				} finally {
-					if (!cancelled) setLoading(false);
-				}
+			if (initialStoreData === undefined) return; // still loading in parent
+			if (initialStoreData === null) {
+				// New canvas with no data
+				setInitialData({
+					elements: [],
+					appState: {
+						viewBackgroundColor: "#1b1b1a",
+						currentItemStrokeColor: "#ffffff",
+						currentItemBackgroundColor: "transparent",
+					},
+					files: {},
+					scrollToContent: false,
+				});
+				setLoading(false);
+				return;
 			}
 
-			loadCanvas();
-			return () => {
-				cancelled = true;
-			};
-		}, [canvasId]);
+			try {
+				const parsed = JSON.parse(initialStoreData);
+				setInitialData({
+					elements: parsed.elements || [],
+					appState: {
+						...parsed.appState,
+						viewBackgroundColor: "#1b1b1a",
+						currentItemStrokeColor: "#ffffff",
+						currentItemBackgroundColor: "transparent",
+						collaborators: [],
+					},
+					files: parsed.files || {},
+					scrollToContent: true,
+				});
+			} catch (e) {
+				console.error("[ExcalidrawEditor] Failed to parse storeData:", e);
+				setInitialData({
+					elements: [],
+					appState: {},
+					files: {},
+					scrollToContent: false,
+				});
+			}
+			setLoading(false);
+		}, [initialStoreData]);
 
 		// Expose API to parent
 		const handleAPI = useCallback(
@@ -229,9 +212,18 @@ export const ExcalidrawEditor = forwardRef<ExcalidrawEditorHandle, ExcalidrawEdi
 					const res = await fetch(url);
 					if (!res.ok) throw new Error("Failed to convert data URL");
 					blob = await res.blob();
+				} else if (url.startsWith("blob:")) {
+					const res = await fetch(url);
+					if (!res.ok) throw new Error("Failed to fetch blob URL");
+					blob = await res.blob();
 				} else {
-					const res = await fetch(fetchUrl, { mode: "cors" });
-					if (!res.ok) throw new Error(`HTTP ${res.status}`);
+					// Use server-side proxy to bypass CORS
+					const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(fetchUrl)}`;
+					const res = await fetch(proxyUrl, { credentials: "include" });
+					if (!res.ok) {
+						const errData = await res.json().catch(() => null);
+						throw new Error(errData?.error || `HTTP ${res.status}`);
+					}
 					blob = await res.blob();
 				}
 
@@ -354,6 +346,21 @@ export const ExcalidrawEditor = forwardRef<ExcalidrawEditorHandle, ExcalidrawEdi
 					elements: [...elements, imageElement] as any,
 				});
 
+				// Save image URL to database for future export
+				fetch(`/api/canvases/${canvasId}/images`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					credentials: "include",
+					body: JSON.stringify({
+						url,
+						name: url,
+						width: img.naturalWidth,
+						height: img.naturalHeight,
+						positionX: x,
+						positionY: y,
+					}),
+				}).catch((err) => console.error("[ImageInsert] Failed to save image to DB:", err));
+
 				// Scroll to the new image
 				setTimeout(() => {
 					api.scrollToContent([imageElement as any], {
@@ -386,9 +393,67 @@ export const ExcalidrawEditor = forwardRef<ExcalidrawEditorHandle, ExcalidrawEdi
 			return (
 				<div
 					className="excalidraw-wrapper"
-					style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+					style={{
+						display: "flex",
+						flexDirection: "column",
+						alignItems: "center",
+						justifyContent: "center",
+						background: "#1b1b1a",
+					}}
 				>
-					<span style={{ color: "#928f89", fontSize: "14px" }}>Cargando lienzo...</span>
+					<div className="loader-canvas">
+						<svg
+							viewBox="0 0 48 48"
+							fill="none"
+							stroke="#928f89"
+							strokeWidth="1.5"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							style={{ width: 48, height: 48 }}
+						>
+							<rect x="6" y="6" width="36" height="36" rx="4" className="loader-border" />
+							<circle cx="15" cy="15" r="2" className="loader-dot-1" />
+							<polyline points="30 20 22 28 14 36" className="loader-stroke" />
+						</svg>
+					</div>
+					<span
+						className="loader-text"
+						style={{ color: "#928f89", fontSize: "14px", marginTop: 16 }}
+					>
+						Cargando lienzo...
+					</span>
+					<style>{`
+						.loader-canvas { animation: loader-float 2s ease-in-out infinite; }
+						.loader-border {
+							stroke-dasharray: 144;
+							stroke-dashoffset: 144;
+							animation: loader-draw 1.8s ease-in-out infinite;
+						}
+						.loader-dot-1 { animation: loader-pulse 1.4s ease-in-out infinite; }
+						.loader-stroke {
+							stroke-dasharray: 40;
+							stroke-dashoffset: 40;
+							animation: loader-draw 1.8s ease-in-out 0.3s infinite;
+						}
+						.loader-text { animation: loader-fade 1.4s ease-in-out infinite alternate; }
+						@keyframes loader-float {
+							0%, 100% { transform: translateY(0); }
+							50% { transform: translateY(-4px); }
+						}
+						@keyframes loader-draw {
+							0% { stroke-dashoffset: 144; opacity: 0.3; }
+							50% { stroke-dashoffset: 0; opacity: 1; }
+							100% { stroke-dashoffset: -144; opacity: 0.3; }
+						}
+						@keyframes loader-pulse {
+							0%, 100% { opacity: 0.3; }
+							50% { opacity: 1; }
+						}
+						@keyframes loader-fade {
+							0% { opacity: 0.4; }
+							100% { opacity: 1; }
+						}
+					`}</style>
 				</div>
 			);
 		}
