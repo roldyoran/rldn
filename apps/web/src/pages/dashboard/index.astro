@@ -749,15 +749,21 @@ import Layout from "@/layouts/Layout.astro";
 				if (refillAmount) createOptions.refillAmount = parseInt(refillAmount);
 				if (refillInterval) createOptions.refillInterval = parseInt(refillInterval);
 
-				const { data, error } = await authClient.apiKey.create(createOptions);
+				const createRes = await fetch("/api/api-keys/create", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					credentials: "include",
+					body: JSON.stringify(createOptions),
+				});
+				const createData = await createRes.json();
 
-				if (error) {
-					alert(`Error: ${error.message || "No se pudo crear la API key"}`);
+				if (!createRes.ok || createData.error) {
+					alert(`Error: ${createData.error || "No se pudo crear la API key"}`);
 					return;
 				}
 
-				if (data?.key) {
-					newApiKeyValue.textContent = data.key;
+				if (createData?.key) {
+					newApiKeyValue.textContent = createData.key;
 					newApiKeyDisplay.classList.remove("hidden");
 
 					// Reset form
