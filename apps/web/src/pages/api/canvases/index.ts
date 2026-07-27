@@ -1,22 +1,16 @@
 import { canvasDocuments, canvases } from "@repo/db/schema";
 import type { APIRoute } from "astro";
 import { desc, eq } from "drizzle-orm";
-import { auth } from "@/lib/auth";
+import { authenticateRequest } from "@/lib/api-auth";
 import { getDbInstance } from "@/lib/db";
-
-async function getUser(request: Request) {
-	const session = await auth.api.getSession({
-		headers: request.headers,
-	});
-	return session?.user ?? null;
-}
 
 /** GET /api/canvases - List user canvases */
 export const GET: APIRoute = async ({ request }) => {
-	const user = await getUser(request);
-	if (!user) {
+	const authResult = await authenticateRequest(request);
+	if (!authResult) {
 		return new Response("Unauthorized", { status: 401 });
 	}
+	const { user } = authResult;
 
 	const db = getDbInstance();
 	const userCanvases = await db
@@ -33,10 +27,11 @@ export const GET: APIRoute = async ({ request }) => {
 
 /** POST /api/canvases - Create new canvas */
 export const POST: APIRoute = async ({ request }) => {
-	const user = await getUser(request);
-	if (!user) {
+	const authResult = await authenticateRequest(request);
+	if (!authResult) {
 		return new Response("Unauthorized", { status: 401 });
 	}
+	const { user } = authResult;
 
 	const body = await request.json();
 	const { name = "Sin título", description } = body;

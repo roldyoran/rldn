@@ -22,3 +22,4 @@ apps/web/.astro
 .commandcode/
 prompt.md
 skills-lock.json
+scripts/

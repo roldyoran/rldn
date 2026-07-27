@@ -47,22 +47,41 @@ import Layout from "@/layouts/Layout.astro";
 					<h1 class="text-2xl font-bold tracking-tight">Mis lienzos</h1>
 					<p class="mt-1 text-sm text-muted-foreground">Gestiona y organiza todos tus lienzos</p>
 				</div>
-				<button
-					id="btn-new-canvas"
-					class="flex items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
-				>
-					<svg
-						class="h-4 w-4"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
+				<div class="flex items-center gap-3">
+					<button
+						id="btn-api-keys"
+						class="flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
 					>
-						<line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
-					</svg>
-					Nuevo lienzo
-				</button>
+						<svg
+							class="h-4 w-4"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+						</svg>
+						API Keys
+					</button>
+					<button
+						id="btn-new-canvas"
+						class="flex items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
+					>
+						<svg
+							class="h-4 w-4"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+						>
+							<line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+						</svg>
+						Nuevo lienzo
+					</button>
+				</div>
 			</div>
 
 			<!-- Loading State -->
@@ -156,6 +175,213 @@ import Layout from "@/layouts/Layout.astro";
 				>
 					Eliminar
 				</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- API Keys Modal -->
+	<div
+		id="api-keys-modal"
+		class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+	>
+		<div class="mx-4 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl border border-border bg-background p-6 shadow-lg">
+			<div class="flex items-center justify-between mb-6">
+				<h3 class="text-lg font-semibold">Gestionar API Keys</h3>
+				<button
+					id="btn-close-api-modal"
+					class="rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+				>
+					<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<line x1="18" y1="6" x2="6" y2="18"></line>
+						<line x1="6" y1="6" x2="18" y2="18"></line>
+					</svg>
+				</button>
+			</div>
+
+			<!-- Create New API Key Form -->
+			<div class="mb-6 rounded-lg border border-border p-4">
+				<h4 class="text-sm font-medium mb-4">Crear nueva API Key</h4>
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+					<div>
+						<label for="api-key-name" class="block text-xs font-medium text-muted-foreground mb-1">Nombre</label>
+						<input
+							type="text"
+							id="api-key-name"
+							placeholder="Mi API Key"
+							class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+						/>
+					</div>
+					<div>
+						<label for="api-key-expiry" class="block text-xs font-medium text-muted-foreground mb-1">Expiración</label>
+						<select
+							id="api-key-expiry"
+							class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+						>
+							<option value="">Sin expiración</option>
+							<option value="3600">1 hora</option>
+							<option value="86400">1 día</option>
+							<option value="604800">7 días</option>
+							<option value="2592000">30 días</option>
+							<option value="7776000">90 días</option>
+							<option value="31536000">1 año</option>
+						</select>
+					</div>
+					<div>
+						<label for="api-key-prefix" class="block text-xs font-medium text-muted-foreground mb-1">Prefijo</label>
+						<input
+							type="text"
+							id="api-key-prefix"
+							placeholder="rldn_"
+							class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+						/>
+					</div>
+					<div>
+						<label for="api-key-metadata" class="block text-xs font-medium text-muted-foreground mb-1">Metadata (JSON)</label>
+						<input
+							type="text"
+							id="api-key-metadata"
+							placeholder='{"plan": "free"}'
+							class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+						/>
+					</div>
+				</div>
+
+				<!-- Rate Limiting -->
+				<div class="mt-4 pt-4 border-t border-border">
+					<h5 class="text-xs font-medium text-muted-foreground mb-3">Rate Limiting (Opcional)</h5>
+					<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+						<div class="flex items-center gap-2">
+							<input
+								type="checkbox"
+								id="api-key-rate-limit-enabled"
+								class="rounded border-border"
+							/>
+							<label for="api-key-rate-limit-enabled" class="text-xs">Habilitar rate limit</label>
+						</div>
+						<div>
+							<label for="api-key-rate-limit-max" class="block text-xs text-muted-foreground mb-1">Max requests</label>
+							<input
+								type="number"
+								id="api-key-rate-limit-max"
+								placeholder="100"
+								class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+							/>
+						</div>
+						<div>
+							<label for="api-key-rate-limit-window" class="block text-xs text-muted-foreground mb-1">Ventana (ms)</label>
+							<input
+								type="number"
+								id="api-key-rate-limit-window"
+								placeholder="60000"
+								class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+							/>
+						</div>
+					</div>
+				</div>
+
+				<!-- Remaining & Refill -->
+				<div class="mt-4 pt-4 border-t border-border">
+					<h5 class="text-xs font-medium text-muted-foreground mb-3">Límites de uso (Opcional)</h5>
+					<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+						<div>
+							<label for="api-key-remaining" class="block text-xs text-muted-foreground mb-1">Requests restantes</label>
+							<input
+								type="number"
+								id="api-key-remaining"
+								placeholder="Sin límite"
+								class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+							/>
+						</div>
+						<div>
+							<label for="api-key-refill-amount" class="block text-xs text-muted-foreground mb-1">Refill amount</label>
+							<input
+								type="number"
+								id="api-key-refill-amount"
+								placeholder="Sin refill"
+								class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+							/>
+						</div>
+						<div>
+							<label for="api-key-refill-interval" class="block text-xs text-muted-foreground mb-1">Refill interval (ms)</label>
+							<input
+								type="number"
+								id="api-key-refill-interval"
+								placeholder="86400000"
+								class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+							/>
+						</div>
+					</div>
+				</div>
+
+				<!-- Permissions -->
+				<div class="mt-4 pt-4 border-t border-border">
+					<h5 class="text-xs font-medium text-muted-foreground mb-3">Permisos</h5>
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+						<div class="flex items-center gap-2">
+							<input type="checkbox" id="perm-canvas-read" checked class="rounded border-border" />
+							<label for="perm-canvas-read" class="text-xs">Canvas: Read</label>
+						</div>
+						<div class="flex items-center gap-2">
+							<input type="checkbox" id="perm-canvas-write" checked class="rounded border-border" />
+							<label for="perm-canvas-write" class="text-xs">Canvas: Write</label>
+						</div>
+						<div class="flex items-center gap-2">
+							<input type="checkbox" id="perm-images-read" checked class="rounded border-border" />
+							<label for="perm-images-read" class="text-xs">Images: Read</label>
+						</div>
+						<div class="flex items-center gap-2">
+							<input type="checkbox" id="perm-images-write" checked class="rounded border-border" />
+							<label for="perm-images-write" class="text-xs">Images: Write</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="mt-4 flex justify-end">
+					<button
+						id="btn-create-api-key"
+						class="flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
+					>
+						<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<line x1="12" y1="5" x2="12" y2="19"></line>
+							<line x1="5" y1="12" x2="19" y2="12"></line>
+						</svg>
+						Generar API Key
+					</button>
+				</div>
+			</div>
+
+			<!-- New API Key Display -->
+			<div id="new-api-key-display" class="hidden mb-6 rounded-lg border border-green-500/50 bg-green-500/10 p-4">
+				<div class="flex items-center justify-between mb-2">
+					<h4 class="text-sm font-medium text-green-600">API Key generada</h4>
+					<button
+						id="btn-close-new-key"
+						class="rounded p-1 text-muted-foreground hover:bg-muted"
+					>
+						<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<line x1="18" y1="6" x2="6" y2="18"></line>
+							<line x1="6" y1="6" x2="18" y2="18"></line>
+						</svg>
+					</button>
+				</div>
+				<p class="text-xs text-muted-foreground mb-3">Guarda esta clave. No podrás verla de nuevo.</p>
+				<div class="flex items-center gap-2">
+					<code id="new-api-key-value" class="flex-1 rounded bg-muted px-3 py-2 text-sm font-mono break-all"></code>
+					<button
+						id="btn-copy-api-key"
+						class="rounded-lg border border-border px-3 py-2 text-sm hover:bg-muted"
+					>
+						Copiar
+					</button>
+				</div>
+			</div>
+
+			<!-- Existing API Keys -->
+			<div>
+				<h4 class="text-sm font-medium mb-3">API Keys existentes</h4>
+				<div id="api-keys-list" class="space-y-2">
+					<p class="text-sm text-muted-foreground">No hay API keys creadas.</p>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -344,6 +570,226 @@ import Layout from "@/layouts/Layout.astro";
 				month: "short",
 				year: "numeric",
 			});
+		}
+
+		// API Keys Management
+		const apiKeysModal = document.getElementById("api-keys-modal")!;
+		const newApiKeyDisplay = document.getElementById("new-api-key-display")!;
+		const newApiKeyValue = document.getElementById("new-api-key-value")!;
+		const apiKeysList = document.getElementById("api-keys-list")!;
+
+		// Import auth client
+		import { authClient } from "@/lib/auth-client";
+
+		// Open API Keys modal
+		document.getElementById("btn-api-keys")!.addEventListener("click", async () => {
+			apiKeysModal.classList.remove("hidden");
+			await loadApiKeys();
+		});
+
+		// Close API Keys modal
+		document.getElementById("btn-close-api-modal")!.addEventListener("click", () => {
+			apiKeysModal.classList.add("hidden");
+		});
+
+		// Close on backdrop click
+		apiKeysModal.addEventListener("click", (e) => {
+			if (e.target === apiKeysModal) {
+				apiKeysModal.classList.add("hidden");
+			}
+		});
+
+		// Close new key display
+		document.getElementById("btn-close-new-key")!.addEventListener("click", () => {
+			newApiKeyDisplay.classList.add("hidden");
+		});
+
+		// Copy API key to clipboard
+		document.getElementById("btn-copy-api-key")!.addEventListener("click", async () => {
+			const key = newApiKeyValue.textContent;
+			if (key) {
+				await navigator.clipboard.writeText(key);
+				const btn = document.getElementById("btn-copy-api-key")!;
+				btn.textContent = "Copiado!";
+				setTimeout(() => {
+					btn.textContent = "Copiar";
+				}, 2000);
+			}
+		});
+
+		// Create API Key
+		document.getElementById("btn-create-api-key")!.addEventListener("click", async () => {
+			const btn = document.getElementById("btn-create-api-key")! as HTMLButtonElement;
+			btn.disabled = true;
+			btn.innerHTML = '<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-dasharray="30 60" /></svg> Creando...';
+
+			try {
+				const name = (document.getElementById("api-key-name") as HTMLInputElement).value || "API Key";
+				const expiresIn = (document.getElementById("api-key-expiry") as HTMLSelectElement).value;
+				const prefix = (document.getElementById("api-key-prefix") as HTMLInputElement).value || undefined;
+				const metadataStr = (document.getElementById("api-key-metadata") as HTMLInputElement).value;
+
+				// Parse metadata
+				let metadata = null;
+				if (metadataStr) {
+					try {
+						metadata = JSON.parse(metadataStr);
+					} catch {
+						alert("JSON de metadata inválido");
+						return;
+					}
+				}
+
+				// Build permissions
+				const permissions: Record<string, string[]> = {};
+				if ((document.getElementById("perm-canvas-read") as HTMLInputElement).checked) {
+					permissions.canvas = permissions.canvas || [];
+					permissions.canvas.push("read");
+				}
+				if ((document.getElementById("perm-canvas-write") as HTMLInputElement).checked) {
+					permissions.canvas = permissions.canvas || [];
+					permissions.canvas.push("write");
+				}
+				if ((document.getElementById("perm-images-read") as HTMLInputElement).checked) {
+					permissions.images = permissions.images || [];
+					permissions.images.push("read");
+				}
+				if ((document.getElementById("perm-images-write") as HTMLInputElement).checked) {
+					permissions.images = permissions.images || [];
+					permissions.images.push("write");
+				}
+
+				// Build create options
+				const createOptions: any = {
+					name,
+					metadata,
+					permissions,
+				};
+
+				if (expiresIn) {
+					createOptions.expiresIn = parseInt(expiresIn);
+				}
+
+				if (prefix) {
+					createOptions.prefix = prefix;
+				}
+
+				// Rate limiting
+				const rateLimitEnabled = (document.getElementById("api-key-rate-limit-enabled") as HTMLInputElement).checked;
+				if (rateLimitEnabled) {
+					createOptions.rateLimitEnabled = true;
+					const max = (document.getElementById("api-key-rate-limit-max") as HTMLInputElement).value;
+					const window = (document.getElementById("api-key-rate-limit-window") as HTMLInputElement).value;
+					if (max) createOptions.rateLimitMax = parseInt(max);
+					if (window) createOptions.rateLimitTimeWindow = parseInt(window);
+				}
+
+				// Remaining & Refill
+				const remaining = (document.getElementById("api-key-remaining") as HTMLInputElement).value;
+				if (remaining) createOptions.remaining = parseInt(remaining);
+
+				const refillAmount = (document.getElementById("api-key-refill-amount") as HTMLInputElement).value;
+				const refillInterval = (document.getElementById("api-key-refill-interval") as HTMLInputElement).value;
+				if (refillAmount) createOptions.refillAmount = parseInt(refillAmount);
+				if (refillInterval) createOptions.refillInterval = parseInt(refillInterval);
+
+				const { data, error } = await authClient.apiKey.create(createOptions);
+
+				if (error) {
+					alert(`Error: ${error.message || "No se pudo crear la API key"}`);
+					return;
+				}
+
+				if (data?.key) {
+					newApiKeyValue.textContent = data.key;
+					newApiKeyDisplay.classList.remove("hidden");
+
+					// Reset form
+					(document.getElementById("api-key-name") as HTMLInputElement).value = "";
+					(document.getElementById("api-key-expiry") as HTMLSelectElement).value = "";
+					(document.getElementById("api-key-prefix") as HTMLInputElement).value = "";
+					(document.getElementById("api-key-metadata") as HTMLInputElement).value = "";
+					(document.getElementById("api-key-rate-limit-enabled") as HTMLInputElement).checked = false;
+					(document.getElementById("api-key-rate-limit-max") as HTMLInputElement).value = "";
+					(document.getElementById("api-key-rate-limit-window") as HTMLInputElement).value = "";
+					(document.getElementById("api-key-remaining") as HTMLInputElement).value = "";
+					(document.getElementById("api-key-refill-amount") as HTMLInputElement).value = "";
+					(document.getElementById("api-key-refill-interval") as HTMLInputElement).value = "";
+
+					await loadApiKeys();
+				}
+			} catch (err) {
+				alert("Error al crear la API key");
+			} finally {
+				btn.disabled = false;
+				btn.innerHTML = '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Generar API Key';
+			}
+		});
+
+		// Load API Keys
+		async function loadApiKeys() {
+			try {
+				const { data, error } = await authClient.apiKey.list({});
+
+				if (error) {
+					apiKeysList.innerHTML = '<p class="text-sm text-destructive">Error al cargar API keys</p>';
+					return;
+				}
+
+				if (!data?.apiKeys || data.apiKeys.length === 0) {
+					apiKeysList.innerHTML = '<p class="text-sm text-muted-foreground">No hay API keys creadas.</p>';
+					return;
+				}
+
+				apiKeysList.innerHTML = "";
+				data.apiKeys.forEach((apiKey: any) => {
+					const card = document.createElement("div");
+					card.className = "rounded-lg border border-border p-3 flex items-center justify-between";
+					card.innerHTML = `
+						<div class="flex-1 min-w-0">
+							<div class="flex items-center gap-2">
+								<span class="font-medium text-sm">${escapeHtml(apiKey.name || "Sin nombre")}</span>
+								<span class="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">${apiKey.prefix || "rldn_"}****</span>
+								${apiKey.enabled === false ? '<span class="text-xs px-2 py-0.5 rounded-full bg-destructive/10 text-destructive">Deshabilitada</span>' : ""}
+							</div>
+							<div class="mt-1 text-xs text-muted-foreground">
+								${apiKey.expiresAt ? `Expira: ${new Date(apiKey.expiresAt).toLocaleDateString("es-ES")}` : "Sin expiración"}
+								${apiKey.remaining !== null ? ` • Restantes: ${apiKey.remaining}` : ""}
+							</div>
+						</div>
+						<button
+							data-delete-key-id="${apiKey.id}"
+							class="delete-api-key-btn ml-3 rounded-lg border border-border px-3 py-1.5 text-xs text-muted-foreground hover:bg-destructive hover:text-white hover:border-destructive"
+						>
+							Eliminar
+						</button>
+					`;
+					apiKeysList.appendChild(card);
+				});
+
+				// Attach delete handlers
+				apiKeysList.querySelectorAll<HTMLButtonElement>(".delete-api-key-btn").forEach((btn) => {
+					btn.addEventListener("click", async () => {
+						const keyId = btn.dataset.deleteKeyId;
+						if (!keyId) return;
+
+						if (!confirm("¿Eliminar esta API key?")) return;
+
+						try {
+							const { error } = await authClient.apiKey.delete({ keyId });
+							if (error) {
+								alert(`Error: ${error.message || "No se pudo eliminar"}`);
+								return;
+							}
+							await loadApiKeys();
+						} catch {
+							alert("Error al eliminar la API key");
+						}
+					});
+				});
+			} catch {
+				apiKeysList.innerHTML = '<p class="text-sm text-destructive">Error al cargar API keys</p>';
+			}
 		}
 
 		init();

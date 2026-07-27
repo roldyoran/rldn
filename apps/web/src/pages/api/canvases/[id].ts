@@ -1,22 +1,16 @@
 import { canvasDocuments, canvases } from "@repo/db/schema";
 import type { APIRoute } from "astro";
 import { and, eq } from "drizzle-orm";
-import { auth } from "@/lib/auth";
+import { authenticateRequest } from "@/lib/api-auth";
 import { getDbInstance } from "@/lib/db";
-
-async function getUser(request: Request) {
-	const session = await auth.api.getSession({
-		headers: request.headers,
-	});
-	return session?.user ?? null;
-}
 
 /** GET /api/canvases/:id - Get canvas with document */
 export const GET: APIRoute = async ({ request, params }) => {
-	const user = await getUser(request);
-	if (!user) {
+	const authResult = await authenticateRequest(request);
+	if (!authResult) {
 		return new Response("Unauthorized", { status: 401 });
 	}
+	const { user } = authResult;
 
 	const canvasId = params.id;
 	if (!canvasId) {
@@ -49,11 +43,12 @@ export const GET: APIRoute = async ({ request, params }) => {
 export const PUT: APIRoute = async ({ request, params }) => {
 	const startTime = Date.now();
 	try {
-		const user = await getUser(request);
-		if (!user) {
+		const authResult = await authenticateRequest(request);
+		if (!authResult) {
 			console.log(`[PUT /api/canvases/${params.id}] 401 Unauthorized`);
 			return new Response("Unauthorized", { status: 401 });
 		}
+		const { user } = authResult;
 
 		const canvasId = params.id;
 		if (!canvasId) {
@@ -179,10 +174,11 @@ export const PUT: APIRoute = async ({ request, params }) => {
 
 /** DELETE /api/canvases/:id - Delete canvas */
 export const DELETE: APIRoute = async ({ request, params }) => {
-	const user = await getUser(request);
-	if (!user) {
+	const authResult = await authenticateRequest(request);
+	if (!authResult) {
 		return new Response("Unauthorized", { status: 401 });
 	}
+	const { user } = authResult;
 
 	const canvasId = params.id;
 	if (!canvasId) {

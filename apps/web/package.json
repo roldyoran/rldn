@@ -9,8 +9,10 @@
 	},
 	"dependencies": {
 		"@astrojs/react": "5.0.7",
+		"@better-auth/api-key": "^1.6.25",
 		"@better-auth/drizzle-adapter": "^1.6.25",
 		"@excalidraw/excalidraw": "^0.18.1",
+		"@libsql/client": "^0.17.4",
 		"@repo/db": "workspace:*",
 		"@wyattjoh/astro-bun-adapter": "^2.0.0",
 		"astro": "^6.0.0",

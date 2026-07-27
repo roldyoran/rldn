@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
+import { apiKey } from "@better-auth/api-key";
 import { getDbInstance } from "@/lib/db";
 
 export const auth = betterAuth({
@@ -26,6 +27,19 @@ export const auth = betterAuth({
 		window: 10, // 10 seconds
 		max: 100, // 100 requests per window
 	},
+	plugins: [
+		apiKey({
+			defaultPrefix: "rldn_",
+			enableSessionForAPIKeys: true,
+			enableMetadata: true,
+			permissions: {
+				defaultPermissions: {
+					canvas: ["read", "write"],
+					images: ["read", "write"],
+				},
+			},
+		}),
+	],
 });
 
 export type Session = typeof auth.$Infer.Session;
