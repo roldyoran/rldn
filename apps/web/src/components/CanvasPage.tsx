@@ -104,6 +104,14 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 	// ===== TOOLBAR =====
 	const noLockTools = useRef(new Set(["arrow", "line", "freedraw"]));
 
+	// Re-focus Excalidraw canvas after toolbar interactions
+	const refocusCanvas = useCallback(() => {
+		requestAnimationFrame(() => {
+			const canvas = document.getElementById("canvas-wrap")?.querySelector("canvas");
+			if (canvas) canvas.focus();
+		});
+	}, []);
+
 	const setTool = useCallback(
 		(tool: string) => {
 			if (!api) return;
@@ -114,8 +122,9 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 			setCurrentTool(nextTool);
 			const locked = nextTool !== "selection" && !noLockTools.current.has(nextTool);
 			api.setActiveTool({ type: nextTool, locked } as any);
+			refocusCanvas();
 		},
-		[api, currentTool],
+		[api, currentTool, refocusCanvas],
 	);
 
 	// ===== COLOR PRESETS =====
@@ -401,7 +410,10 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 				{/* Insert image */}
 				<button
 					className="tool-btn flex h-[38px] w-[38px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-					onClick={() => excalidrawRef.current?.openImageDialog()}
+					onClick={() => {
+						excalidrawRef.current?.openImageDialog();
+						refocusCanvas();
+					}}
 					title="Insertar imagen por URL"
 				>
 					<svg
@@ -422,7 +434,10 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 				{/* Download PNG */}
 				<button
 					className="tool-btn flex h-[38px] w-[38px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
-					onClick={exportPNG}
+					onClick={() => {
+						exportPNG();
+						refocusCanvas();
+					}}
 					title="Descargar como PNG"
 				>
 					<svg
@@ -449,7 +464,10 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 					<button
 						className="h-[24px] w-[24px] cursor-pointer rounded-md border border-[#373634] p-0 hover:ring-1 hover:ring-[#928f89] transition-all"
 						style={{ background: "#ffffff" }}
-						onClick={() => excalidrawRef.current?.openColorPicker("stroke")}
+						onClick={() => {
+							excalidrawRef.current?.openColorPicker("stroke");
+							refocusCanvas();
+						}}
 						title="Seleccionar color de trazo"
 					/>
 					<div className="flex flex-wrap gap-0.5 justify-center max-w-[38px]">
@@ -469,7 +487,10 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 								key={preset.color}
 								className="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
 								style={{ background: preset.color }}
-								onClick={() => setStrokeColor(preset.color)}
+								onClick={() => {
+									setStrokeColor(preset.color);
+									refocusCanvas();
+								}}
 								title={preset.title}
 							/>
 						))}
@@ -484,13 +505,19 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 						style={{
 							background: "repeating-conic-gradient(#373634 0% 25%, #1b1b1a 0% 50%) 50% / 8px 8px",
 						}}
-						onClick={() => excalidrawRef.current?.openColorPicker("bg")}
+						onClick={() => {
+							excalidrawRef.current?.openColorPicker("bg");
+							refocusCanvas();
+						}}
 						title="Seleccionar color de relleno"
 					/>
 					<div className="flex flex-wrap gap-0.5 justify-center max-w-[38px]">
 						<button
 							className="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
-							onClick={() => setBackgroundColor("transparent")}
+							onClick={() => {
+								setBackgroundColor("transparent");
+								refocusCanvas();
+							}}
 							title="Sin relleno"
 						>
 							<span className="block h-full w-full relative">
@@ -514,7 +541,10 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 								key={preset.color}
 								className="color-preset h-[14px] w-[14px] rounded-sm border border-[#4a4846] hover:scale-125 transition-transform"
 								style={{ background: preset.color }}
-								onClick={() => setBackgroundColor(preset.color)}
+								onClick={() => {
+									setBackgroundColor(preset.color);
+									refocusCanvas();
+								}}
 								title={preset.title}
 							/>
 						))}
