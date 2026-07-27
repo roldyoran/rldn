@@ -160,16 +160,40 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 	);
 
 	// ===== EFFECTS =====
+	// Tool shortcuts map
+	const toolShortcuts = useRef<Record<string, string>>({
+		v: "selection",
+		h: "hand",
+		p: "freedraw",
+		t: "text",
+		r: "rectangle",
+		o: "ellipse",
+		l: "line",
+		a: "arrow",
+		f: "frame",
+	});
+
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
+			// Ignore if typing in an input/textarea
+			const tag = (e.target as HTMLElement)?.tagName;
+			if (tag === "INPUT" || tag === "TEXTAREA") return;
+
 			if ((e.ctrlKey || e.metaKey) && e.key === "s") {
 				e.preventDefault();
 				saveCanvas();
+				return;
+			}
+
+			const tool = toolShortcuts.current[e.key.toLowerCase()];
+			if (tool) {
+				e.preventDefault();
+				setTool(tool);
 			}
 		};
 		document.addEventListener("keydown", handleKeyDown);
 		return () => document.removeEventListener("keydown", handleKeyDown);
-	}, [saveCanvas]);
+	}, [saveCanvas, setTool]);
 
 	useEffect(() => {
 		const handleBeforeUnload = () => {
