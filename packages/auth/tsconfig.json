@@ -6,6 +6,7 @@
 			"@repo/db": ["../db/src"],
 			"@repo/db/*": ["../db/src/*"]
 		},
-		"rootDir": null
+		"rootDir": null,
+		"types": ["node"]
 	}
 }

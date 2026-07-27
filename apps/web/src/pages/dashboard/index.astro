@@ -1,43 +1,17 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import TopBar from "@/components/dashboard/TopBar.astro";
+import LoadingState from "@/components/dashboard/LoadingState.astro";
+import EmptyState from "@/components/dashboard/EmptyState.astro";
+import CanvasGrid from "@/components/dashboard/CanvasGrid.astro";
+import DeleteModal from "@/components/dashboard/DeleteModal.astro";
+import ApiKeyModal from "@/components/dashboard/ApiKeyModal.astro";
+import Icons from "@/components/dashboard/Icons.astro";
 ---
 
 <Layout title="Dashboard - Canvas App">
 	<div class="min-h-screen bg-background">
-		<!-- Top Bar -->
-		<header class="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur-sm">
-			<div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
-				<div class="flex items-center gap-3">
-					<div
-						class="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground text-background"
-					>
-						<svg
-							class="h-4 w-4"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<rect x="3" y="3" width="18" height="18" rx="2"></rect>
-							<circle cx="8.5" cy="8.5" r="1.5"></circle>
-							<polyline points="21 15 16 10 5 21"></polyline>
-						</svg>
-					</div>
-					<span class="text-lg font-semibold">Canvas</span>
-				</div>
-				<div class="flex items-center gap-3">
-					<span id="user-name" class="text-sm text-muted-foreground"></span>
-					<button
-						id="btn-logout"
-						class="rounded-lg border border-border px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-					>
-						Cerrar sesión
-					</button>
-				</div>
-			</div>
-		</header>
+		<TopBar />
 
 		<!-- Main Content -->
 		<main class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
@@ -52,404 +26,39 @@ import Layout from "@/layouts/Layout.astro";
 						id="btn-api-keys"
 						class="flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
 					>
-						<svg
-							class="h-4 w-4"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<path
-								d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"
-							></path>
-						</svg>
+						<Icons name="key" class="h-4 w-4" />
 						API Keys
 					</button>
 					<button
 						id="btn-new-canvas"
-						class="flex items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
+						class="flex items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-all hover:scale-105 hover:shadow-lg"
 					>
-						<svg
-							class="h-4 w-4"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-						>
-							<line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"
-							></line>
-						</svg>
+						<Icons name="plus" class="h-4 w-4" />
 						Nuevo lienzo
 					</button>
 				</div>
 			</div>
 
-			<!-- Loading State -->
-			<div id="loading-state" class="flex flex-col items-center justify-center py-20">
-				<div class="loader-canvas">
-					<svg
-						viewBox="0 0 48 48"
-						fill="none"
-						stroke="#928f89"
-						stroke-width="1.5"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="h-12 w-12"
-					>
-						<rect x="6" y="6" width="36" height="36" rx="4" class="loader-border"></rect>
-						<circle cx="15" cy="15" r="2" class="loader-dot loader-dot-1"></circle>
-						<polyline points="30 20 22 28 14 36" class="loader-stroke"></polyline>
-					</svg>
-				</div>
-				<p class="mt-4 text-sm text-muted-foreground loader-text">Cargando lienzos...</p>
-			</div>
-
-			<!-- Empty State -->
-			<div id="empty-state" class="hidden py-20 text-center">
-				<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
-					<svg
-						class="h-8 w-8 text-muted-foreground"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.5"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<rect x="3" y="3" width="18" height="18" rx="2"></rect>
-						<circle cx="8.5" cy="8.5" r="1.5"></circle>
-						<polyline points="21 15 16 10 5 21"></polyline>
-					</svg>
-				</div>
-				<h3 class="text-lg font-semibold">No hay lienzos</h3>
-				<p class="mt-1 text-sm text-muted-foreground">
-					Crea tu primer lienzo para empezar a trabajar
-				</p>
-				<button
-					id="btn-new-canvas-empty"
-					class="mt-6 inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
-				>
-					<svg
-						class="h-4 w-4"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-					>
-						<line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
-					</svg>
-					Crear primer lienzo
-				</button>
-			</div>
-
-			<!-- Canvas Grid -->
-			<div
-				id="canvas-grid"
-				class="hidden grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-			>
-			</div>
+			<LoadingState />
+			<EmptyState />
+			<CanvasGrid />
 		</main>
 	</div>
 
-	<!-- Delete Confirmation Modal -->
-	<div
-		id="delete-modal"
-		class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-	>
-		<div class="mx-4 w-full max-w-sm rounded-xl border border-border bg-background p-6 shadow-lg">
-			<h3 class="text-lg font-semibold">Eliminar lienzo</h3>
-			<p class="mt-2 text-sm text-muted-foreground">
-				¿Estás seguro de que deseas eliminar este lienzo? Esta acción no se puede deshacer.
-			</p>
-			<div class="mt-6 flex justify-end gap-3">
-				<button
-					id="btn-cancel-delete"
-					class="rounded-lg border border-border px-4 py-2 text-sm hover:bg-muted"
-				>
-					Cancelar
-				</button>
-				<button
-					id="btn-confirm-delete"
-					class="rounded-lg bg-destructive px-4 py-2 text-sm text-white hover:opacity-90"
-				>
-					Eliminar
-				</button>
-			</div>
-		</div>
-	</div>
-
-	<!-- API Keys Modal -->
-	<div
-		id="api-keys-modal"
-		class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-	>
-		<div
-			class="mx-4 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl border border-border bg-background p-6 shadow-lg"
-		>
-			<div class="flex items-center justify-between mb-6">
-				<h3 class="text-lg font-semibold">Gestionar API Keys</h3>
-				<button
-					id="btn-close-api-modal"
-					class="rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-				>
-					<svg
-						class="h-5 w-5"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-					>
-						<line x1="18" y1="6" x2="6" y2="18"></line>
-						<line x1="6" y1="6" x2="18" y2="18"></line>
-					</svg>
-				</button>
-			</div>
-
-			<!-- Create New API Key Form -->
-			<div class="mb-6 rounded-lg border border-border p-4">
-				<h4 class="text-sm font-medium mb-4">Crear nueva API Key</h4>
-				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-					<div>
-						<label for="api-key-name" class="block text-xs font-medium text-muted-foreground mb-1"
-							>Nombre</label
-						>
-						<input
-							type="text"
-							id="api-key-name"
-							placeholder="Mi API Key"
-							class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-						/>
-					</div>
-					<div>
-						<label for="api-key-expiry" class="block text-xs font-medium text-muted-foreground mb-1"
-							>Expiración</label
-						>
-						<select
-							id="api-key-expiry"
-							class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-						>
-							<option value="">Sin expiración</option>
-							<option value="3600">1 hora</option>
-							<option value="86400">1 día</option>
-							<option value="604800">7 días</option>
-							<option value="2592000">30 días</option>
-							<option value="7776000">90 días</option>
-							<option value="31536000">1 año</option>
-						</select>
-					</div>
-					<div>
-						<label for="api-key-prefix" class="block text-xs font-medium text-muted-foreground mb-1"
-							>Prefijo</label
-						>
-						<input
-							type="text"
-							id="api-key-prefix"
-							placeholder="rldn_"
-							class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-						/>
-					</div>
-					<div>
-						<label
-							for="api-key-metadata"
-							class="block text-xs font-medium text-muted-foreground mb-1">Metadata (JSON)</label
-						>
-						<input
-							type="text"
-							id="api-key-metadata"
-							placeholder='{"plan": "free"}'
-							class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-						/>
-					</div>
-				</div>
-
-				<!-- Rate Limiting -->
-				<div class="mt-4 pt-4 border-t border-border">
-					<h5 class="text-xs font-medium text-muted-foreground mb-3">Rate Limiting (Opcional)</h5>
-					<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-						<div class="flex items-center gap-2">
-							<input
-								type="checkbox"
-								id="api-key-rate-limit-enabled"
-								class="rounded border-border"
-							/>
-							<label for="api-key-rate-limit-enabled" class="text-xs">Habilitar rate limit</label>
-						</div>
-						<div>
-							<label for="api-key-rate-limit-max" class="block text-xs text-muted-foreground mb-1"
-								>Max requests</label
-							>
-							<input
-								type="number"
-								id="api-key-rate-limit-max"
-								placeholder="100"
-								class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-							/>
-						</div>
-						<div>
-							<label
-								for="api-key-rate-limit-window"
-								class="block text-xs text-muted-foreground mb-1">Ventana (ms)</label
-							>
-							<input
-								type="number"
-								id="api-key-rate-limit-window"
-								placeholder="60000"
-								class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-							/>
-						</div>
-					</div>
-				</div>
-
-				<!-- Remaining & Refill -->
-				<div class="mt-4 pt-4 border-t border-border">
-					<h5 class="text-xs font-medium text-muted-foreground mb-3">Límites de uso (Opcional)</h5>
-					<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-						<div>
-							<label for="api-key-remaining" class="block text-xs text-muted-foreground mb-1"
-								>Requests restantes</label
-							>
-							<input
-								type="number"
-								id="api-key-remaining"
-								placeholder="Sin límite"
-								class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-							/>
-						</div>
-						<div>
-							<label for="api-key-refill-amount" class="block text-xs text-muted-foreground mb-1"
-								>Refill amount</label
-							>
-							<input
-								type="number"
-								id="api-key-refill-amount"
-								placeholder="Sin refill"
-								class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-							/>
-						</div>
-						<div>
-							<label for="api-key-refill-interval" class="block text-xs text-muted-foreground mb-1"
-								>Refill interval (ms)</label
-							>
-							<input
-								type="number"
-								id="api-key-refill-interval"
-								placeholder="86400000"
-								class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-							/>
-						</div>
-					</div>
-				</div>
-
-				<!-- Permissions -->
-				<div class="mt-4 pt-4 border-t border-border">
-					<h5 class="text-xs font-medium text-muted-foreground mb-3">Permisos</h5>
-					<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-						<div class="flex items-center gap-2">
-							<input type="checkbox" id="perm-canvas-read" checked class="rounded border-border" />
-							<label for="perm-canvas-read" class="text-xs">Canvas: Read</label>
-						</div>
-						<div class="flex items-center gap-2">
-							<input type="checkbox" id="perm-canvas-write" checked class="rounded border-border" />
-							<label for="perm-canvas-write" class="text-xs">Canvas: Write</label>
-						</div>
-						<div class="flex items-center gap-2">
-							<input type="checkbox" id="perm-images-read" checked class="rounded border-border" />
-							<label for="perm-images-read" class="text-xs">Images: Read</label>
-						</div>
-						<div class="flex items-center gap-2">
-							<input type="checkbox" id="perm-images-write" checked class="rounded border-border" />
-							<label for="perm-images-write" class="text-xs">Images: Write</label>
-						</div>
-					</div>
-				</div>
-
-				<div class="mt-4 flex justify-end">
-					<button
-						id="btn-create-api-key"
-						class="flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
-					>
-						<svg
-							class="h-4 w-4"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-						>
-							<line x1="12" y1="5" x2="12" y2="19"></line>
-							<line x1="5" y1="12" x2="19" y2="12"></line>
-						</svg>
-						Generar API Key
-					</button>
-				</div>
-			</div>
-
-			<!-- New API Key Display -->
-			<div
-				id="new-api-key-display"
-				class="hidden mb-6 rounded-lg border border-green-500/50 bg-green-500/10 p-4"
-			>
-				<div class="flex items-center justify-between mb-2">
-					<h4 class="text-sm font-medium text-green-600">API Key generada</h4>
-					<button id="btn-close-new-key" class="rounded p-1 text-muted-foreground hover:bg-muted">
-						<svg
-							class="h-4 w-4"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-						>
-							<line x1="18" y1="6" x2="6" y2="18"></line>
-							<line x1="6" y1="6" x2="18" y2="18"></line>
-						</svg>
-					</button>
-				</div>
-				<p class="text-xs text-muted-foreground mb-3">
-					Guarda esta clave. No podrás verla de nuevo.
-				</p>
-				<div class="flex items-center gap-2">
-					<code
-						id="new-api-key-value"
-						class="flex-1 rounded bg-muted px-3 py-2 text-sm font-mono break-all"></code>
-					<button
-						id="btn-copy-api-key"
-						class="rounded-lg border border-border px-3 py-2 text-sm hover:bg-muted"
-					>
-						Copiar
-					</button>
-				</div>
-			</div>
-
-			<!-- Existing API Keys -->
-			<div>
-				<h4 class="text-sm font-medium mb-3">API Keys existentes</h4>
-				<div id="api-keys-list" class="space-y-2">
-					<p class="text-sm text-muted-foreground">No hay API keys creadas.</p>
-				</div>
-			</div>
-		</div>
-	</div>
+	<DeleteModal />
+	<ApiKeyModal />
 
 	<script>
-		interface CanvasItem {
-			id: string;
-			name: string;
-			description: string | null;
-			thumbnail: string | null;
-			createdAt: string;
-			updatedAt: string;
-		}
+		import { authClient } from "@/lib/auth-client";
 
-		const grid = document.getElementById("canvas-grid")!;
-		const loadingState = document.getElementById("loading-state")!;
-		const emptyState = document.getElementById("empty-state")!;
-		const deleteModal = document.getElementById("delete-modal")!;
-		let deleteTargetId: string | null = null;
+		// Wait for DOM to be ready
+		document.addEventListener("DOMContentLoaded", () => {
+			init();
+		});
 
-		// Check auth and load canvases
+		// Also run immediately in case DOMContentLoaded already fired
+		init();
+
 		async function init() {
 			try {
 				const sessionRes = await fetch("/api/auth/get-session", {
@@ -468,83 +77,11 @@ import Layout from "@/layouts/Layout.astro";
 
 				document.getElementById("user-name")!.textContent =
 					sessionData.user.name || sessionData.user.email;
-				await loadCanvases();
+
+				// Load canvases using the component's function
+				await (window as any).loadCanvases();
 			} catch {
 				window.location.href = "/login";
-			}
-		}
-
-		async function loadCanvases() {
-			loadingState.classList.remove("hidden");
-			grid.classList.add("hidden");
-			emptyState.classList.add("hidden");
-
-			try {
-				const res = await fetch("/api/canvases", {
-					credentials: "include",
-				});
-				if (!res.ok) throw new Error("Failed to load");
-				const canvases: CanvasItem[] = await res.json();
-
-				loadingState.classList.add("hidden");
-
-				if (canvases.length === 0) {
-					emptyState.classList.remove("hidden");
-					return;
-				}
-
-				grid.innerHTML = "";
-				canvases.forEach((c) => {
-					const card = document.createElement("div");
-					card.className =
-						"group relative overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-ring";
-					card.innerHTML = `
-            <a href="/canvas/${c.id}" class="block p-4">
-              <div class="aspect-video overflow-hidden rounded-lg bg-muted mb-3">
-                ${
-									c.thumbnail
-										? `<img src="${c.thumbnail}" alt="${c.name}" class="h-full w-full object-cover" />`
-										: `<div class="flex h-full items-center justify-center">
-                      <svg class="h-10 w-10 text-muted-foreground/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <rect x="3" y="3" width="18" height="18" rx="2"/>
-                        <circle cx="8.5" cy="8.5" r="1.5"/>
-                        <polyline points="21 15 16 10 5 21"/>
-                      </svg>
-                    </div>`
-								}
-              </div>
-              <h3 class="font-medium truncate">${escapeHtml(c.name)}</h3>
-              <p class="mt-0.5 text-xs text-muted-foreground">
-                ${formatDate(c.updatedAt)}
-              </p>
-            </a>
-            <button
-              data-delete-id="${c.id}"
-              class="delete-btn absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-lg bg-background/80 text-muted-foreground opacity-0 backdrop-blur-sm transition-all hover:bg-destructive hover:text-white group-hover:opacity-100"
-              title="Eliminar"
-            >
-              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z"/>
-              </svg>
-            </button>
-          `;
-					grid.appendChild(card);
-				});
-
-				// Attach delete handlers
-				grid.querySelectorAll<HTMLButtonElement>(".delete-btn").forEach((btn) => {
-					btn.addEventListener("click", (e) => {
-						e.preventDefault();
-						e.stopPropagation();
-						deleteTargetId = btn.dataset.deleteId!;
-						deleteModal.classList.remove("hidden");
-					});
-				});
-
-				grid.classList.remove("hidden");
-			} catch {
-				loadingState.innerHTML =
-					'<div class="text-sm text-destructive">Error al cargar lienzos</div>';
 			}
 		}
 
@@ -552,8 +89,8 @@ import Layout from "@/layouts/Layout.astro";
 		async function createCanvas() {
 			const btn = document.getElementById("btn-new-canvas")! as HTMLButtonElement;
 			const btnEmpty = document.getElementById("btn-new-canvas-empty")! as HTMLButtonElement;
-			btn.disabled = true;
-			btnEmpty.disabled = true;
+			if (btn) btn.disabled = true;
+			if (btnEmpty) btnEmpty.disabled = true;
 
 			try {
 				const res = await fetch("/api/canvases", {
@@ -566,37 +103,40 @@ import Layout from "@/layouts/Layout.astro";
 				const canvas = await res.json();
 				window.location.href = `/canvas/${canvas.id}`;
 			} catch {
-				btn.disabled = false;
-				btnEmpty.disabled = false;
+				if (btn) btn.disabled = false;
+				if (btnEmpty) btnEmpty.disabled = false;
 			}
 		}
 
-		document.getElementById("btn-new-canvas")!.addEventListener("click", createCanvas);
-		document.getElementById("btn-new-canvas-empty")!.addEventListener("click", createCanvas);
+		document.getElementById("btn-new-canvas")?.addEventListener("click", createCanvas);
+		document.getElementById("btn-new-canvas-empty")?.addEventListener("click", createCanvas);
 
 		// Delete canvas
-		document.getElementById("btn-cancel-delete")!.addEventListener("click", () => {
-			deleteModal.classList.add("hidden");
-			deleteTargetId = null;
+		const canvasDeleteModal = document.getElementById("delete-modal")!;
+
+		document.getElementById("btn-cancel-delete")?.addEventListener("click", () => {
+			canvasDeleteModal.classList.add("hidden");
+			(window as any).clearDeleteTargetId();
 		});
 
-		document.getElementById("btn-confirm-delete")!.addEventListener("click", async () => {
+		document.getElementById("btn-confirm-delete")?.addEventListener("click", async () => {
+			const deleteTargetId = (window as any).getDeleteTargetId();
 			if (!deleteTargetId) return;
 			try {
 				await fetch(`/api/canvases/${deleteTargetId}`, {
 					method: "DELETE",
 					credentials: "include",
 				});
-				deleteModal.classList.add("hidden");
-				deleteTargetId = null;
-				await loadCanvases();
+				canvasDeleteModal.classList.add("hidden");
+				(window as any).clearDeleteTargetId();
+				await (window as any).loadCanvases();
 			} catch {
 				// silently fail
 			}
 		});
 
 		// Logout
-		document.getElementById("btn-logout")!.addEventListener("click", async () => {
+		document.getElementById("btn-logout")?.addEventListener("click", async () => {
 			await fetch("/api/auth/sign-out", {
 				method: "POST",
 				credentials: "include",
@@ -604,68 +144,50 @@ import Layout from "@/layouts/Layout.astro";
 			window.location.href = "/";
 		});
 
-		function escapeHtml(str: string) {
-			const div = document.createElement("div");
-			div.textContent = str;
-			return div.innerHTML;
-		}
-
-		function formatDate(dateStr: string) {
-			const d = new Date(dateStr);
-			return d.toLocaleDateString("es-ES", {
-				day: "numeric",
-				month: "short",
-				year: "numeric",
-			});
-		}
-
 		// API Keys Management
 		const apiKeysModal = document.getElementById("api-keys-modal")!;
 		const newApiKeyDisplay = document.getElementById("new-api-key-display")!;
 		const newApiKeyValue = document.getElementById("new-api-key-value")!;
 		const apiKeysList = document.getElementById("api-keys-list")!;
 
-		// Import auth client
-		import { authClient } from "@/lib/auth-client";
-
 		// Open API Keys modal
-		document.getElementById("btn-api-keys")!.addEventListener("click", async () => {
+		document.getElementById("btn-api-keys")?.addEventListener("click", async () => {
 			apiKeysModal.classList.remove("hidden");
 			await loadApiKeys();
 		});
 
 		// Close API Keys modal
-		document.getElementById("btn-close-api-modal")!.addEventListener("click", () => {
+		document.getElementById("btn-close-api-modal")?.addEventListener("click", () => {
 			apiKeysModal.classList.add("hidden");
 		});
 
 		// Close on backdrop click
-		apiKeysModal.addEventListener("click", (e) => {
+		apiKeysModal?.addEventListener("click", (e) => {
 			if (e.target === apiKeysModal) {
 				apiKeysModal.classList.add("hidden");
 			}
 		});
 
 		// Close new key display
-		document.getElementById("btn-close-new-key")!.addEventListener("click", () => {
+		document.getElementById("btn-close-new-key")?.addEventListener("click", () => {
 			newApiKeyDisplay.classList.add("hidden");
 		});
 
 		// Copy API key to clipboard
-		document.getElementById("btn-copy-api-key")!.addEventListener("click", async () => {
+		document.getElementById("btn-copy-api-key")?.addEventListener("click", async () => {
 			const key = newApiKeyValue.textContent;
 			if (key) {
 				await navigator.clipboard.writeText(key);
 				const btn = document.getElementById("btn-copy-api-key")!;
 				btn.textContent = "Copiado!";
 				setTimeout(() => {
-					btn.textContent = "Copiar";
+					btn.innerHTML = `<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copiar`;
 				}, 2000);
 			}
 		});
 
 		// Create API Key
-		document.getElementById("btn-create-api-key")!.addEventListener("click", async () => {
+		document.getElementById("btn-create-api-key")?.addEventListener("click", async () => {
 			const btn = document.getElementById("btn-create-api-key")! as HTMLButtonElement;
 			btn.disabled = true;
 			btn.innerHTML =
@@ -731,23 +253,12 @@ import Layout from "@/layouts/Layout.astro";
 				if (rateLimitEnabled) {
 					createOptions.rateLimitEnabled = true;
 					const max = (document.getElementById("api-key-rate-limit-max") as HTMLInputElement).value;
-					const window = (document.getElementById("api-key-rate-limit-window") as HTMLInputElement)
-						.value;
 					if (max) createOptions.rateLimitMax = parseInt(max);
-					if (window) createOptions.rateLimitTimeWindow = parseInt(window);
 				}
 
-				// Remaining & Refill
+				// Remaining
 				const remaining = (document.getElementById("api-key-remaining") as HTMLInputElement).value;
 				if (remaining) createOptions.remaining = parseInt(remaining);
-
-				const refillAmount = (document.getElementById("api-key-refill-amount") as HTMLInputElement)
-					.value;
-				const refillInterval = (
-					document.getElementById("api-key-refill-interval") as HTMLInputElement
-				).value;
-				if (refillAmount) createOptions.refillAmount = parseInt(refillAmount);
-				if (refillInterval) createOptions.refillInterval = parseInt(refillInterval);
 
 				const createRes = await fetch("/api/api-keys/create", {
 					method: "POST",
@@ -774,10 +285,7 @@ import Layout from "@/layouts/Layout.astro";
 					(document.getElementById("api-key-rate-limit-enabled") as HTMLInputElement).checked =
 						false;
 					(document.getElementById("api-key-rate-limit-max") as HTMLInputElement).value = "";
-					(document.getElementById("api-key-rate-limit-window") as HTMLInputElement).value = "";
 					(document.getElementById("api-key-remaining") as HTMLInputElement).value = "";
-					(document.getElementById("api-key-refill-amount") as HTMLInputElement).value = "";
-					(document.getElementById("api-key-refill-interval") as HTMLInputElement).value = "";
 
 					await loadApiKeys();
 				}
@@ -785,49 +293,78 @@ import Layout from "@/layouts/Layout.astro";
 				alert("Error al crear la API key");
 			} finally {
 				btn.disabled = false;
-				btn.innerHTML =
-					'<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Generar API Key';
+				btn.innerHTML = `<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Generar`;
 			}
 		});
 
 		// Load API Keys
+		let deleteKeyId: string | null = null;
+		let deleteKeyName: string | null = null;
+		const deleteModal = document.getElementById("api-key-delete-modal")!;
+		const deleteKeyNameEl = document.getElementById("delete-key-name")!;
+
+		document.getElementById("btn-cancel-delete-api-key")?.addEventListener("click", () => {
+			deleteModal.classList.add("hidden");
+			deleteKeyId = null;
+			deleteKeyName = null;
+		});
+
+		document.getElementById("btn-confirm-delete-api-key")?.addEventListener("click", async () => {
+			if (!deleteKeyId) return;
+			try {
+				const { error } = await authClient.apiKey.delete({ keyId: deleteKeyId });
+				if (error) {
+					alert(`Error: ${error.message || "No se pudo eliminar"}`);
+					return;
+				}
+				deleteModal.classList.add("hidden");
+				deleteKeyId = null;
+				deleteKeyName = null;
+				await loadApiKeys();
+			} catch {
+				alert("Error al eliminar la API key");
+			}
+		});
+
 		async function loadApiKeys() {
 			try {
 				const { data, error } = await authClient.apiKey.list({});
 
 				if (error) {
 					apiKeysList.innerHTML =
-						'<p class="text-sm text-destructive">Error al cargar API keys</p>';
+						'<div class="text-xs text-destructive py-4 text-center">Error al cargar API keys</div>';
 					return;
 				}
 
 				if (!data?.apiKeys || data.apiKeys.length === 0) {
 					apiKeysList.innerHTML =
-						'<p class="text-sm text-muted-foreground">No hay API keys creadas.</p>';
+						'<div class="text-xs text-muted-foreground py-6 text-center rounded-lg border border-dashed border-border">No hay API keys creadas.</div>';
 					return;
 				}
 
 				apiKeysList.innerHTML = "";
 				data.apiKeys.forEach((apiKey: any) => {
 					const card = document.createElement("div");
-					card.className = "rounded-lg border border-border p-3 flex items-center justify-between";
+					card.className =
+						"rounded-lg border border-border p-3 flex items-center justify-between transition-all hover:border-ring";
 					card.innerHTML = `
 						<div class="flex-1 min-w-0">
 							<div class="flex items-center gap-2">
-								<span class="font-medium text-sm">${escapeHtml(apiKey.name || "Sin nombre")}</span>
-								<span class="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">${apiKey.prefix || "rldn_"}****</span>
-								${apiKey.enabled === false ? '<span class="text-xs px-2 py-0.5 rounded-full bg-destructive/10 text-destructive">Deshabilitada</span>' : ""}
+								<span class="text-sm font-medium truncate">${escapeHtml(apiKey.name || "Sin nombre")}</span>
+								<code class="text-[10px] px-1.5 py-0.5 rounded bg-muted font-mono text-muted-foreground">${apiKey.prefix || "rldn_"}****</code>
+								${apiKey.enabled === false ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-destructive/10 text-destructive">Off</span>' : ""}
 							</div>
-							<div class="mt-1 text-xs text-muted-foreground">
-								${apiKey.expiresAt ? `Expira: ${new Date(apiKey.expiresAt).toLocaleDateString("es-ES")}` : "Sin expiración"}
-								${apiKey.remaining !== null ? ` • Restantes: ${apiKey.remaining}` : ""}
+							<div class="mt-1 text-[11px] text-muted-foreground font-mono">
+								${apiKey.expiresAt ? `expira ${new Date(apiKey.expiresAt).toLocaleDateString("es-ES")}` : "sin expiración"}
+								${apiKey.remaining !== null ? ` · ${apiKey.remaining} restantes` : ""}
 							</div>
 						</div>
 						<button
 							data-delete-key-id="${apiKey.id}"
-							class="delete-api-key-btn ml-3 rounded-lg border border-border px-3 py-1.5 text-xs text-muted-foreground hover:bg-destructive hover:text-white hover:border-destructive"
+							data-delete-key-name="${escapeHtml(apiKey.name || "Sin nombre")}"
+							class="delete-api-key-btn ml-3 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
 						>
-							Eliminar
+							<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z"/></svg>
 						</button>
 					`;
 					apiKeysList.appendChild(card);
@@ -835,93 +372,26 @@ import Layout from "@/layouts/Layout.astro";
 
 				// Attach delete handlers
 				apiKeysList.querySelectorAll<HTMLButtonElement>(".delete-api-key-btn").forEach((btn) => {
-					btn.addEventListener("click", async () => {
+					btn.addEventListener("click", () => {
 						const keyId = btn.dataset.deleteKeyId;
+						const keyName = btn.dataset.deleteKeyName;
 						if (!keyId) return;
-
-						if (!confirm("¿Eliminar esta API key?")) return;
-
-						try {
-							const { error } = await authClient.apiKey.delete({ keyId });
-							if (error) {
-								alert(`Error: ${error.message || "No se pudo eliminar"}`);
-								return;
-							}
-							await loadApiKeys();
-						} catch {
-							alert("Error al eliminar la API key");
-						}
+						deleteKeyId = keyId;
+						deleteKeyName = keyName || "Sin nombre";
+						deleteKeyNameEl.textContent = deleteKeyName;
+						deleteModal.classList.remove("hidden");
 					});
 				});
 			} catch {
-				apiKeysList.innerHTML = '<p class="text-sm text-destructive">Error al cargar API keys</p>';
+				apiKeysList.innerHTML =
+					'<div class="text-xs text-destructive py-4 text-center">Error al cargar API keys</div>';
 			}
 		}
 
-		init();
+		function escapeHtml(str: string) {
+			const div = document.createElement("div");
+			div.textContent = str;
+			return div.innerHTML;
+		}
 	</script>
-
-	<style>
-		.loader-canvas {
-			animation: loader-float 2s ease-in-out infinite;
-		}
-		.loader-border {
-			stroke-dasharray: 144;
-			stroke-dashoffset: 144;
-			animation: loader-draw 1.8s ease-in-out infinite;
-		}
-		.loader-dot-1 {
-			animation: loader-pulse 1.4s ease-in-out infinite;
-		}
-		.loader-stroke {
-			stroke-dasharray: 40;
-			stroke-dashoffset: 40;
-			animation: loader-draw 1.8s ease-in-out 0.3s infinite;
-		}
-		.loader-text {
-			animation: loader-fade 1.4s ease-in-out infinite alternate;
-		}
-		@keyframes loader-float {
-			0%,
-			100% {
-				transform: translateY(0);
-			}
-			50% {
-				transform: translateY(-4px);
-			}
-		}
-		@keyframes loader-draw {
-			0% {
-				stroke-dashoffset: 144;
-				opacity: 0.3;
-			}
-			50% {
-				stroke-dashoffset: 0;
-				opacity: 1;
-			}
-			100% {
-				stroke-dashoffset: -144;
-				opacity: 0.3;
-			}
-		}
-		@keyframes loader-pulse {
-			0%,
-			100% {
-				opacity: 0.3;
-				r: 1.5;
-			}
-			50% {
-				opacity: 1;
-				r: 2.5;
-			}
-		}
-		@keyframes loader-fade {
-			0% {
-				opacity: 0.4;
-			}
-			100% {
-				opacity: 1;
-			}
-		}
-	</style>
 </Layout>

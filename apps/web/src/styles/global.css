@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
 @theme {
+	--font-sans:
+		"Space Grotesk", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+		"Segoe UI Symbol", "Noto Color Emoji";
+	--font-mono:
+		"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+		"Courier New", monospace;
 	--color-background: oklch(1 0 0);
 	--color-foreground: oklch(0.145 0 0);
 	--color-primary: oklch(0.205 0 0);
@@ -40,7 +46,19 @@
 		@apply border-border outline-ring/50;
 	}
 	body {
-		@apply bg-background text-foreground;
+		@apply bg-background text-foreground font-sans;
+	}
+	button,
+	a,
+	[role="button"],
+	input,
+	select,
+	textarea {
+		@apply transition-colors duration-150 ease-in-out;
+	}
+	button,
+	[role="button"] {
+		cursor: pointer;
 	}
 }
 
@@ -223,9 +241,4 @@
 /* Adjust the welcome screen colors */
 .excalidraw-wrapper .excalidraw .welcome-screen {
 	color: #928f89;
-}
-
-/* Button cursor */
-.button {
-	cursor: pointer;
 }
