@@ -24,7 +24,7 @@ export const POST: APIRoute = async ({ request }) => {
 				prefix: body.prefix,
 				metadata: body.metadata,
 				permissions: body.permissions,
-				rateLimitEnabled: body.rateLimitEnabled,
+				rateLimitEnabled: body.rateLimitEnabled ?? false,
 				rateLimitMax: body.rateLimitMax,
 				rateLimitTimeWindow: body.rateLimitTimeWindow,
 				remaining: body.remaining,

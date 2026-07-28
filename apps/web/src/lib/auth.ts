@@ -25,7 +25,7 @@ export const auth = betterAuth({
 	rateLimit: {
 		enabled: true,
 		window: 10, // 10 seconds
-		max: 100, // 100 requests per window
+		max: 500, // 500 requests per window
 	},
 	plugins: [
 		apiKey({
