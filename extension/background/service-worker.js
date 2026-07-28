@@ -7,7 +7,7 @@
 var DEFAULT_BASE_URL = "http://localhost:4321";
 
 function getConfig() {
-	return chrome.storage.local.get(["apiKey", "baseUrl"]).then(function (data) {
+	return api.storage.local.get(["apiKey", "baseUrl"]).then(function (data) {
 		return {
 			apiKey: data.apiKey || "",
 			baseUrl: data.baseUrl || DEFAULT_BASE_URL,
@@ -58,7 +58,10 @@ function getCanvasName(canvasId) {
 
 // ── Message Handler ───────────────────────────────────
 
-chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+// Firefox/Zen compat
+var api = (typeof chrome !== "undefined" && chrome.runtime) ? chrome : (typeof browser !== "undefined" ? browser : null);
+
+api.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 	if (msg.type === "START_CAPTURE") {
 		handleStartCapture(msg.tabId, msg.canvasId);
 		sendResponse({ ok: true });
@@ -75,12 +78,12 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 // ── Capture Flow ──────────────────────────────────────
 
 function handleStartCapture(tabId, canvasId) {
-	chrome.scripting.executeScript({
+	api.scripting.executeScript({
 		target: { tabId: tabId },
 		files: ["content/content.js"],
 	}).then(function () {
-		chrome.tabs.sendMessage(tabId, { type: "ACTIVATE_CAPTURE" });
-		return chrome.storage.local.set({ activeCanvasId: canvasId });
+		api.tabs.sendMessage(tabId, { type: "ACTIVATE_CAPTURE" });
+		return api.storage.local.set({ activeCanvasId: canvasId });
 	}).catch(function (err) {
 		console.error("Canvas Grab: Failed to inject content script", err);
 		showNotification("Error", "No se pudo activar el modo captura en esta página");
@@ -88,7 +91,7 @@ function handleStartCapture(tabId, canvasId) {
 }
 
 function handleImageCaptured(imageData) {
-	chrome.storage.local.get("activeCanvasId").then(function (data) {
+	api.storage.local.get("activeCanvasId").then(function (data) {
 		var canvasId = data.activeCanvasId;
 		if (!canvasId) {
 			showNotification("Error", "No hay lienzo seleccionado");
@@ -99,7 +102,7 @@ function handleImageCaptured(imageData) {
 			return getCanvasName(canvasId);
 		}).then(function (canvasName) {
 			showNotification("Imagen guardada", imageData.name + " → " + canvasName);
-			chrome.runtime.sendMessage({
+			api.runtime.sendMessage({
 				type: "CAPTURE_SUCCESS",
 				imageName: imageData.name,
 				canvasName: canvasName,
@@ -114,7 +117,7 @@ function handleImageCaptured(imageData) {
 // ── Notifications ─────────────────────────────────────
 
 function showNotification(title, message) {
-	chrome.notifications.create({
+	api.notifications.create({
 		type: "basic",
 		iconUrl: "icons/icon128.png",
 		title: title,
@@ -125,10 +128,10 @@ function showNotification(title, message) {
 
 // ── Extension Install ─────────────────────────────────
 
-chrome.runtime.onInstalled.addListener(function () {
-	chrome.storage.local.get(["baseUrl"], function (data) {
+api.runtime.onInstalled.addListener(function () {
+	api.storage.local.get(["baseUrl"], function (data) {
 		if (!data.baseUrl) {
-			chrome.storage.local.set({ baseUrl: DEFAULT_BASE_URL });
+			api.storage.local.set({ baseUrl: DEFAULT_BASE_URL });
 		}
 	});
 });

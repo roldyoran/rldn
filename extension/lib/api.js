@@ -5,8 +5,11 @@
 
 var DEFAULT_BASE_URL = "http://localhost:4321";
 
+// Firefox/Zen compat
+var api = (typeof chrome !== "undefined" && chrome.runtime) ? chrome : (typeof browser !== "undefined" ? browser : null);
+
 function getConfig() {
-	return chrome.storage.local.get(["apiKey", "baseUrl"]).then(function (data) {
+	return api.storage.local.get(["apiKey", "baseUrl"]).then(function (data) {
 		return {
 			apiKey: data.apiKey || "",
 			baseUrl: data.baseUrl || DEFAULT_BASE_URL,
@@ -15,7 +18,7 @@ function getConfig() {
 }
 
 function saveConfig(apiKey, baseUrl) {
-	return chrome.storage.local.set({
+	return api.storage.local.set({
 		apiKey: apiKey,
 		baseUrl: baseUrl || DEFAULT_BASE_URL,
 	});

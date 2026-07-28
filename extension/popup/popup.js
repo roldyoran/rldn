@@ -3,11 +3,15 @@
  * Manages UI state, canvas list, and capture mode
  */
 
+// Firefox/Zen compat
+var api = (typeof chrome !== "undefined" && chrome.runtime) ? chrome : (typeof browser !== "undefined" ? browser : null);
+
 // ── DOM Elements ──────────────────────────────────────
 
 var viewMain = document.getElementById("view-main");
 var viewSettings = document.getElementById("view-settings");
 var btnSettings = document.getElementById("btn-settings");
+var btnRefresh = document.getElementById("btn-refresh");
 var btnBack = document.getElementById("btn-back");
 var canvasSelect = document.getElementById("canvas-select");
 var btnCapture = document.getElementById("btn-capture");
@@ -49,7 +53,7 @@ function loadCanvases(useCache) {
 
 		// Try loading from cache first
 		if (useCache) {
-			chrome.storage.local.get(["canvasCache", "canvasCacheTime"]).then(function (data) {
+			api.storage.local.get(["canvasCache", "canvasCacheTime"]).then(function (data) {
 				var cached = data.canvasCache;
 				var cacheTime = data.canvasCacheTime || 0;
 				var age = Date.now() - cacheTime;
@@ -73,7 +77,7 @@ function fetchAndCacheCanvases(apiKey) {
 
 	listCanvases().then(function (canvases) {
 		// Save to cache
-		chrome.storage.local.set({
+		api.storage.local.set({
 			canvasCache: canvases,
 			canvasCacheTime: Date.now(),
 		});
@@ -103,7 +107,7 @@ function renderCanvases(canvases) {
 }
 
 function invalidateCanvasCache() {
-	chrome.storage.local.set({ canvasCache: null, canvasCacheTime: 0 });
+	api.storage.local.set({ canvasCache: null, canvasCacheTime: 0 });
 }
 
 // ── Capture Mode ──────────────────────────────────────
@@ -115,13 +119,13 @@ function startCaptureMode() {
 		return;
 	}
 
-	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+	api.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 		if (!tabs || !tabs[0]) {
 			showStatus(statusEl, "error", "No hay pestaña activa");
 			return;
 		}
 
-		chrome.runtime.sendMessage({
+		api.runtime.sendMessage({
 			type: "START_CAPTURE",
 			tabId: tabs[0].id,
 			canvasId: selectedCanvas,
@@ -148,6 +152,15 @@ function bindEvents() {
 	btnSettings.addEventListener("click", function () {
 		viewMain.classList.add("hidden");
 		viewSettings.classList.remove("hidden");
+	});
+
+	btnRefresh.addEventListener("click", function () {
+		btnRefresh.classList.add("spinning");
+		invalidateCanvasCache();
+		loadCanvases(false);
+		setTimeout(function () {
+			btnRefresh.classList.remove("spinning");
+		}, 800);
 	});
 
 	btnBack.addEventListener("click", function () {
@@ -178,7 +191,7 @@ function bindEvents() {
 	linkDashboard.addEventListener("click", function (e) {
 		e.preventDefault();
 		var url = inputBaseUrl.value || "http://localhost:4321";
-		chrome.tabs.create({ url: url + "/dashboard" });
+		api.tabs.create({ url: url + "/dashboard" });
 	});
 }
 
