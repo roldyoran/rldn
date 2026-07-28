@@ -116,13 +116,6 @@ body {
 	margin-bottom: 6px;
 }
 
-.label-row {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 6px;
-}
-
 /* Select */
 .select-wrapper {
 	position: relative;
@@ -198,22 +191,6 @@ body {
 	height: 16px;
 }
 
-.text-btn {
-	background: none;
-	border: none;
-	color: var(--muted);
-	font-size: 11px;
-	font-family: inherit;
-	cursor: pointer;
-	padding: 2px 4px;
-	border-radius: 4px;
-	transition: color 0.15s ease;
-}
-
-.text-btn:hover {
-	color: var(--fg);
-}
-
 /* Input */
 .input {
 	width: 100%;
@@ -265,56 +242,6 @@ body {
 	background: rgba(255, 168, 165, 0.1);
 	color: var(--danger);
 	border: 1px solid rgba(255, 168, 165, 0.2);
-}
-
-/* Recent list */
-.recent-list {
-	max-height: 120px;
-	overflow-y: auto;
-}
-
-.recent-item {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	padding: 6px 8px;
-	border-radius: 6px;
-	font-size: 12px;
-	transition: background 0.15s ease;
-}
-
-.recent-item:hover {
-	background: var(--bg-hover);
-}
-
-.recent-icon {
-	color: var(--success);
-	flex-shrink: 0;
-}
-
-.recent-icon svg {
-	width: 14px;
-	height: 14px;
-}
-
-.recent-name {
-	color: var(--fg);
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	flex: 1;
-}
-
-.recent-canvas {
-	color: var(--muted);
-	flex-shrink: 0;
-}
-
-.empty-text {
-	color: var(--muted-dim);
-	font-size: 12px;
-	text-align: center;
-	padding: 12px 0;
 }
 
 /* Footer */
