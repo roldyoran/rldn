@@ -1,0 +1,35 @@
+---
+import { AlertDialog } from "@/components/starwind/alert-dialog/AlertDialog.astro";
+import { AlertDialogContent } from "@/components/starwind/alert-dialog/AlertDialogContent.astro";
+import { AlertDialogHeader } from "@/components/starwind/alert-dialog/AlertDialogHeader.astro";
+import { AlertDialogTitle } from "@/components/starwind/alert-dialog/AlertDialogTitle.astro";
+import { AlertDialogDescription } from "@/components/starwind/alert-dialog/AlertDialogDescription.astro";
+import { AlertDialogFooter } from "@/components/starwind/alert-dialog/AlertDialogFooter.astro";
+import { AlertDialogCancel } from "@/components/starwind/alert-dialog/AlertDialogCancel.astro";
+import { AlertDialogAction } from "@/components/starwind/alert-dialog/AlertDialogAction.astro";
+import Icons from "./Icons.astro";
+---
+
+<AlertDialog id="delete-modal">
+	<AlertDialogContent>
+		<AlertDialogHeader>
+			<div class="flex items-center gap-3">
+				<div
+					class="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/10 text-destructive"
+				>
+					<Icons name="alert" class="h-5 w-5" />
+				</div>
+				<AlertDialogTitle>Eliminar lienzo</AlertDialogTitle>
+			</div>
+			<AlertDialogDescription>
+				¿Estás seguro de que deseas eliminar este lienzo? Esta acción no se puede deshacer.
+			</AlertDialogDescription>
+		</AlertDialogHeader>
+		<AlertDialogFooter>
+			<AlertDialogCancel id="btn-cancel-delete">Cancelar</AlertDialogCancel>
+			<AlertDialogAction id="btn-confirm-delete" class="bg-destructive text-white hover:bg-destructive/90">
+				Eliminar
+			</AlertDialogAction>
+		</AlertDialogFooter>
+	</AlertDialogContent>
+</AlertDialog>

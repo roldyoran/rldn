@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { auth } from "@/lib/auth";
+import { auth } from "@/shared/lib/auth";
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
