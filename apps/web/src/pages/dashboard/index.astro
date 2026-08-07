@@ -308,10 +308,17 @@ import { Toaster } from "@/components/starwind/toast";
 		let deleteKeyId: string | null = null;
 		let deleteKeyName: string | null = null;
 		const deleteModal = document.getElementById("api-key-delete-modal")!;
+		const deleteDialog = deleteModal.querySelector("dialog") as HTMLDialogElement;
+		const deleteBackdrop = deleteModal.querySelector(".starwind-alert-dialog-backdrop") as HTMLElement;
 		const deleteKeyNameEl = document.getElementById("delete-key-name")!;
 
 		document.getElementById("btn-cancel-delete-api-key")?.addEventListener("click", () => {
-			deleteModal.classList.add("hidden");
+			deleteBackdrop?.classList.add("hidden");
+			deleteBackdrop?.setAttribute("data-state", "closed");
+			deleteDialog?.setAttribute("data-state", "closed");
+			setTimeout(() => {
+				deleteDialog?.close();
+			}, 200);
 			deleteKeyId = null;
 			deleteKeyName = null;
 		});
@@ -324,7 +331,12 @@ import { Toaster } from "@/components/starwind/toast";
 					alert(`Error: ${error.message || "No se pudo eliminar"}`);
 					return;
 				}
-				deleteModal.classList.add("hidden");
+				deleteBackdrop?.classList.add("hidden");
+				deleteBackdrop?.setAttribute("data-state", "closed");
+				deleteDialog?.setAttribute("data-state", "closed");
+				setTimeout(() => {
+					deleteDialog?.close();
+				}, 200);
 				deleteKeyId = null;
 				deleteKeyName = null;
 				await loadApiKeys();
@@ -386,7 +398,10 @@ import { Toaster } from "@/components/starwind/toast";
 						deleteKeyId = keyId;
 						deleteKeyName = keyName || "Sin nombre";
 						deleteKeyNameEl.textContent = deleteKeyName;
-						deleteModal.classList.remove("hidden");
+						deleteBackdrop?.classList.remove("hidden");
+						deleteBackdrop?.setAttribute("data-state", "open");
+						deleteDialog?.setAttribute("data-state", "open");
+						deleteDialog?.showModal();
 					});
 				});
 			} catch {
