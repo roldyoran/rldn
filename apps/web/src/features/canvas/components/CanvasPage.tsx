@@ -3,6 +3,23 @@ import { serializeAsJSON } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { ExcalidrawEditor, type ExcalidrawEditorHandle } from "./ExcalidrawEditor";
 
+// Tabler icons as React components
+import IconArrowLeft from "@tabler/icons/outline/arrow-left.svg?react";
+import IconCloudUpload from "@tabler/icons/outline/cloud-upload.svg?react";
+import IconMaximize from "@tabler/icons/outline/maximize.svg?react";
+import IconPointer from "@tabler/icons/outline/pointer.svg?react";
+import IconHandClick from "@tabler/icons/outline/hand-click.svg?react";
+import IconPencil from "@tabler/icons/outline/pencil.svg?react";
+import IconLetterT from "@tabler/icons/outline/letter-t.svg?react";
+import IconRectangle from "@tabler/icons/outline/rectangle.svg?react";
+import IconCircle from "@tabler/icons/outline/circle.svg?react";
+import IconMinus from "@tabler/icons/outline/minus.svg?react";
+import IconArrowRight from "@tabler/icons/outline/arrow-right.svg?react";
+import IconPhoto from "@tabler/icons/outline/photo.svg?react";
+import IconDownload from "@tabler/icons/outline/download.svg?react";
+import IconCheck from "@tabler/icons/outline/check.svg?react";
+import IconX from "@tabler/icons/outline/x.svg?react";
+
 interface CanvasPageProps {
 	canvasId: string;
 }
@@ -198,6 +215,19 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 		a.click();
 		URL.revokeObjectURL(url);
 	}, []);
+
+	const fitToContent = useCallback(() => {
+		const currentApi = apiRef.current;
+		if (!currentApi) return;
+		const elements = currentApi.getSceneElements();
+		if (elements.length === 0) return;
+		currentApi.scrollToContent(elements, {
+			fitToViewport: true,
+			viewportZoomFactor: 1,
+			animate: true,
+		});
+	}, []);
+
 	const setStrokeColor = useCallback(
 		(color: string) => {
 			setCurrentStrokeColor(color);
@@ -335,16 +365,7 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 						}}
 						title="Volver"
 					>
-						<svg
-							className="h-[18px] w-[18px]"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-						>
-							<path d="M19 12H5M12 19l-7-7 7-7" />
-						</svg>
+						<IconArrowLeft width={18} height={18} />
 					</button>
 					<input
 						value={docTitle}
@@ -364,22 +385,17 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 				<div className="flex items-center gap-1.5">
 					<button
 						className="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
+						onClick={fitToContent}
+						title="Encajar en pantalla"
+					>
+						<IconMaximize width={18} height={18} />
+					</button>
+					<button
+						className="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
 						onClick={saveCanvas}
 						title="Guardar (Ctrl+S)"
 					>
-						<svg
-							className="h-[18px] w-[18px]"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-						>
-							<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-							<polyline points="17 21 17 13 7 13 7 21" />
-							<polyline points="7 3 7 8 15 8" />
-						</svg>
+						<IconCloudUpload width={18} height={18} />
 					</button>
 				</div>
 			</div>
@@ -390,32 +406,14 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 				className="absolute left-3 top-[70px] z-30 flex flex-col gap-0.5 rounded-xl border border-[#373634] bg-[#232322] p-1.5"
 			>
 				{[
-					{ tool: "selection", title: "Seleccionar (V)", path: "M4 4l7.07 17 2.51-7.39L21 11.07z" },
-					{
-						tool: "hand",
-						title: "Mover lienzo (H)",
-						path: "M18 11V6a2 2 0 0 0-4 0M14 10V4a2 2 0 0 0-4 0v2M10 10.5V6a2 2 0 0 0-4 0v8M6 14l-1.7-1.7a1.7 1.7 0 0 0-2.5 2.3l4 4.6A5 5 0 0 0 9.6 21H14a5 5 0 0 0 5-5v-4a2 2 0 0 0-4 0",
-					},
-					{
-						tool: "freedraw",
-						title: "Lápiz (P)",
-						path: "M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z",
-					},
-					{
-						tool: "text",
-						title: "Texto (T)",
-						extra: (
-							<>
-								<polyline points="4 7 4 4 20 4 20 7" />
-								<line x1="9" y1="20" x2="15" y2="20" />
-								<line x1="12" y1="4" x2="12" y2="20" />
-							</>
-						),
-					},
-					{ tool: "rectangle", title: "Rectángulo (R)", isRect: true },
-					{ tool: "ellipse", title: "Elipse (O)", isCircle: true },
-					{ tool: "line", title: "Línea (L)", isLine: true },
-					{ tool: "arrow", title: "Flecha (A)", isArrow: true },
+					{ tool: "selection", title: "Seleccionar (V)", icon: IconPointer },
+					{ tool: "hand", title: "Mover lienzo (H)", icon: IconHandClick },
+					{ tool: "freedraw", title: "Lápiz (P)", icon: IconPencil },
+					{ tool: "text", title: "Texto (T)", icon: IconLetterT },
+					{ tool: "rectangle", title: "Rectángulo (R)", icon: IconRectangle },
+					{ tool: "ellipse", title: "Elipse (O)", icon: IconCircle },
+					{ tool: "line", title: "Línea (L)", icon: IconMinus },
+					{ tool: "arrow", title: "Flecha (A)", icon: IconArrowRight },
 				].map((item) => (
 					<button
 						key={item.tool}
@@ -425,32 +423,7 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 						onClick={() => setTool(item.tool)}
 						title={item.title}
 					>
-						<svg
-							className="h-[18px] w-[18px]"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-						>
-							{item.extra ? (
-								item.extra
-							) : item.isRect ? (
-								<rect x="3" y="5" width="18" height="14" rx="2" />
-							) : item.isCircle ? (
-								<circle cx="12" cy="12" r="9" />
-							) : item.isLine ? (
-								<line x1="5" y1="19" x2="19" y2="5" />
-							) : item.isArrow ? (
-								<>
-									<line x1="5" y1="19" x2="19" y2="5" />
-									<polyline points="9 5 19 5 19 15" />
-								</>
-							) : (
-								<path d={item.path} />
-							)}
-						</svg>
+						<item.icon width={18} height={18} />
 					</button>
 				))}
 
@@ -465,19 +438,7 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 					}}
 					title="Insertar imagen por URL"
 				>
-					<svg
-						className="h-[18px] w-[18px]"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="2"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-					>
-						<rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-						<circle cx="8.5" cy="8.5" r="1.5" />
-						<polyline points="21 15 16 10 5 21" />
-					</svg>
+					<IconPhoto width={18} height={18} />
 				</button>
 
 				{/* Download PNG */}
@@ -489,19 +450,7 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 					}}
 					title="Descargar como PNG"
 				>
-					<svg
-						className="h-[18px] w-[18px]"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="2"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-					>
-						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-						<polyline points="7 10 12 15 17 10" />
-						<line x1="12" y1="15" x2="12" y2="3" />
-					</svg>
+					<IconDownload width={18} height={18} />
 				</button>
 
 				{/* Color Pickers */}
@@ -625,34 +574,8 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 					{saveState === "saving" && (
 						<span className="save-spinner inline-block h-3 w-3 rounded-full border-2 border-[#928f89] border-t-transparent" />
 					)}
-					{saveState === "saved" && (
-						<svg
-							className="h-3.5 w-3.5 text-[#69db7c]"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2.5"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-						>
-							<polyline points="20 6 9 17 4 12" />
-						</svg>
-					)}
-					{saveState === "error" && (
-						<svg
-							className="h-3.5 w-3.5 text-[#ff6b6b]"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2.5"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-						>
-							<circle cx="12" cy="12" r="10" />
-							<line x1="15" y1="9" x2="9" y2="15" />
-							<line x1="9" y1="9" x2="15" y2="15" />
-						</svg>
-					)}
+					{saveState === "saved" && <IconCheck width={14} height={14} className="text-[#69db7c]" />}
+					{saveState === "error" && <IconX width={14} height={14} className="text-[#ff6b6b]" />}
 				</span>
 				<span>
 					{saveState === "saving" && "Guardando..."}
