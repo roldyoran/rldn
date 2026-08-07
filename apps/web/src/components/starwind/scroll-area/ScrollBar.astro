@@ -6,18 +6,18 @@ import { scrollBar, scrollBarThumb } from "./variants";
 type ScrollBarOrientation = "vertical" | "horizontal";
 
 type Props = HTMLAttributes<"div"> & {
-  orientation?: ScrollBarOrientation;
+	orientation?: ScrollBarOrientation;
 };
 
 const { class: className, orientation = "vertical", ...rest } = Astro.props;
 ---
 
 <div
-  class={scrollBar({ class: className })}
-  data-orientation={orientation}
-  aria-hidden="true"
-  {...rest}
-  data-slot="scroll-area-scrollbar"
+	class={scrollBar({ class: className })}
+	data-orientation={orientation}
+	aria-hidden="true"
+	{...rest}
+	data-slot="scroll-area-scrollbar"
 >
-  <div class={scrollBarThumb()} data-slot="scroll-area-thumb"></div>
+	<div class={scrollBarThumb()} data-slot="scroll-area-thumb"></div>
 </div>

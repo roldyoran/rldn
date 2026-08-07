@@ -9,9 +9,9 @@ type Props = HTMLAttributes<"div"> & VariantProps<typeof alert>;
 const { variant, class: className, ...rest } = Astro.props;
 
 const inferredRole =
-  rest.role ?? (variant === "error" || variant === "warning" ? "alert" : "status");
+	rest.role ?? (variant === "error" || variant === "warning" ? "alert" : "status");
 ---
 
 <div class={alert({ variant, class: className })} role={inferredRole} {...rest} data-slot="alert">
-  <slot />
+	<slot />
 </div>

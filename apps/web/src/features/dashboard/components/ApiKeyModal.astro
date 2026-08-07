@@ -53,11 +53,7 @@ import Icons from "./Icons.astro";
 						id="new-api-key-value"
 						class="flex-1 rounded bg-muted px-3 py-2 text-xs font-mono break-all border border-border text-foreground"
 					></code>
-					<Button
-						id="btn-copy-api-key"
-						variant="outline"
-						size="sm"
-					>
+					<Button id="btn-copy-api-key" variant="outline" size="sm">
 						<Icons name="copy" class="h-3.5 w-3.5" />
 					</Button>
 				</div>
@@ -70,12 +66,7 @@ import Icons from "./Icons.astro";
 						<label for="api-key-name" class="block text-xs font-medium text-muted-foreground mb-1"
 							>Nombre</label
 						>
-						<Input
-							type="text"
-							id="api-key-name"
-							placeholder="Mi API Key"
-							class="font-mono"
-						/>
+						<Input type="text" id="api-key-name" placeholder="Mi API Key" class="font-mono" />
 					</div>
 					<div>
 						<label for="api-key-expiry" class="block text-xs font-medium text-muted-foreground mb-1"
@@ -194,7 +185,9 @@ import Icons from "./Icons.astro";
 									id="api-key-rate-limit-enabled"
 									class="rounded border-border h-3.5 w-3.5"
 								/>
-								<label for="api-key-rate-limit-enabled" class="text-xs text-foreground">Rate limit</label>
+								<label for="api-key-rate-limit-enabled" class="text-xs text-foreground"
+									>Rate limit</label
+								>
 							</div>
 							<div></div>
 							<div>
@@ -225,10 +218,7 @@ import Icons from "./Icons.astro";
 
 				<!-- Actions -->
 				<div class="flex justify-end gap-3 pt-2">
-					<Button
-						id="btn-create-api-key"
-						class="gap-2"
-					>
+					<Button id="btn-create-api-key" class="gap-2">
 						<Icons name="plus" class="h-4 w-4" />
 						Generar
 					</Button>
@@ -271,8 +261,13 @@ import Icons from "./Icons.astro";
 			</AlertDialogDescription>
 		</AlertDialogHeader>
 		<AlertDialogFooter>
-			<AlertDialogCancel id="btn-cancel-delete-api-key" class="text-foreground">Cancelar</AlertDialogCancel>
-			<AlertDialogAction id="btn-confirm-delete-api-key" class="bg-destructive text-white hover:bg-destructive/90">
+			<AlertDialogCancel id="btn-cancel-delete-api-key" class="text-foreground"
+				>Cancelar</AlertDialogCancel
+			>
+			<AlertDialogAction
+				id="btn-confirm-delete-api-key"
+				class="bg-destructive text-white hover:bg-destructive/90"
+			>
 				Eliminar
 			</AlertDialogAction>
 		</AlertDialogFooter>

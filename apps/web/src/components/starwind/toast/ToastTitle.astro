@@ -11,31 +11,31 @@ import { toastTitle } from "./variants";
 type Variant = "default" | "success" | "error" | "warning" | "info" | "loading";
 
 type Props = HTMLAttributes<"div"> & {
-  variant?: Variant;
+	variant?: Variant;
 };
 
 const { class: className, variant = "default", ...rest } = Astro.props;
 
 const icons = {
-  default: null,
-  success: SuccessIcon,
-  error: ErrorIcon,
-  warning: WarningIcon,
-  info: InfoIcon,
-  loading: LoaderIcon,
+	default: null,
+	success: SuccessIcon,
+	error: ErrorIcon,
+	warning: WarningIcon,
+	info: InfoIcon,
+	loading: LoaderIcon,
 };
 
 const Icon = icons[variant];
 ---
 
 <div
-  class={toastTitle({ variant, class: className })}
-  data-slot="toast-title"
-  data-toast-title
-  {...rest}
+	class={toastTitle({ variant, class: className })}
+	data-slot="toast-title"
+	data-toast-title
+	{...rest}
 >
-  <slot name="icon">
-    {Icon && (variant === "loading" ? <Icon class="animate-spin" /> : <Icon />)}
-  </slot>
-  <span data-toast-title-text><slot /></span>
+	<slot name="icon">
+		{Icon && (variant === "loading" ? <Icon class="animate-spin" /> : <Icon />)}
+	</slot>
+	<span data-toast-title-text><slot /></span>
 </div>

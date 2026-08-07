@@ -26,19 +26,12 @@ import { Toaster } from "@/components/starwind/toast";
 				</div>
 				<div class="flex items-center gap-3">
 					<AlertDialogTrigger for="api-keys-modal" asChild>
-					<Button
-						id="btn-api-keys"
-						variant="outline"
-						class="gap-2"
-					>
-						<Icons name="key" class="h-4 w-4" />
-						<span class="hidden sm:inline">API Keys</span>
-					</Button>
-				</AlertDialogTrigger>
-					<Button
-						id="btn-new-canvas"
-						class="gap-2"
-					>
+						<Button id="btn-api-keys" variant="outline" class="gap-2">
+							<Icons name="key" class="h-4 w-4" />
+							<span class="hidden sm:inline">API Keys</span>
+						</Button>
+					</AlertDialogTrigger>
+					<Button id="btn-new-canvas" class="gap-2">
 						<Icons name="plus" class="h-4 w-4" />
 						Nuevo lienzo
 					</Button>
@@ -121,7 +114,9 @@ import { Toaster } from "@/components/starwind/toast";
 		// Delete canvas
 		const canvasDeleteModal = document.getElementById("delete-modal")!;
 		const canvasDeleteDialog = canvasDeleteModal?.querySelector("dialog") as HTMLDialogElement;
-		const canvasDeleteBackdrop = canvasDeleteModal?.querySelector(".starwind-alert-dialog-backdrop") as HTMLElement;
+		const canvasDeleteBackdrop = canvasDeleteModal?.querySelector(
+			".starwind-alert-dialog-backdrop",
+		) as HTMLElement;
 
 		function closeCanvasDeleteDialog() {
 			canvasDeleteBackdrop?.classList.add("hidden");
@@ -320,7 +315,9 @@ import { Toaster } from "@/components/starwind/toast";
 		let deleteKeyName: string | null = null;
 		const deleteModal = document.getElementById("api-key-delete-modal")!;
 		const deleteDialog = deleteModal.querySelector("dialog") as HTMLDialogElement;
-		const deleteBackdrop = deleteModal.querySelector(".starwind-alert-dialog-backdrop") as HTMLElement;
+		const deleteBackdrop = deleteModal.querySelector(
+			".starwind-alert-dialog-backdrop",
+		) as HTMLElement;
 		const deleteKeyNameEl = document.getElementById("delete-key-name")!;
 
 		document.getElementById("btn-cancel-delete-api-key")?.addEventListener("click", () => {

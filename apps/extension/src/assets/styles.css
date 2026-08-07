@@ -1,6 +1,6 @@
 /* ========================================
-   Canvas Grab - Popup Styles
-   Matches the Canvas App dark theme
+   Canvas Grab — Popup Styles
+   Minimalist design matching DESIGN.md
    ======================================== */
 
 :root {
@@ -14,8 +14,8 @@
 	--surface: #232322;
 	--accent: #eae8e4;
 	--accent-fg: #1b1b1a;
-	--danger: #ffa8a5;
-	--success: #a5d6a7;
+	--danger: #fca5a5;
+	--success: #86efac;
 	--radius: 8px;
 }
 
@@ -27,12 +27,12 @@
 
 body {
 	width: 350px;
-	min-height: 200px;
+	min-height: 180px;
 	max-height: 500px;
 	overflow-y: auto;
 	background: var(--bg);
 	color: var(--fg);
-	font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+	font-family: 'Space Grotesk', -apple-system, 'Segoe UI', system-ui, sans-serif;
 	font-size: 13px;
 	line-height: 1.5;
 }
@@ -229,7 +229,7 @@ body {
 }
 
 .input.mono {
-	font-family: "Geist Mono", "SF Mono", "Fira Code", monospace;
+	font-family: 'Geist Mono', 'SF Mono', 'Fira Code', monospace;
 	font-size: 12px;
 }
 
@@ -248,15 +248,40 @@ body {
 }
 
 .status.success {
-	background: rgba(165, 214, 167, 0.1);
+	background: rgba(134, 239, 172, 0.1);
 	color: var(--success);
-	border: 1px solid rgba(165, 214, 167, 0.2);
+	border: 1px solid rgba(134, 239, 172, 0.2);
 }
 
 .status.error {
-	background: rgba(255, 168, 165, 0.1);
+	background: rgba(252, 165, 165, 0.1);
 	color: var(--danger);
-	border: 1px solid rgba(255, 168, 165, 0.2);
+	border: 1px solid rgba(252, 165, 165, 0.2);
+}
+
+/* Connection dot */
+.connection-dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	margin-right: 4px;
+}
+
+.connection-dot.connected { background: #22c55e; }
+.connection-dot.disconnected { background: #ef4444; }
+.connection-dot.checking { background: #6b7280; }
+
+/* Skeleton */
+.skeleton {
+	background: var(--surface);
+	border-radius: var(--radius);
+	height: 36px;
+	animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+	0%, 100% { opacity: 0.5; }
+	50% { opacity: 0.8; }
 }
 
 /* Footer */
@@ -278,19 +303,7 @@ body {
 }
 
 /* Scrollbar */
-::-webkit-scrollbar {
-	width: 4px;
-}
-
-::-webkit-scrollbar-track {
-	background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-	background: var(--border);
-	border-radius: 2px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-	background: var(--muted-dim);
-}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted-dim); }

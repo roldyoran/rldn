@@ -24,12 +24,16 @@ import Icons from "./Icons.astro";
 				<AlertDialogTitle>Eliminar lienzo</AlertDialogTitle>
 			</div>
 			<AlertDialogDescription>
-				¿Estás seguro de que deseas eliminar <strong id="delete-canvas-name" class="text-foreground"></strong>? Esta acción no se puede deshacer.
+				¿Estás seguro de que deseas eliminar <strong id="delete-canvas-name" class="text-foreground"
+				></strong>? Esta acción no se puede deshacer.
 			</AlertDialogDescription>
 		</AlertDialogHeader>
 		<AlertDialogFooter>
 			<AlertDialogCancel id="btn-cancel-delete" class="text-foreground">Cancelar</AlertDialogCancel>
-			<AlertDialogAction id="btn-confirm-delete" class="bg-destructive text-white hover:bg-destructive/90">
+			<AlertDialogAction
+				id="btn-confirm-delete"
+				class="bg-destructive text-white hover:bg-destructive/90"
+			>
 				Eliminar
 			</AlertDialogAction>
 		</AlertDialogFooter>

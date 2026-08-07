@@ -1,0 +1,5 @@
+apps/extension/.wxt/
+node_modules/
+.output/
+.wxt/
+dist/

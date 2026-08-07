@@ -33,17 +33,17 @@ The app will be available at `http://localhost:4321`.
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `bun run dev:web` | Start Astro dev server |
-| `bun run build` | Build for production |
-| `bun run typecheck` | Typecheck all packages |
-| `bun run lint` | Lint with ESLint |
-| `bun run format` | Format with Prettier |
-| `bun run db:generate` | Generate Drizzle migrations |
-| `bun run db:migrate` | Apply migrations to Turso |
-| `bun run db:push` | Push schema to Turso |
-| `bash scripts/db-setup.sh` | Full DB setup |
+| Command                    | Description                 |
+| -------------------------- | --------------------------- |
+| `bun run dev:web`          | Start Astro dev server      |
+| `bun run build`            | Build for production        |
+| `bun run typecheck`        | Typecheck all packages      |
+| `bun run lint`             | Lint with ESLint            |
+| `bun run format`           | Format with Prettier        |
+| `bun run db:generate`      | Generate Drizzle migrations |
+| `bun run db:migrate`       | Apply migrations to Turso   |
+| `bun run db:push`          | Push schema to Turso        |
+| `bash scripts/db-setup.sh` | Full DB setup               |
 
 ## Project Structure
 
@@ -98,12 +98,12 @@ See [DESIGN.md](./DESIGN.md) for:
 
 Two `.env` files must be kept in sync:
 
-| Variable | Root `.env` | `apps/web/.env` |
-|----------|-------------|-----------------|
-| `TURSO_DB_URL` | `libsql://...` | `TURSO_DB_URL=libsql://...` |
-| `TURSO_SECRET` | `...` | `TURSO_SECRET=...` |
-| `BETTER_AUTH_SECRET` | `...` | `BETTER_AUTH_SECRET=...` |
-| `BETTER_AUTH_URL` | — | `http://localhost:4321` |
+| Variable             | Root `.env`    | `apps/web/.env`             |
+| -------------------- | -------------- | --------------------------- |
+| `TURSO_DB_URL`       | `libsql://...` | `TURSO_DB_URL=libsql://...` |
+| `TURSO_SECRET`       | `...`          | `TURSO_SECRET=...`          |
+| `BETTER_AUTH_SECRET` | `...`          | `BETTER_AUTH_SECRET=...`    |
+| `BETTER_AUTH_URL`    | —              | `http://localhost:4321`     |
 
 ## Database
 

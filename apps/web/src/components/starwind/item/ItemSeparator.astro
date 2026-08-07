@@ -11,8 +11,8 @@ const { class: className, orientation = "horizontal", ...rest } = Astro.props;
 ---
 
 <Separator
-  orientation={orientation}
-  class={itemSeparator({ class: className })}
-  {...rest}
-  data-slot="item-separator"
+	orientation={orientation}
+	class={itemSeparator({ class: className })}
+	{...rest}
+	data-slot="item-separator"
 />

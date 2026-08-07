@@ -4,18 +4,18 @@ import type { HTMLAttributes } from "astro/types";
 import { breadcrumbLink } from "./variants";
 
 type Props = HTMLAttributes<"a"> & {
-  asChild?: boolean;
+	asChild?: boolean;
 };
 
 const { class: className, asChild = false, ...rest } = Astro.props;
 ---
 
 {
-  asChild ? (
-    <slot />
-  ) : (
-    <a class={breadcrumbLink({ class: className })} {...rest} data-slot="breadcrumb-link">
-      <slot />
-    </a>
-  )
+	asChild ? (
+		<slot />
+	) : (
+		<a class={breadcrumbLink({ class: className })} {...rest} data-slot="breadcrumb-link">
+			<slot />
+		</a>
+	)
 }

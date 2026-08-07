@@ -6,31 +6,31 @@ import type { VariantProps } from "tailwind-variants";
 import { selectTrigger } from "./variants";
 
 type Props = Omit<HTMLAttributes<"button">, "role" | "type"> &
-  VariantProps<typeof selectTrigger> & {
-    /**
-     * The content to be rendered inside the select trigger
-     */
-    children: any;
-  };
+	VariantProps<typeof selectTrigger> & {
+		/**
+		 * The content to be rendered inside the select trigger
+		 */
+		children: any;
+	};
 
 const { class: className, size, ...rest } = Astro.props;
 ---
 
 <button
-  class={selectTrigger({ size, class: className })}
-  type="button"
-  role="combobox"
-  aria-label="Select field"
-  aria-controls=""
-  aria-expanded="false"
-  aria-haspopup="listbox"
-  aria-autocomplete="none"
-  data-state="closed"
-  {...rest}
-  data-slot="select-trigger"
+	class={selectTrigger({ size, class: className })}
+	type="button"
+	role="combobox"
+	aria-label="Select field"
+	aria-controls=""
+	aria-expanded="false"
+	aria-haspopup="listbox"
+	aria-autocomplete="none"
+	data-state="closed"
+	{...rest}
+	data-slot="select-trigger"
 >
-  <slot />
-  <slot name="icon">
-    <ChevronDown class="size-4 opacity-50" />
-  </slot>
+	<slot />
+	<slot name="icon">
+		<ChevronDown class="size-4 opacity-50" />
+	</slot>
 </button>

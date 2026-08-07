@@ -9,10 +9,10 @@ const { class: className, ...rest } = Astro.props;
 ---
 
 <div
-  class={dropdownSeparator({ class: className })}
-  role="separator"
-  aria-orientation="horizontal"
-  {...rest}
-  data-slot="dropdown-separator"
+	class={dropdownSeparator({ class: className })}
+	role="separator"
+	aria-orientation="horizontal"
+	{...rest}
+	data-slot="dropdown-separator"
 >
 </div>

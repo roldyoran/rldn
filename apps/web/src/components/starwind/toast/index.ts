@@ -7,31 +7,31 @@ import ToastTemplate from "./ToastTemplate.astro";
 import ToastTitle from "./ToastTitle.astro";
 import { toastDescription, toastItem, toastTitle, toastViewport } from "./variants";
 const ToastVariants = {
-  toastViewport,
-  toastDescription,
-  toastItem,
-  toastTitle,
+	toastViewport,
+	toastDescription,
+	toastItem,
+	toastTitle,
 };
 
 export {
-  type PromiseOptions,
-  type PromiseStateOption,
-  toast,
-  ToastDescription,
-  Toaster,
-  ToastItem,
-  type ToastOptions,
-  ToastTemplate,
-  ToastTitle,
-  ToastVariants,
-  type Variant,
+	type PromiseOptions,
+	type PromiseStateOption,
+	toast,
+	ToastDescription,
+	Toaster,
+	ToastItem,
+	type ToastOptions,
+	ToastTemplate,
+	ToastTitle,
+	ToastVariants,
+	type Variant,
 };
 
 export default {
-  Manager: toast,
-  Viewport: Toaster,
-  Item: ToastItem,
-  Title: ToastTitle,
-  Description: ToastDescription,
-  Template: ToastTemplate,
+	Manager: toast,
+	Viewport: Toaster,
+	Item: ToastItem,
+	Title: ToastTitle,
+	Description: ToastDescription,
+	Template: ToastTemplate,
 };

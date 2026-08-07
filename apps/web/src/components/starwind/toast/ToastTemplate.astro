@@ -6,7 +6,7 @@ import ToastTitle from "./ToastTitle.astro";
 type Variant = "default" | "success" | "error" | "warning" | "info" | "loading";
 
 interface Props {
-  variant: Variant;
+	variant: Variant;
 }
 
 const { variant } = Astro.props;
@@ -16,10 +16,10 @@ const itemVariant = variant === "loading" ? "default" : variant;
 ---
 
 <template data-toast-template={variant}>
-  <slot>
-    <ToastItem variant={itemVariant}>
-      <ToastTitle variant={variant}>Title</ToastTitle>
-      <ToastDescription>Description</ToastDescription>
-    </ToastItem>
-  </slot>
+	<slot>
+		<ToastItem variant={itemVariant}>
+			<ToastTitle variant={variant}>Title</ToastTitle>
+			<ToastDescription>Description</ToastDescription>
+		</ToastItem>
+	</slot>
 </template>
