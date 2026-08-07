@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { apiKey } from "@better-auth/api-key";
-import { getDbInstance } from "@/lib/db";
+import { getDbInstance } from "@/shared/lib/db";
 
 export const auth = betterAuth({
 	baseURL: import.meta.env.BETTER_AUTH_URL || "http://localhost:4321",

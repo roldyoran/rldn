@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { auth } from "@/shared/lib/auth";
 import type { APIRoute } from "astro";
 
 /**

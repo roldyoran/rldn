@@ -117,7 +117,8 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 		try {
 			const appState = apiInstance.getAppState();
 			if (appState.currentItemStrokeColor) setCurrentStrokeColor(appState.currentItemStrokeColor);
-			if (appState.currentItemBackgroundColor) setCurrentBackgroundColor(appState.currentItemBackgroundColor);
+			if (appState.currentItemBackgroundColor)
+				setCurrentBackgroundColor(appState.currentItemBackgroundColor);
 			const elements = apiInstance.getSceneElements();
 			const files = apiInstance.getFiles();
 			lastSavedStoreDataRef.current = serializeAsJSON(elements, appState, files, "local");
@@ -132,7 +133,8 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 		if (currentApi) {
 			const appState = currentApi.getAppState();
 			if (appState.currentItemStrokeColor) setCurrentStrokeColor(appState.currentItemStrokeColor);
-			if (appState.currentItemBackgroundColor) setCurrentBackgroundColor(appState.currentItemBackgroundColor);
+			if (appState.currentItemBackgroundColor)
+				setCurrentBackgroundColor(appState.currentItemBackgroundColor);
 		}
 		// Skip onChange fired during initial render (Excalidraw fires onChange
 		// immediately when it mounts with initialData, causing a useless save)

@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { user } from "@repo/db/auth-schema";
-import { auth } from "@/lib/auth";
-import { getDbInstance } from "@/lib/db";
+import { auth } from "@/shared/lib/auth";
+import { getDbInstance } from "@/shared/lib/db";
 
 export interface AuthResult {
 	user: { id: string; name: string; email: string; image?: string | null };
