@@ -2,8 +2,8 @@ import { canvases, canvasDocuments, images } from "@repo/db/schema";
 import type { APIRoute } from "astro";
 import { and, eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
-import { authenticateRequest } from "@/lib/api-auth";
-import { getDbInstance } from "@/lib/db";
+import { authenticateRequest } from "@/shared/lib/api-auth";
+import { getDbInstance } from "@/shared/lib/db";
 
 /** GET /api/canvases/:id/images - List images for a canvas */
 export const GET: APIRoute = async ({ request, params }) => {
@@ -111,9 +111,10 @@ export const POST: APIRoute = async ({ request, params }) => {
 				const fileId = nanoid();
 				const elementId = nanoid();
 
-				// Determine image dimensions from data if not provided
-				let imgWidth = width ?? 300;
-				let imgHeight = height ?? 200;
+				// Determine actual image dimensions from the fetched data
+				const dims = getImageDimensions(dataURL);
+				const imgWidth = width && width > 10 ? width : (dims.width || 400);
+				const imgHeight = height && height > 10 ? height : (dims.height || 300);
 
 				// Calculate position: place next to the rightmost existing element
 				const GAP = 20;
@@ -298,4 +299,71 @@ function calculateNextY(elements: any[], newHeight: number, gap: number): number
 
 	// Align Y with the rightmost element
 	return rightmostEl?.y ?? 100;
+}
+
+/**
+ * Parse image dimensions from a base64 data URL.
+ * Supports PNG and JPEG formats.
+ */
+function getImageDimensions(dataURL: string): { width: number; height: number } {
+	try {
+		// Extract base64 part
+		const base64 = dataURL.split(",")[1];
+		if (!base64) return { width: 0, height: 0 };
+
+		const binary = atob(base64);
+		const bytes = new Uint8Array(binary.length);
+		for (let i = 0; i < binary.length; i++) {
+			bytes[i] = binary.charCodeAt(i);
+		}
+
+		// PNG: dimensions at bytes 16-23 (width at 16, height at 20)
+		if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
+			const width = (bytes[16] << 24) | (bytes[17] << 16) | (bytes[18] << 8) | bytes[19];
+			const height = (bytes[20] << 24) | (bytes[21] << 16) | (bytes[22] << 8) | bytes[23];
+			return { width: Math.abs(width), height: Math.abs(height) };
+		}
+
+		// JPEG: find SOF marker (0xFF 0xC0 or 0xFF 0xC2)
+		if (bytes[0] === 0xff && bytes[1] === 0xd8) {
+			let offset = 2;
+			while (offset < bytes.length - 9) {
+				if (bytes[offset] === 0xff) {
+					const marker = bytes[offset + 1];
+					// SOF0 or SOF2
+					if (marker === 0xc0 || marker === 0xc2) {
+						const height = (bytes[offset + 5] << 8) | bytes[offset + 6];
+						const width = (bytes[offset + 7] << 8) | bytes[offset + 8];
+						return { width, height };
+					}
+					// Skip to next marker
+					const segmentLength = (bytes[offset + 2] << 8) | bytes[offset + 3];
+					offset += 2 + segmentLength;
+				} else {
+					offset++;
+				}
+			}
+		}
+
+		// WebP: check RIFF header
+		if (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46) {
+			// VP8 lossy
+			if (bytes[12] === 0x56 && bytes[13] === 0x50 && bytes[14] === 0x38 && bytes[15] === 0x20) {
+				const width = ((bytes[26] | (bytes[27] << 8)) & 0x3fff);
+				const height = ((bytes[28] | (bytes[29] << 8)) & 0x3fff);
+				return { width, height };
+			}
+			// VP8L lossless
+			if (bytes[12] === 0x56 && bytes[13] === 0x50 && bytes[14] === 0x38 && bytes[15] === 0x4c) {
+				const bits = (bytes[21] | (bytes[22] << 8) | (bytes[23] << 16) | (bytes[24] << 24));
+				const width = (bits & 0x3fff) + 1;
+				const height = ((bits >> 14) & 0x3fff) + 1;
+				return { width, height };
+			}
+		}
+	} catch {
+		// Ignore parsing errors
+	}
+
+	return { width: 0, height: 0 };
 }

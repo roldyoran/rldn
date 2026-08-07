@@ -1,8 +1,8 @@
 import { canvasDocuments, canvases } from "@repo/db/schema";
 import type { APIRoute } from "astro";
 import { and, eq } from "drizzle-orm";
-import { authenticateRequest } from "@/lib/api-auth";
-import { getDbInstance } from "@/lib/db";
+import { authenticateRequest } from "@/shared/lib/api-auth";
+import { getDbInstance } from "@/shared/lib/db";
 
 /** GET /api/canvases/:id - Get canvas with document */
 export const GET: APIRoute = async ({ request, params }) => {

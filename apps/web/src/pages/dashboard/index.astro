@@ -1,12 +1,13 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import TopBar from "@/components/dashboard/TopBar.astro";
-import LoadingState from "@/components/dashboard/LoadingState.astro";
-import EmptyState from "@/components/dashboard/EmptyState.astro";
-import CanvasGrid from "@/components/dashboard/CanvasGrid.astro";
-import DeleteModal from "@/components/dashboard/DeleteModal.astro";
-import ApiKeyModal from "@/components/dashboard/ApiKeyModal.astro";
-import Icons from "@/components/dashboard/Icons.astro";
+import TopBar from "@/features/dashboard/components/TopBar.astro";
+import LoadingState from "@/features/dashboard/components/LoadingState.astro";
+import EmptyState from "@/features/dashboard/components/EmptyState.astro";
+import CanvasGrid from "@/features/dashboard/components/CanvasGrid.astro";
+import DeleteModal from "@/features/dashboard/components/DeleteModal.astro";
+import ApiKeyModal from "@/features/dashboard/components/ApiKeyModal.astro";
+import Icons from "@/features/dashboard/components/Icons.astro";
+import { Button } from "@/components/starwind/button/Button.astro";
 ---
 
 <Layout title="Dashboard - Canvas App">
@@ -22,20 +23,21 @@ import Icons from "@/components/dashboard/Icons.astro";
 					<p class="mt-1 text-sm text-muted-foreground">Gestiona y organiza todos tus lienzos</p>
 				</div>
 				<div class="flex items-center gap-3">
-					<button
+					<Button
 						id="btn-api-keys"
-						class="flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+						variant="outline"
+						class="gap-2"
 					>
 						<Icons name="key" class="h-4 w-4" />
 						API Keys
-					</button>
-					<button
+					</Button>
+					<Button
 						id="btn-new-canvas"
-						class="flex items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-all hover:scale-105 hover:shadow-lg"
+						class="gap-2"
 					>
 						<Icons name="plus" class="h-4 w-4" />
 						Nuevo lienzo
-					</button>
+					</Button>
 				</div>
 			</div>
 
@@ -49,7 +51,7 @@ import Icons from "@/components/dashboard/Icons.astro";
 	<ApiKeyModal />
 
 	<script>
-		import { authClient } from "@/lib/auth-client";
+		import { authClient } from "@/shared/lib/auth-client";
 
 		// Wait for DOM to be ready
 		document.addEventListener("DOMContentLoaded", () => {

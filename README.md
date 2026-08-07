@@ -1,330 +1,119 @@
-Welcome to your new TanStack Start app!
+# rldn
 
-# Getting Started
+Multi-feature workspace application. Infinite canvas, kanban boards, todo lists, and notes — all in one place.
 
-To run this application:
+## Tech Stack
+
+- **Framework**: [Astro 6](https://astro.build/) (SSR, Bun adapter)
+- **UI**: [Starwind UI](https://starwind.dev/) (shadcn for Astro) + [React 19](https://react.dev/) islands
+- **Canvas**: [Excalidraw](https://excalidraw.com/) v0.18+
+- **Database**: [Turso](https://turso.tech/) (libSQL) + [Drizzle ORM](https://orm.drizzle.team/)
+- **Auth**: [Better Auth](https://www.better-auth.com/) (email + password)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **Monorepo**: [Turborepo](https://turbo.build/) + [Bun](https://bun.sh/) workspaces
+
+## Getting Started
 
 ```bash
+# Install dependencies
 bun install
-bun --bun run dev
+
+# Set up environment variables
+cp .env.example .env
+cp apps/web/.env.example apps/web/.env
+
+# Set up database
+bash scripts/db-setup.sh
+
+# Start dev server
+bun run dev:web
 ```
 
-# Building For Production
+The app will be available at `http://localhost:4321`.
 
-To build this application for production:
+## Commands
 
-```bash
-bun --bun run build
-```
-
-## Styling
-
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
-
-### Removing Tailwind CSS
-
-If you prefer not to use Tailwind CSS:
-
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Remove `@tailwindcss/vite` and `tailwindcss` from `package.json`
-
-## Linting & Formatting
-
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
-
-```bash
-bun --bun run lint
-bun --bun run format
-bun --bun run check
-```
-
-## Deploy with Nitro
-
-This project uses Nitro as a generic server adapter, so it can run on any Node-compatible host.
-
-```bash
-npm run build
-node dist/server/index.mjs
-```
-
-The build output is a self-contained Node server. To deploy, push the `dist/` directory to your host (Render, Fly.io, your own VPS, etc.) and run the server command above.
-
-For host-specific presets (Vercel, Netlify, Cloudflare, AWS Lambda, etc.) and tuning, see https://v3.nitro.build/deploy.
-
-## Shadcn
-
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
-
-```bash
-pnpm dlx shadcn@latest add button
-```
-
-## Setting up Better Auth
-
-1. Generate and set the `BETTER_AUTH_SECRET` environment variable in your `.env.local`:
-
-   ```bash
-   bunx --bun @better-auth/cli secret
-   ```
-
-2. Visit the [Better Auth documentation](https://www.better-auth.com) to unlock the full potential of authentication in your app.
-
-### Adding a Database (Optional)
-
-Better Auth can work in stateless mode, but to persist user data, add a database:
-
-```typescript
-// src/lib/auth.ts
-import { betterAuth } from "better-auth";
-import { Pool } from "pg";
-
-export const auth = betterAuth({
-	database: new Pool({
-		connectionString: process.env.DATABASE_URL,
-	}),
-	// ... rest of config
-});
-```
-
-Then run migrations:
-
-```bash
-bunx --bun @better-auth/cli migrate
-```
-
-# Resume Example
-
-A professional resume template built with TanStack Start and content-collections for Netlify deployment.
-
-## Features
-
-- **Content Collections**: Work experience and education managed as markdown files
-- **Skills Filter**: Interactive sidebar to filter jobs by skills/technologies
-- **Beautiful UI**: Modern design with shadcn/ui components
-- **SSR Ready**: Full server-side rendering with TanStack Start
+| Command | Description |
+|---------|-------------|
+| `bun run dev:web` | Start Astro dev server |
+| `bun run build` | Build for production |
+| `bun run typecheck` | Typecheck all packages |
+| `bun run lint` | Lint with ESLint |
+| `bun run format` | Format with Prettier |
+| `bun run db:generate` | Generate Drizzle migrations |
+| `bun run db:migrate` | Apply migrations to Turso |
+| `bun run db:push` | Push schema to Turso |
+| `bash scripts/db-setup.sh` | Full DB setup |
 
 ## Project Structure
 
 ```
-├── content/
-│   ├── jobs/              # Work experience entries
-│   └── education/         # Education entries
-├── src/
-│   ├── components/
-│   │   └── ui/            # Shadcn UI components
-│   │       ├── badge.tsx
-│   │       ├── card.tsx
-│   │       ├── checkbox.tsx
-│   │       ├── hover-card.tsx
-│   │       └── separator.tsx
-│   ├── lib/
-│   │   └── utils.ts       # Utility functions
-│   └── routes/
-│       ├── __root.tsx     # Root layout
-│       └── index.tsx      # Resume page
-└── public/
-    └── headshot-on-white.jpg
+rldn/
+├── apps/
+│   └── web/                    # Astro application
+│       └── src/
+│           ├── pages/          # File-based routing
+│           ├── layouts/        # HTML shell
+│           ├── features/       # Feature modules
+│           │   ├── canvas/     # Excalidraw canvas (React)
+│           │   └── dashboard/  # Dashboard (Astro + Starwind)
+│           ├── shared/         # Cross-feature utilities
+│           │   └── lib/        # auth, db, api-auth
+│           ├── styles/         # CSS (starwind + excalidraw)
+│           └── components/     # Auto-generated Starwind UI
+├── packages/
+│   ├── db/                     # Drizzle ORM + schema
+│   └── auth/                   # Better Auth
+├── scripts/                    # DB setup scripts
+└── extension/                  # Browser extension
 ```
 
-## Adding Work Experience
+## Architecture
 
-Create a new markdown file in `content/jobs/` with the following frontmatter:
+**Feature-based architecture** with strict dependency direction:
 
-```markdown
----
-jobTitle: Your Job Title
-company: Company Name
-location: City, State
-startDate: 2024-01-01
-endDate: 2024-12-31 # Optional - omit for current position
-summary: Brief summary of your role
-tags:
-  - React
-  - TypeScript
-  - Web Development
----
-
-Detailed description of your responsibilities and achievements...
+```
+pages/ → features/ → shared/
 ```
 
-## Adding Education
+- **Pages**: Thin controllers — route definition + layout composition
+- **Features**: Self-contained modules (canvas, dashboard, kanban, etc.)
+- **Shared**: Business-agnostic utilities (auth, DB, types)
 
-Create a new markdown file in `content/education/`:
+Features never import from other features. Shared never imports from features.
 
-```markdown
----
-school: School Name
-summary: Degree or Program Name
-startDate: 2020-01-01
-endDate: 2024-01-01
-tags:
-  - Relevant
-  - Skills
----
+See [AGENTS.md](./AGENTS.md) for detailed architecture documentation.
 
-Details about your education...
-```
+## Design System
 
-## Development
+See [DESIGN.md](./DESIGN.md) for:
 
-```bash
-# Start development server
-npm run dev
+- Starwind UI component library
+- Theme configuration
+- Color palette
+- Excalidraw theme overrides
+- Guide for adding new features
 
-# Build for production
-npm run build
-```
+## Environment Variables
 
-## Routing
+Two `.env` files must be kept in sync:
 
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
+| Variable | Root `.env` | `apps/web/.env` |
+|----------|-------------|-----------------|
+| `TURSO_DB_URL` | `libsql://...` | `TURSO_DB_URL=libsql://...` |
+| `TURSO_SECRET` | `...` | `TURSO_SECRET=...` |
+| `BETTER_AUTH_SECRET` | `...` | `BETTER_AUTH_SECRET=...` |
+| `BETTER_AUTH_URL` | — | `http://localhost:4321` |
 
-### Adding A Route
+## Database
 
-To add a new route to your application just add a new file in the `./src/routes` directory.
+Turso (libSQL) with Drizzle ORM. Schema includes:
 
-TanStack will automatically generate the content of the route file for you.
+- `documents` — Universal base entity (canvas, kanban, todo, note)
+- `canvases`, `canvas_documents`, `images` — Canvas feature
+- `kanban_data`, `todo_data`, `note_data` — Future features
+- Auth tables (`user`, `session`, `account`, `verification`, `apikey`)
 
-Now that you have two routes you can use a `Link` component to navigate between them.
+## License
 
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
-
-export const Route = createRootRoute({
-	head: () => ({
-		meta: [
-			{ charSet: "utf-8" },
-			{ name: "viewport", content: "width=device-width, initial-scale=1" },
-			{ title: "My App" },
-		],
-	}),
-	shellComponent: ({ children }) => (
-		<html lang="en">
-			<head>
-				<HeadContent />
-			</head>
-			<body>
-				<header>
-					<nav>
-						<Link to="/">Home</Link>
-						<Link to="/about">About</Link>
-					</nav>
-				</header>
-				{children}
-				<Scripts />
-			</body>
-		</html>
-	),
-});
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from "@tanstack/react-start";
-
-const getServerTime = createServerFn({
-	method: "GET",
-}).handler(async () => {
-	return new Date().toISOString();
-});
-
-// Use in a component
-function MyComponent() {
-	const [time, setTime] = useState("");
-
-	useEffect(() => {
-		getServerTime().then(setTime);
-	}, []);
-
-	return <div>Server time: {time}</div>;
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from "@tanstack/react-router";
-import { json } from "@tanstack/react-start";
-
-export const Route = createFileRoute("/api/hello")({
-	server: {
-		handlers: {
-			GET: () => json({ message: "Hello, World!" }),
-		},
-	},
-});
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from "@tanstack/react-router";
-
-export const Route = createFileRoute("/people")({
-	loader: async () => {
-		const response = await fetch("https://swapi.dev/api/people");
-		return response.json();
-	},
-	component: PeopleComponent,
-});
-
-function PeopleComponent() {
-	const data = Route.useLoaderData();
-	return (
-		<ul>
-			{data.results.map((person) => (
-				<li key={person.name}>{person.name}</li>
-			))}
-		</ul>
-	);
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+Private — All rights reserved.
