@@ -12,17 +12,17 @@ npx starwind@latest add <component>
 
 ### Installed Components
 
-| Component | Location | Purpose |
-|-----------|----------|---------|
-| `button` | `src/components/starwind/button/` | Actions, form submissions |
-| `card` | `src/components/starwind/card/` | Content containers |
-| `alert-dialog` | `src/components/starwind/alert-dialog/` | Confirmation modals |
-| `input` | `src/components/starwind/input/` | Text inputs |
-| `badge` | `src/components/starwind/badge/` | Status indicators |
-| `skeleton` | `src/components/starwind/skeleton/` | Loading placeholders |
-| `separator` | `src/components/starwind/separator/` | Visual dividers |
-| `dropdown` | `src/components/starwind/dropdown/` | Menus, actions |
-| `avatar` | `src/components/starwind/avatar/` | User avatars |
+| Component      | Location                                | Purpose                   |
+| -------------- | --------------------------------------- | ------------------------- |
+| `button`       | `src/components/starwind/button/`       | Actions, form submissions |
+| `card`         | `src/components/starwind/card/`         | Content containers        |
+| `alert-dialog` | `src/components/starwind/alert-dialog/` | Confirmation modals       |
+| `input`        | `src/components/starwind/input/`        | Text inputs               |
+| `badge`        | `src/components/starwind/badge/`        | Status indicators         |
+| `skeleton`     | `src/components/starwind/skeleton/`     | Loading placeholders      |
+| `separator`    | `src/components/starwind/separator/`    | Visual dividers           |
+| `dropdown`     | `src/components/starwind/dropdown/`     | Menus, actions            |
+| `avatar`       | `src/components/starwind/avatar/`       | User avatars              |
 
 ### Import Pattern
 
@@ -63,13 +63,13 @@ Components are installed to `src/components/starwind/`. Edit them directly — y
 
 Neutral palette. No blue/bright accent colors in canvas UI.
 
-| Token | Light | Dark |
-|-------|-------|------|
-| `--background` | `oklch(1 0 0)` | `oklch(0.145 0 0)` |
-| `--foreground` | `oklch(0.145 0 0)` | `oklch(0.985 0 0)` |
-| `--primary` | `oklch(0.205 0 0)` | `oklch(0.922 0 0)` |
-| `--muted` | `oklch(0.97 0 0)` | `oklch(0.269 0 0)` |
-| `--border` | `oklch(0.922 0 0)` | `oklch(1 0 0 / 10%)` |
+| Token           | Light                       | Dark                        |
+| --------------- | --------------------------- | --------------------------- |
+| `--background`  | `oklch(1 0 0)`              | `oklch(0.145 0 0)`          |
+| `--foreground`  | `oklch(0.145 0 0)`          | `oklch(0.985 0 0)`          |
+| `--primary`     | `oklch(0.205 0 0)`          | `oklch(0.922 0 0)`          |
+| `--muted`       | `oklch(0.97 0 0)`           | `oklch(0.269 0 0)`          |
+| `--border`      | `oklch(0.922 0 0)`          | `oklch(1 0 0 / 10%)`        |
 | `--destructive` | `oklch(0.577 0.245 27.325)` | `oklch(0.704 0.191 22.216)` |
 
 ### Typography
@@ -135,7 +135,7 @@ import Layout from "@/layouts/Layout.astro";
 ---
 
 <Layout title="Kanban">
-  <!-- Feature content -->
+	<!-- Feature content -->
 </Layout>
 ```
 

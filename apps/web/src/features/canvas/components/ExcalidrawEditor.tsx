@@ -4,6 +4,7 @@ import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
 import { ColorPickerPopup } from "./ColorPickerPopup";
 import { ImageUrlDialog } from "./ImageUrlDialog";
+import IconLoader2 from "@tabler/icons/outline/loader-2.svg?react";
 
 // Self-host fonts from public/fonts/
 if (typeof window !== "undefined") {
@@ -402,19 +403,12 @@ export const ExcalidrawEditor = forwardRef<ExcalidrawEditorHandle, ExcalidrawEdi
 					}}
 				>
 					<div className="loader-canvas">
-						<svg
-							viewBox="0 0 48 48"
-							fill="none"
-							stroke="#928f89"
-							strokeWidth="1.5"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							style={{ width: 48, height: 48 }}
-						>
-							<rect x="6" y="6" width="36" height="36" rx="4" className="loader-border" />
-							<circle cx="15" cy="15" r="2" className="loader-dot-1" />
-							<polyline points="30 20 22 28 14 36" className="loader-stroke" />
-						</svg>
+						<IconLoader2
+							width={48}
+							height={48}
+							className="text-[#928f89] animate-spin"
+							strokeWidth={1.5}
+						/>
 					</div>
 					<span
 						className="loader-text"
@@ -423,37 +417,12 @@ export const ExcalidrawEditor = forwardRef<ExcalidrawEditorHandle, ExcalidrawEdi
 						Cargando lienzo...
 					</span>
 					<style>{`
-						.loader-canvas { animation: loader-float 2s ease-in-out infinite; }
-						.loader-border {
-							stroke-dasharray: 144;
-							stroke-dashoffset: 144;
-							animation: loader-draw 1.8s ease-in-out infinite;
-						}
-						.loader-dot-1 { animation: loader-pulse 1.4s ease-in-out infinite; }
-						.loader-stroke {
-							stroke-dasharray: 40;
-							stroke-dashoffset: 40;
-							animation: loader-draw 1.8s ease-in-out 0.3s infinite;
-						}
-						.loader-text { animation: loader-fade 1.4s ease-in-out infinite alternate; }
-						@keyframes loader-float {
-							0%, 100% { transform: translateY(0); }
-							50% { transform: translateY(-4px); }
-						}
-						@keyframes loader-draw {
-							0% { stroke-dashoffset: 144; opacity: 0.3; }
-							50% { stroke-dashoffset: 0; opacity: 1; }
-							100% { stroke-dashoffset: -144; opacity: 0.3; }
-						}
-						@keyframes loader-pulse {
-							0%, 100% { opacity: 0.3; }
-							50% { opacity: 1; }
-						}
-						@keyframes loader-fade {
-							0% { opacity: 0.4; }
-							100% { opacity: 1; }
-						}
-					`}</style>
+					.loader-text { animation: loader-fade 1.4s ease-in-out infinite alternate; }
+					@keyframes loader-fade {
+						0% { opacity: 0.4; }
+						100% { opacity: 1; }
+					}
+				`}</style>
 				</div>
 			);
 		}

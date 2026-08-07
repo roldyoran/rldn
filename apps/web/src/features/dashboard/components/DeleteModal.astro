@@ -1,12 +1,14 @@
 ---
-import { AlertDialog } from "@/components/starwind/alert-dialog/AlertDialog.astro";
-import { AlertDialogContent } from "@/components/starwind/alert-dialog/AlertDialogContent.astro";
-import { AlertDialogHeader } from "@/components/starwind/alert-dialog/AlertDialogHeader.astro";
-import { AlertDialogTitle } from "@/components/starwind/alert-dialog/AlertDialogTitle.astro";
-import { AlertDialogDescription } from "@/components/starwind/alert-dialog/AlertDialogDescription.astro";
-import { AlertDialogFooter } from "@/components/starwind/alert-dialog/AlertDialogFooter.astro";
-import { AlertDialogCancel } from "@/components/starwind/alert-dialog/AlertDialogCancel.astro";
-import { AlertDialogAction } from "@/components/starwind/alert-dialog/AlertDialogAction.astro";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/starwind/alert-dialog";
 import Icons from "./Icons.astro";
 ---
 
@@ -22,12 +24,16 @@ import Icons from "./Icons.astro";
 				<AlertDialogTitle>Eliminar lienzo</AlertDialogTitle>
 			</div>
 			<AlertDialogDescription>
-				¿Estás seguro de que deseas eliminar este lienzo? Esta acción no se puede deshacer.
+				¿Estás seguro de que deseas eliminar <strong id="delete-canvas-name" class="text-foreground"
+				></strong>? Esta acción no se puede deshacer.
 			</AlertDialogDescription>
 		</AlertDialogHeader>
 		<AlertDialogFooter>
-			<AlertDialogCancel id="btn-cancel-delete">Cancelar</AlertDialogCancel>
-			<AlertDialogAction id="btn-confirm-delete" class="bg-destructive text-white hover:bg-destructive/90">
+			<AlertDialogCancel id="btn-cancel-delete" class="text-foreground">Cancelar</AlertDialogCancel>
+			<AlertDialogAction
+				id="btn-confirm-delete"
+				class="bg-destructive text-white hover:bg-destructive/90"
+			>
 				Eliminar
 			</AlertDialogAction>
 		</AlertDialogFooter>

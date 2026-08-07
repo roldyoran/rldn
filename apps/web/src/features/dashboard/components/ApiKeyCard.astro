@@ -1,7 +1,7 @@
 ---
-import { Card } from "@/components/starwind/card/Card.astro";
-import { Badge } from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button/Button.astro";
+import { Card } from "@/components/starwind/card";
+import { Badge } from "@/components/starwind/badge";
+import { Button } from "@/components/starwind/button";
 
 interface Props {
 	id: string;
@@ -15,14 +15,19 @@ interface Props {
 const { id, name, prefix = "rldn_", expiresAt, remaining, enabled = true } = Astro.props;
 ---
 
-<Card class="p-4 flex items-center justify-between transition-all hover:border-ring hover:shadow-sm" data-key-id={id}>
+<Card
+	class="p-4 flex items-center justify-between transition-all hover:border-ring hover:shadow-sm"
+	data-key-id={id}
+>
 	<div class="flex-1 min-w-0">
 		<div class="flex items-center gap-2 flex-wrap">
 			<span class="font-medium text-sm">{name || "Sin nombre"}</span>
 			<Badge variant="secondary" class="font-mono text-xs">{prefix}****</Badge>
 			{
 				!enabled && (
-					<Badge variant="destructive" class="text-xs">Deshabilitada</Badge>
+					<Badge variant="destructive" class="text-xs">
+						Deshabilitada
+					</Badge>
 				)
 			}
 		</div>
