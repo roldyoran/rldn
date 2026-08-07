@@ -120,9 +120,20 @@ import { Toaster } from "@/components/starwind/toast";
 
 		// Delete canvas
 		const canvasDeleteModal = document.getElementById("delete-modal")!;
+		const canvasDeleteDialog = canvasDeleteModal?.querySelector("dialog") as HTMLDialogElement;
+		const canvasDeleteBackdrop = canvasDeleteModal?.querySelector(".starwind-alert-dialog-backdrop") as HTMLElement;
+
+		function closeCanvasDeleteDialog() {
+			canvasDeleteBackdrop?.classList.add("hidden");
+			canvasDeleteBackdrop?.setAttribute("data-state", "closed");
+			canvasDeleteDialog?.setAttribute("data-state", "closed");
+			setTimeout(() => {
+				canvasDeleteDialog?.close();
+			}, 200);
+		}
 
 		document.getElementById("btn-cancel-delete")?.addEventListener("click", () => {
-			canvasDeleteModal.classList.add("hidden");
+			closeCanvasDeleteDialog();
 			(window as any).clearDeleteTargetId();
 		});
 
@@ -134,7 +145,7 @@ import { Toaster } from "@/components/starwind/toast";
 					method: "DELETE",
 					credentials: "include",
 				});
-				canvasDeleteModal.classList.add("hidden");
+				closeCanvasDeleteDialog();
 				(window as any).clearDeleteTargetId();
 				await (window as any).loadCanvases();
 			} catch {
