@@ -1,21 +1,26 @@
 ---
-import { Button } from "@/components/starwind/button/Button.astro";
+import { Button } from "@/components/starwind/button";
+import { Card, CardContent } from "@/components/starwind/card";
 import Icons from "./Icons.astro";
 ---
 
 <div id="empty-state" class="hidden py-20 text-center">
-	<div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-muted">
-		<Icons name="canvas" class="h-10 w-10 text-muted-foreground" />
-	</div>
-	<h3 class="text-xl font-semibold">No hay lienzos</h3>
-	<p class="mt-2 text-sm text-muted-foreground max-w-sm mx-auto">
-		Crea tu primer lienzo para empezar a trabajar. Tus ideas merecen un espacio.
-	</p>
-	<Button
-		id="btn-new-canvas-empty"
-		class="mt-8 inline-flex items-center gap-2"
-	>
-		<Icons name="plus" class="h-4 w-4" />
-		Crear primer lienzo
-	</Button>
+	<Card class="mx-auto max-w-md">
+		<CardContent class="flex flex-col items-center p-8">
+			<div class="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-muted">
+				<Icons name="canvas" class="h-10 w-10 text-muted-foreground" />
+			</div>
+			<h3 class="text-xl font-semibold">No hay lienzos</h3>
+			<p class="mt-2 text-sm text-muted-foreground">
+				Crea tu primer lienzo para empezar a trabajar. Tus ideas merecen un espacio.
+			</p>
+			<Button
+				id="btn-new-canvas-empty"
+				class="mt-8 inline-flex items-center gap-2"
+			>
+				<Icons name="plus" class="h-4 w-4" />
+				Crear primer lienzo
+			</Button>
+		</CardContent>
+	</Card>
 </div>

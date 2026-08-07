@@ -25,4 +25,4 @@ export const alertDialogFooter = tv({
 
 export const alertDialogHeader = tv({ base: "flex flex-col gap-2 text-center sm:text-left" });
 
-export const alertDialogTitle = tv({ base: "font-heading text-xl font-semibold" });
+export const alertDialogTitle = tv({ base: "font-heading text-xl font-semibold text-foreground" });

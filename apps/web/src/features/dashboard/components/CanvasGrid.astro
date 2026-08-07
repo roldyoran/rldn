@@ -1,5 +1,5 @@
 ---
-
+import { Card, CardContent } from "@/components/starwind/card";
 ---
 
 <div
@@ -9,6 +9,8 @@
 </div>
 
 <script>
+	import { toaster } from "@/components/starwind/toast";
+
 	interface CanvasItem {
 		id: string;
 		name: string;
@@ -53,38 +55,41 @@
 			grid.innerHTML = "";
 			canvases.forEach((c) => {
 				const card = document.createElement("div");
-				card.className =
-					"group relative overflow-hidden rounded-xl border border-border bg-card transition-all duration-200 hover:border-ring hover:shadow-md hover:-translate-y-0.5";
+				card.className = "group relative";
 				card.innerHTML = `
-            <a href="/canvas/${c.id}" class="block p-4">
-              <div class="aspect-video overflow-hidden rounded-lg bg-muted mb-3">
-                ${
-									c.thumbnail
-										? `<img src="${c.thumbnail}" alt="${c.name}" class="h-full w-full object-cover" />`
-										: `<div class="flex h-full items-center justify-center">
-                      <svg class="h-10 w-10 text-muted-foreground/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <rect x="3" y="3" width="18" height="18" rx="2"/>
-                        <circle cx="8.5" cy="8.5" r="1.5"/>
-                        <polyline points="21 15 16 10 5 21"/>
-                      </svg>
-                    </div>`
-								}
-              </div>
-              <h3 class="font-medium truncate">${escapeHtml(c.name)}</h3>
-              <p class="mt-0.5 text-xs text-muted-foreground font-mono">
-                ${formatDate(c.updatedAt)}
-              </p>
-            </a>
-            <button
-              data-delete-id="${c.id}"
-              class="delete-btn absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-lg bg-background/80 text-muted-foreground opacity-0 backdrop-blur-sm transition-all duration-200 hover:bg-destructive hover:text-white group-hover:opacity-100"
-              title="Eliminar"
-            >
-              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z"/>
-              </svg>
-            </button>
-          `;
+					<a href="/canvas/${c.id}" class="block">
+						<Card class="transition-all duration-200 hover:border-ring hover:shadow-md hover:-translate-y-0.5">
+							<CardContent class="p-4">
+								<div class="aspect-video overflow-hidden rounded-lg bg-muted mb-3">
+									${
+										c.thumbnail
+											? `<img src="${c.thumbnail}" alt="${c.name}" class="h-full w-full object-cover" />`
+											: `<div class="flex h-full items-center justify-center">
+												<svg class="h-10 w-10 text-muted-foreground/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+													<rect x="3" y="3" width="18" height="18" rx="2"/>
+													<circle cx="8.5" cy="8.5" r="1.5"/>
+													<polyline points="21 15 16 10 5 21"/>
+												</svg>
+											</div>`
+									}
+								</div>
+								<h3 class="font-medium truncate">${escapeHtml(c.name)}</h3>
+								<p class="mt-0.5 text-xs text-muted-foreground font-mono">
+									${formatDate(c.updatedAt)}
+								</p>
+							</CardContent>
+						</Card>
+					</a>
+					<button
+						data-delete-id="${c.id}"
+						class="delete-btn absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-lg bg-background/80 text-muted-foreground opacity-0 backdrop-blur-sm transition-all duration-200 hover:bg-destructive hover:text-white group-hover:opacity-100"
+						title="Eliminar"
+					>
+						<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z"/>
+						</svg>
+					</button>
+				`;
 				grid.appendChild(card);
 			});
 

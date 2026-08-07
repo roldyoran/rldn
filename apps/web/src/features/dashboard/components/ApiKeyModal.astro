@@ -1,15 +1,18 @@
 ---
-import { AlertDialog } from "@/components/starwind/alert-dialog/AlertDialog.astro";
-import { AlertDialogContent } from "@/components/starwind/alert-dialog/AlertDialogContent.astro";
-import { AlertDialogHeader } from "@/components/starwind/alert-dialog/AlertDialogHeader.astro";
-import { AlertDialogTitle } from "@/components/starwind/alert-dialog/AlertDialogTitle.astro";
-import { AlertDialogFooter } from "@/components/starwind/alert-dialog/AlertDialogFooter.astro";
-import { AlertDialogCancel } from "@/components/starwind/alert-dialog/AlertDialogCancel.astro";
-import { AlertDialogAction } from "@/components/starwind/alert-dialog/AlertDialogAction.astro";
-import { Button } from "@/components/starwind/button/Button.astro";
-import { Input } from "@/components/starwind/input/Input.astro";
-import { Badge } from "@/components/starwind/badge/Badge.astro";
-import { Separator } from "@/components/starwind/separator/Separator.astro";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/starwind/alert-dialog";
+import { Button } from "@/components/starwind/button";
+import { Input } from "@/components/starwind/input";
+import { Badge } from "@/components/starwind/badge";
+import { Separator } from "@/components/starwind/separator";
 import Icons from "./Icons.astro";
 ---
 
@@ -23,7 +26,7 @@ import Icons from "./Icons.astro";
 					</div>
 					<AlertDialogTitle>API Keys</AlertDialogTitle>
 				</div>
-				<AlertDialogCancel class="absolute right-4 top-4">
+				<AlertDialogCancel class="absolute right-4 top-4 text-foreground">
 					<Icons name="close" class="h-4 w-4" />
 				</AlertDialogCancel>
 			</div>
@@ -37,8 +40,8 @@ import Icons from "./Icons.astro";
 			>
 				<div class="flex items-center justify-between mb-2">
 					<div class="flex items-center gap-2">
-						<Icons name="check" class="h-4 w-4 text-green-600" />
-						<span class="text-sm font-medium text-green-600">Key generada</span>
+						<Icons name="check" class="h-4 w-4 text-green-500" />
+						<span class="text-sm font-medium text-green-500">Key generada</span>
 					</div>
 					<button id="btn-close-new-key" class="rounded p-1 text-muted-foreground hover:bg-muted">
 						<Icons name="close" class="h-3.5 w-3.5" />
@@ -48,7 +51,7 @@ import Icons from "./Icons.astro";
 				<div class="flex items-center gap-2">
 					<code
 						id="new-api-key-value"
-						class="flex-1 rounded bg-muted px-3 py-2 text-xs font-mono break-all border border-border"
+						class="flex-1 rounded bg-muted px-3 py-2 text-xs font-mono break-all border border-border text-foreground"
 					></code>
 					<Button
 						id="btn-copy-api-key"
@@ -80,7 +83,7 @@ import Icons from "./Icons.astro";
 						>
 						<select
 							id="api-key-expiry"
-							class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring"
+							class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
 						>
 							<option value="">Sin expiración</option>
 							<option value="3600">1 hora</option>
@@ -98,7 +101,7 @@ import Icons from "./Icons.astro";
 					<label class="block text-xs font-medium text-muted-foreground mb-2">Permisos</label>
 					<div class="flex flex-wrap gap-2">
 						<label
-							class="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs transition-colors hover:bg-muted cursor-pointer"
+							class="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs text-foreground transition-colors hover:bg-muted cursor-pointer"
 						>
 							<input
 								type="checkbox"
@@ -109,7 +112,7 @@ import Icons from "./Icons.astro";
 							<span class="font-mono">canvas:read</span>
 						</label>
 						<label
-							class="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs transition-colors hover:bg-muted cursor-pointer"
+							class="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs text-foreground transition-colors hover:bg-muted cursor-pointer"
 						>
 							<input
 								type="checkbox"
@@ -120,7 +123,7 @@ import Icons from "./Icons.astro";
 							<span class="font-mono">canvas:write</span>
 						</label>
 						<label
-							class="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs transition-colors hover:bg-muted cursor-pointer"
+							class="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs text-foreground transition-colors hover:bg-muted cursor-pointer"
 						>
 							<input
 								type="checkbox"
@@ -131,7 +134,7 @@ import Icons from "./Icons.astro";
 							<span class="font-mono">images:read</span>
 						</label>
 						<label
-							class="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs transition-colors hover:bg-muted cursor-pointer"
+							class="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs text-foreground transition-colors hover:bg-muted cursor-pointer"
 						>
 							<input
 								type="checkbox"
@@ -191,7 +194,7 @@ import Icons from "./Icons.astro";
 									id="api-key-rate-limit-enabled"
 									class="rounded border-border h-3.5 w-3.5"
 								/>
-								<label for="api-key-rate-limit-enabled" class="text-xs">Rate limit</label>
+								<label for="api-key-rate-limit-enabled" class="text-xs text-foreground">Rate limit</label>
 							</div>
 							<div></div>
 							<div>
@@ -268,7 +271,7 @@ import Icons from "./Icons.astro";
 			</AlertDialogDescription>
 		</AlertDialogHeader>
 		<AlertDialogFooter>
-			<AlertDialogCancel id="btn-cancel-delete-api-key">Cancelar</AlertDialogCancel>
+			<AlertDialogCancel id="btn-cancel-delete-api-key" class="text-foreground">Cancelar</AlertDialogCancel>
 			<AlertDialogAction id="btn-confirm-delete-api-key" class="bg-destructive text-white hover:bg-destructive/90">
 				Eliminar
 			</AlertDialogAction>

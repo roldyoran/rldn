@@ -7,7 +7,9 @@ import CanvasGrid from "@/features/dashboard/components/CanvasGrid.astro";
 import DeleteModal from "@/features/dashboard/components/DeleteModal.astro";
 import ApiKeyModal from "@/features/dashboard/components/ApiKeyModal.astro";
 import Icons from "@/features/dashboard/components/Icons.astro";
-import { Button } from "@/components/starwind/button/Button.astro";
+import { Button } from "@/components/starwind/button";
+import { AlertDialogTrigger } from "@/components/starwind/alert-dialog";
+import { Toaster } from "@/components/starwind/toast";
 ---
 
 <Layout title="Dashboard - Canvas App">
@@ -17,20 +19,22 @@ import { Button } from "@/components/starwind/button/Button.astro";
 		<!-- Main Content -->
 		<main class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
 			<!-- Header -->
-			<div class="mb-8 flex items-center justify-between">
+			<div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div>
 					<h1 class="text-2xl font-bold tracking-tight">Mis lienzos</h1>
 					<p class="mt-1 text-sm text-muted-foreground">Gestiona y organiza todos tus lienzos</p>
 				</div>
 				<div class="flex items-center gap-3">
+					<AlertDialogTrigger for="api-keys-modal" asChild>
 					<Button
 						id="btn-api-keys"
 						variant="outline"
 						class="gap-2"
 					>
 						<Icons name="key" class="h-4 w-4" />
-						API Keys
+						<span class="hidden sm:inline">API Keys</span>
 					</Button>
+				</AlertDialogTrigger>
 					<Button
 						id="btn-new-canvas"
 						class="gap-2"
@@ -49,6 +53,7 @@ import { Button } from "@/components/starwind/button/Button.astro";
 
 	<DeleteModal />
 	<ApiKeyModal />
+	<Toaster />
 
 	<script>
 		import { authClient } from "@/shared/lib/auth-client";

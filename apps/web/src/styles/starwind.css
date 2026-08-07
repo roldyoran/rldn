@@ -212,4 +212,21 @@
 	[role="button"] {
 		cursor: pointer;
 	}
+
+	/* Dialog elements - ensure dark mode colors */
+	dialog {
+		@apply bg-background text-foreground;
+	}
+	dialog::backdrop {
+		@apply bg-black/80;
+	}
+
+	/* Native form controls dark mode */
+	select,
+	option {
+		@apply bg-background text-foreground;
+	}
+	option:disabled {
+		@apply text-muted-foreground;
+	}
 }

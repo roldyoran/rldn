@@ -1,12 +1,18 @@
 ---
 import { Skeleton } from "@/components/starwind/skeleton";
+import { Card, CardContent } from "@/components/starwind/card";
 ---
 
-<div id="loading-state" class="flex flex-col items-center justify-center py-20">
-	<div class="space-y-3">
-		<Skeleton class="h-[180px] w-full rounded-xl" />
-		<Skeleton class="h-4 w-[250px]" />
-		<Skeleton class="h-4 w-[200px]" />
+<div id="loading-state" class="py-8">
+	<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+		{Array.from({ length: 8 }).map(() => (
+			<Card>
+				<CardContent class="p-4">
+					<Skeleton class="aspect-video w-full rounded-lg mb-3" />
+					<Skeleton class="h-4 w-3/4 mb-2" />
+					<Skeleton class="h-3 w-1/2" />
+				</CardContent>
+			</Card>
+		))}
 	</div>
-	<p class="mt-4 text-sm text-muted-foreground">Cargando lienzos...</p>
 </div>
