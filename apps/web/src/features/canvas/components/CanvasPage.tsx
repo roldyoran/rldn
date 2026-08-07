@@ -80,7 +80,13 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 		if (isSavingRef.current) return;
 		const currentApi = apiRef.current;
 		if (!currentApi) return;
-		if (!isDirtyRef.current) return;
+
+		// If nothing changed, just show "already saved" feedback
+		if (!isDirtyRef.current) {
+			setSaveState("saved");
+			setTimeout(() => setSaveState("idle"), 1200);
+			return;
+		}
 
 		isSavingRef.current = true;
 		setSaveState("saving");
@@ -92,7 +98,8 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 			if (storeData === lastSavedStoreDataRef.current) {
 				isDirtyRef.current = false;
 				isSavingRef.current = false;
-				setSaveState("idle");
+				setSaveState("saved");
+				setTimeout(() => setSaveState("idle"), 1200);
 				return;
 			}
 
@@ -390,6 +397,7 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 					>
 						<IconMaximize width={18} height={18} />
 					</button>
+					<div className="h-5 w-px bg-[#373634]" />
 					<button
 						className="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
 						onClick={saveCanvas}
