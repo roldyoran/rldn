@@ -113,8 +113,8 @@ export const POST: APIRoute = async ({ request, params }) => {
 
 				// Determine actual image dimensions from the fetched data
 				const dims = getImageDimensions(dataURL);
-				const imgWidth = width && width > 10 ? width : (dims.width || 400);
-				const imgHeight = height && height > 10 ? height : (dims.height || 300);
+				const imgWidth = width && width > 10 ? width : dims.width || 400;
+				const imgHeight = height && height > 10 ? height : dims.height || 300;
 
 				// Calculate position: place next to the rightmost existing element
 				const GAP = 20;
@@ -349,13 +349,13 @@ function getImageDimensions(dataURL: string): { width: number; height: number } 
 		if (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46) {
 			// VP8 lossy
 			if (bytes[12] === 0x56 && bytes[13] === 0x50 && bytes[14] === 0x38 && bytes[15] === 0x20) {
-				const width = ((bytes[26] | (bytes[27] << 8)) & 0x3fff);
-				const height = ((bytes[28] | (bytes[29] << 8)) & 0x3fff);
+				const width = (bytes[26] | (bytes[27] << 8)) & 0x3fff;
+				const height = (bytes[28] | (bytes[29] << 8)) & 0x3fff;
 				return { width, height };
 			}
 			// VP8L lossless
 			if (bytes[12] === 0x56 && bytes[13] === 0x50 && bytes[14] === 0x38 && bytes[15] === 0x4c) {
-				const bits = (bytes[21] | (bytes[22] << 8) | (bytes[23] << 16) | (bytes[24] << 24));
+				const bits = bytes[21] | (bytes[22] << 8) | (bytes[23] << 16) | (bytes[24] << 24);
 				const width = (bits & 0x3fff) + 1;
 				const height = ((bits >> 14) & 0x3fff) + 1;
 				return { width, height };

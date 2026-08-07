@@ -4,6 +4,14 @@
 
 Multi-feature workspace app (canvas, kanban, todos, notes). Monorepo: Turborepo + Bun workspaces. Stack: Astro 6, React 19, TailwindCSS 4, Starwind UI, Drizzle ORM, Better Auth, Turso (libSQL).
 
+## Package Manager
+
+**IMPORTANT**: This project uses **Bun** exclusively. Do NOT use npm, npx, yarn, or pnpm.
+
+- Run scripts: `bun run <script>`
+- Install packages: `bun add <package>`
+- Run CLI tools: `bunx <tool>` (e.g., `bunx starwind@latest add button`)
+
 ## Commands
 
 ```bash

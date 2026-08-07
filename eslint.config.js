@@ -43,7 +43,8 @@ export default [
 						},
 						{
 							group: ["@/features/*/!(index).*"],
-							message: "Features cannot import from other features directly. Use shared/ for cross-feature code.",
+							message:
+								"Features cannot import from other features directly. Use shared/ for cross-feature code.",
 						},
 					],
 				},

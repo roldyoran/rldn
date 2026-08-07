@@ -5,7 +5,7 @@ import type { VariantProps } from "tailwind-variants";
 import { badge } from "./variants";
 
 interface Props
-  extends HTMLAttributes<"div">, Omit<HTMLAttributes<"a">, "type">, VariantProps<typeof badge> {}
+	extends HTMLAttributes<"div">, Omit<HTMLAttributes<"a">, "type">, VariantProps<typeof badge> {}
 
 const { variant, size, class: className, ...rest } = Astro.props;
 const isLink = Astro.props.href ? true : false;
@@ -13,5 +13,5 @@ const Tag = Astro.props.href ? "a" : "div";
 ---
 
 <Tag class={badge({ variant, size, isLink, class: className })} data-slot="badge" {...rest}>
-  <slot />
+	<slot />
 </Tag>

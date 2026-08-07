@@ -4,12 +4,12 @@ import type { HTMLAttributes } from "astro/types";
 import { avatarFallback } from "./variants";
 
 interface Props extends HTMLAttributes<"div"> {
-  class?: string;
+	class?: string;
 }
 
 const { class: className, ...rest } = Astro.props;
 ---
 
 <div class={avatarFallback({ class: className })} {...rest} data-slot="avatar-fallback">
-  <slot />
+	<slot />
 </div>

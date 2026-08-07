@@ -7,7 +7,9 @@ import CanvasGrid from "@/features/dashboard/components/CanvasGrid.astro";
 import DeleteModal from "@/features/dashboard/components/DeleteModal.astro";
 import ApiKeyModal from "@/features/dashboard/components/ApiKeyModal.astro";
 import Icons from "@/features/dashboard/components/Icons.astro";
-import { Button } from "@/components/starwind/button/Button.astro";
+import { Button } from "@/components/starwind/button";
+import { AlertDialogTrigger } from "@/components/starwind/alert-dialog";
+import { Toaster } from "@/components/starwind/toast";
 ---
 
 <Layout title="Dashboard - Canvas App">
@@ -17,24 +19,19 @@ import { Button } from "@/components/starwind/button/Button.astro";
 		<!-- Main Content -->
 		<main class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
 			<!-- Header -->
-			<div class="mb-8 flex items-center justify-between">
+			<div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div>
 					<h1 class="text-2xl font-bold tracking-tight">Mis lienzos</h1>
 					<p class="mt-1 text-sm text-muted-foreground">Gestiona y organiza todos tus lienzos</p>
 				</div>
 				<div class="flex items-center gap-3">
-					<Button
-						id="btn-api-keys"
-						variant="outline"
-						class="gap-2"
-					>
-						<Icons name="key" class="h-4 w-4" />
-						API Keys
-					</Button>
-					<Button
-						id="btn-new-canvas"
-						class="gap-2"
-					>
+					<AlertDialogTrigger for="api-keys-modal" asChild>
+						<Button id="btn-api-keys" variant="outline" class="gap-2">
+							<Icons name="key" class="h-4 w-4" />
+							<span class="hidden sm:inline">API Keys</span>
+						</Button>
+					</AlertDialogTrigger>
+					<Button id="btn-new-canvas" class="gap-2">
 						<Icons name="plus" class="h-4 w-4" />
 						Nuevo lienzo
 					</Button>
@@ -49,6 +46,7 @@ import { Button } from "@/components/starwind/button/Button.astro";
 
 	<DeleteModal />
 	<ApiKeyModal />
+	<Toaster />
 
 	<script>
 		import { authClient } from "@/shared/lib/auth-client";
@@ -115,9 +113,22 @@ import { Button } from "@/components/starwind/button/Button.astro";
 
 		// Delete canvas
 		const canvasDeleteModal = document.getElementById("delete-modal")!;
+		const canvasDeleteDialog = canvasDeleteModal?.querySelector("dialog") as HTMLDialogElement;
+		const canvasDeleteBackdrop = canvasDeleteModal?.querySelector(
+			".starwind-alert-dialog-backdrop",
+		) as HTMLElement;
+
+		function closeCanvasDeleteDialog() {
+			canvasDeleteBackdrop?.classList.add("hidden");
+			canvasDeleteBackdrop?.setAttribute("data-state", "closed");
+			canvasDeleteDialog?.setAttribute("data-state", "closed");
+			setTimeout(() => {
+				canvasDeleteDialog?.close();
+			}, 200);
+		}
 
 		document.getElementById("btn-cancel-delete")?.addEventListener("click", () => {
-			canvasDeleteModal.classList.add("hidden");
+			closeCanvasDeleteDialog();
 			(window as any).clearDeleteTargetId();
 		});
 
@@ -129,7 +140,7 @@ import { Button } from "@/components/starwind/button/Button.astro";
 					method: "DELETE",
 					credentials: "include",
 				});
-				canvasDeleteModal.classList.add("hidden");
+				closeCanvasDeleteDialog();
 				(window as any).clearDeleteTargetId();
 				await (window as any).loadCanvases();
 			} catch {
@@ -303,10 +314,19 @@ import { Button } from "@/components/starwind/button/Button.astro";
 		let deleteKeyId: string | null = null;
 		let deleteKeyName: string | null = null;
 		const deleteModal = document.getElementById("api-key-delete-modal")!;
+		const deleteDialog = deleteModal.querySelector("dialog") as HTMLDialogElement;
+		const deleteBackdrop = deleteModal.querySelector(
+			".starwind-alert-dialog-backdrop",
+		) as HTMLElement;
 		const deleteKeyNameEl = document.getElementById("delete-key-name")!;
 
 		document.getElementById("btn-cancel-delete-api-key")?.addEventListener("click", () => {
-			deleteModal.classList.add("hidden");
+			deleteBackdrop?.classList.add("hidden");
+			deleteBackdrop?.setAttribute("data-state", "closed");
+			deleteDialog?.setAttribute("data-state", "closed");
+			setTimeout(() => {
+				deleteDialog?.close();
+			}, 200);
 			deleteKeyId = null;
 			deleteKeyName = null;
 		});
@@ -319,7 +339,12 @@ import { Button } from "@/components/starwind/button/Button.astro";
 					alert(`Error: ${error.message || "No se pudo eliminar"}`);
 					return;
 				}
-				deleteModal.classList.add("hidden");
+				deleteBackdrop?.classList.add("hidden");
+				deleteBackdrop?.setAttribute("data-state", "closed");
+				deleteDialog?.setAttribute("data-state", "closed");
+				setTimeout(() => {
+					deleteDialog?.close();
+				}, 200);
 				deleteKeyId = null;
 				deleteKeyName = null;
 				await loadApiKeys();
@@ -381,7 +406,10 @@ import { Button } from "@/components/starwind/button/Button.astro";
 						deleteKeyId = keyId;
 						deleteKeyName = keyName || "Sin nombre";
 						deleteKeyNameEl.textContent = deleteKeyName;
-						deleteModal.classList.remove("hidden");
+						deleteBackdrop?.classList.remove("hidden");
+						deleteBackdrop?.setAttribute("data-state", "open");
+						deleteDialog?.setAttribute("data-state", "open");
+						deleteDialog?.showModal();
 					});
 				});
 			} catch {

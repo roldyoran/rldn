@@ -2,11 +2,16 @@
 import { Skeleton } from "@/components/starwind/skeleton";
 ---
 
-<div id="loading-state" class="flex flex-col items-center justify-center py-20">
-	<div class="space-y-3">
-		<Skeleton class="h-[180px] w-full rounded-xl" />
-		<Skeleton class="h-4 w-[250px]" />
-		<Skeleton class="h-4 w-[200px]" />
-	</div>
-	<p class="mt-4 text-sm text-muted-foreground">Cargando lienzos...</p>
+<div id="loading-state" class="space-y-1">
+	{
+		Array.from({ length: 5 }).map(() => (
+			<div class="flex items-center gap-4 rounded-lg border border-border p-3">
+				<Skeleton class="h-16 w-24 flex-shrink-0 rounded-md" />
+				<div class="flex-1 space-y-2">
+					<Skeleton class="h-4 w-48" />
+					<Skeleton class="h-3 w-24" />
+				</div>
+			</div>
+		))
+	}
 </div>
