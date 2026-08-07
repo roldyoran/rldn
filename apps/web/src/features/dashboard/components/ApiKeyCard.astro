@@ -1,4 +1,8 @@
 ---
+import { Card } from "@/components/starwind/card/Card.astro";
+import { Badge } from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button/Button.astro";
+
 interface Props {
 	id: string;
 	name: string;
@@ -11,21 +15,14 @@ interface Props {
 const { id, name, prefix = "rldn_", expiresAt, remaining, enabled = true } = Astro.props;
 ---
 
-<div
-	class="rounded-xl border border-border p-4 flex items-center justify-between transition-all hover:border-ring hover:shadow-sm"
-	data-key-id={id}
->
+<Card class="p-4 flex items-center justify-between transition-all hover:border-ring hover:shadow-sm" data-key-id={id}>
 	<div class="flex-1 min-w-0">
 		<div class="flex items-center gap-2 flex-wrap">
 			<span class="font-medium text-sm">{name || "Sin nombre"}</span>
-			<span class="text-xs px-2 py-0.5 rounded-full bg-muted font-mono text-muted-foreground"
-				>{prefix}****</span
-			>
+			<Badge variant="secondary" class="font-mono text-xs">{prefix}****</Badge>
 			{
 				!enabled && (
-					<span class="text-xs px-2 py-0.5 rounded-full bg-destructive/10 text-destructive">
-						Deshabilitada
-					</span>
+					<Badge variant="destructive" class="text-xs">Deshabilitada</Badge>
 				)
 			}
 		</div>
@@ -66,10 +63,12 @@ const { id, name, prefix = "rldn_", expiresAt, remaining, enabled = true } = Ast
 			}
 		</div>
 	</div>
-	<button
+	<Button
+		variant="ghost"
+		size="sm"
+		class="delete-api-key-btn ml-4 text-muted-foreground hover:bg-destructive hover:text-white"
 		data-delete-key-id={id}
-		class="delete-api-key-btn ml-4 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:bg-destructive hover:text-white hover:border-destructive"
 	>
 		Eliminar
-	</button>
-</div>
+	</Button>
+</Card>

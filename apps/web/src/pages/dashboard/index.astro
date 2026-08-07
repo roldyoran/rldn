@@ -7,6 +7,7 @@ import CanvasGrid from "@/features/dashboard/components/CanvasGrid.astro";
 import DeleteModal from "@/features/dashboard/components/DeleteModal.astro";
 import ApiKeyModal from "@/features/dashboard/components/ApiKeyModal.astro";
 import Icons from "@/features/dashboard/components/Icons.astro";
+import { Button } from "@/components/starwind/button/Button.astro";
 ---
 
 <Layout title="Dashboard - Canvas App">
@@ -22,20 +23,21 @@ import Icons from "@/features/dashboard/components/Icons.astro";
 					<p class="mt-1 text-sm text-muted-foreground">Gestiona y organiza todos tus lienzos</p>
 				</div>
 				<div class="flex items-center gap-3">
-					<button
+					<Button
 						id="btn-api-keys"
-						class="flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+						variant="outline"
+						class="gap-2"
 					>
 						<Icons name="key" class="h-4 w-4" />
 						API Keys
-					</button>
-					<button
+					</Button>
+					<Button
 						id="btn-new-canvas"
-						class="flex items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-all hover:scale-105 hover:shadow-lg"
+						class="gap-2"
 					>
 						<Icons name="plus" class="h-4 w-4" />
 						Nuevo lienzo
-					</button>
+					</Button>
 				</div>
 			</div>
 

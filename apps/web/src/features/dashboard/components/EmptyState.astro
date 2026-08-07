@@ -1,4 +1,5 @@
 ---
+import { Button } from "@/components/starwind/button/Button.astro";
 import Icons from "./Icons.astro";
 ---
 
@@ -10,11 +11,11 @@ import Icons from "./Icons.astro";
 	<p class="mt-2 text-sm text-muted-foreground max-w-sm mx-auto">
 		Crea tu primer lienzo para empezar a trabajar. Tus ideas merecen un espacio.
 	</p>
-	<button
+	<Button
 		id="btn-new-canvas-empty"
-		class="mt-8 inline-flex items-center gap-2 rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-all hover:scale-105 hover:shadow-lg"
+		class="mt-8 inline-flex items-center gap-2"
 	>
 		<Icons name="plus" class="h-4 w-4" />
 		Crear primer lienzo
-	</button>
+	</Button>
 </div>

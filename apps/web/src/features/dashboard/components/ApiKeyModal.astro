@@ -1,32 +1,33 @@
 ---
+import { AlertDialog } from "@/components/starwind/alert-dialog/AlertDialog.astro";
+import { AlertDialogContent } from "@/components/starwind/alert-dialog/AlertDialogContent.astro";
+import { AlertDialogHeader } from "@/components/starwind/alert-dialog/AlertDialogHeader.astro";
+import { AlertDialogTitle } from "@/components/starwind/alert-dialog/AlertDialogTitle.astro";
+import { AlertDialogFooter } from "@/components/starwind/alert-dialog/AlertDialogFooter.astro";
+import { AlertDialogCancel } from "@/components/starwind/alert-dialog/AlertDialogCancel.astro";
+import { AlertDialogAction } from "@/components/starwind/alert-dialog/AlertDialogAction.astro";
+import { Button } from "@/components/starwind/button/Button.astro";
+import { Input } from "@/components/starwind/input/Input.astro";
+import { Badge } from "@/components/starwind/badge/Badge.astro";
+import { Separator } from "@/components/starwind/separator/Separator.astro";
 import Icons from "./Icons.astro";
 ---
 
-<div
-	id="api-keys-modal"
-	class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
->
-	<div
-		class="mx-4 w-full max-w-lg rounded-xl border border-border bg-background shadow-xl"
-		role="dialog"
-		aria-modal="true"
-		aria-labelledby="api-keys-modal-title"
-	>
-		<!-- Header -->
-		<div class="flex items-center justify-between border-b border-border px-5 py-4">
-			<div class="flex items-center gap-3">
-				<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
-					<Icons name="key" class="h-4 w-4 text-muted-foreground" />
+<AlertDialog id="api-keys-modal">
+	<AlertDialogContent class="max-w-lg">
+		<AlertDialogHeader>
+			<div class="flex items-center justify-between">
+				<div class="flex items-center gap-3">
+					<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
+						<Icons name="key" class="h-4 w-4 text-muted-foreground" />
+					</div>
+					<AlertDialogTitle>API Keys</AlertDialogTitle>
 				</div>
-				<h3 id="api-keys-modal-title" class="text-base font-semibold">API Keys</h3>
+				<AlertDialogCancel class="absolute right-4 top-4">
+					<Icons name="close" class="h-4 w-4" />
+				</AlertDialogCancel>
 			</div>
-			<button
-				id="btn-close-api-modal"
-				class="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-			>
-				<Icons name="close" class="h-4 w-4" />
-			</button>
-		</div>
+		</AlertDialogHeader>
 
 		<div class="p-5">
 			<!-- New API Key Display (hidden by default) -->
@@ -49,12 +50,13 @@ import Icons from "./Icons.astro";
 						id="new-api-key-value"
 						class="flex-1 rounded bg-muted px-3 py-2 text-xs font-mono break-all border border-border"
 					></code>
-					<button
+					<Button
 						id="btn-copy-api-key"
-						class="rounded-lg border border-border px-3 py-2 text-xs font-medium hover:bg-muted"
+						variant="outline"
+						size="sm"
 					>
 						<Icons name="copy" class="h-3.5 w-3.5" />
-					</button>
+					</Button>
 				</div>
 			</div>
 
@@ -65,11 +67,11 @@ import Icons from "./Icons.astro";
 						<label for="api-key-name" class="block text-xs font-medium text-muted-foreground mb-1"
 							>Nombre</label
 						>
-						<input
+						<Input
 							type="text"
 							id="api-key-name"
 							placeholder="Mi API Key"
-							class="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring"
+							class="font-mono"
 						/>
 					</div>
 					<div>
@@ -163,22 +165,22 @@ import Icons from "./Icons.astro";
 								<label for="api-key-prefix" class="block text-xs text-muted-foreground mb-1"
 									>Prefijo</label
 								>
-								<input
+								<Input
 									type="text"
 									id="api-key-prefix"
 									placeholder="rldn_"
-									class="w-full rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-ring"
+									class="text-xs font-mono"
 								/>
 							</div>
 							<div>
 								<label for="api-key-metadata" class="block text-xs text-muted-foreground mb-1"
 									>Metadata</label
 								>
-								<input
+								<Input
 									type="text"
 									id="api-key-metadata"
 									placeholder='{"plan":"free"}'
-									class="w-full rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-ring"
+									class="text-xs font-mono"
 								/>
 							</div>
 						</div>
@@ -196,22 +198,22 @@ import Icons from "./Icons.astro";
 								<label for="api-key-rate-limit-max" class="block text-xs text-muted-foreground mb-1"
 									>Max reqs</label
 								>
-								<input
+								<Input
 									type="number"
 									id="api-key-rate-limit-max"
 									placeholder="100"
-									class="w-full rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-ring"
+									class="text-xs font-mono"
 								/>
 							</div>
 							<div>
 								<label for="api-key-remaining" class="block text-xs text-muted-foreground mb-1"
 									>Restantes</label
 								>
-								<input
+								<Input
 									type="number"
 									id="api-key-remaining"
 									placeholder="Sin límite"
-									class="w-full rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-ring"
+									class="text-xs font-mono"
 								/>
 							</div>
 						</div>
@@ -220,13 +222,13 @@ import Icons from "./Icons.astro";
 
 				<!-- Actions -->
 				<div class="flex justify-end gap-3 pt-2">
-					<button
+					<Button
 						id="btn-create-api-key"
-						class="flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition-all hover:scale-105 hover:shadow-lg"
+						class="gap-2"
 					>
 						<Icons name="plus" class="h-4 w-4" />
 						Generar
-					</button>
+					</Button>
 				</div>
 			</div>
 
@@ -242,47 +244,34 @@ import Icons from "./Icons.astro";
 				</div>
 			</div>
 		</div>
-	</div>
-</div>
+	</AlertDialogContent>
+</AlertDialog>
 
 <!-- Delete Confirmation Modal -->
-<div
-	id="api-key-delete-modal"
-	class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
->
-	<div
-		class="mx-4 w-full max-w-sm rounded-xl border border-border bg-background p-5 shadow-xl"
-		role="alertdialog"
-		aria-modal="true"
-	>
-		<div class="flex items-center gap-3 mb-3">
-			<div
-				class="flex h-9 w-9 items-center justify-center rounded-full bg-destructive/10 text-destructive"
-			>
-				<Icons name="alert" class="h-4 w-4" />
+<AlertDialog id="api-key-delete-modal">
+	<AlertDialogContent class="max-w-sm">
+		<AlertDialogHeader>
+			<div class="flex items-center gap-3">
+				<div
+					class="flex h-9 w-9 items-center justify-center rounded-full bg-destructive/10 text-destructive"
+				>
+					<Icons name="alert" class="h-4 w-4" />
+				</div>
+				<div>
+					<AlertDialogTitle class="text-sm">Eliminar API Key</AlertDialogTitle>
+					<p class="text-xs text-muted-foreground">Esta acción es permanente.</p>
+				</div>
 			</div>
-			<div>
-				<h4 class="text-sm font-semibold">Eliminar API Key</h4>
-				<p class="text-xs text-muted-foreground">Esta acción es permanente.</p>
-			</div>
-		</div>
-		<p class="text-sm text-muted-foreground ml-12">
-			¿Eliminar <code id="delete-key-name" class="font-mono text-foreground"></code>? No podrás
-			recuperarla.
-		</p>
-		<div class="flex justify-end gap-3 mt-5">
-			<button
-				id="btn-cancel-delete-api-key"
-				class="rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-muted"
-			>
-				Cancelar
-			</button>
-			<button
-				id="btn-confirm-delete-api-key"
-				class="rounded-lg bg-destructive px-4 py-2 text-sm font-medium text-white transition-all hover:scale-105"
-			>
+			<AlertDialogDescription>
+				¿Eliminar <code id="delete-key-name" class="font-mono text-foreground"></code>? No podrás
+				recuperarla.
+			</AlertDialogDescription>
+		</AlertDialogHeader>
+		<AlertDialogFooter>
+			<AlertDialogCancel id="btn-cancel-delete-api-key">Cancelar</AlertDialogCancel>
+			<AlertDialogAction id="btn-confirm-delete-api-key" class="bg-destructive text-white hover:bg-destructive/90">
 				Eliminar
-			</button>
-		</div>
-	</div>
-</div>
+			</AlertDialogAction>
+		</AlertDialogFooter>
+	</AlertDialogContent>
+</AlertDialog>

@@ -1,4 +1,6 @@
 ---
+import { Button } from "@/components/starwind/button/Button.astro";
+import { Separator } from "@/components/starwind/separator/Separator.astro";
 import Icons from "./Icons.astro";
 ---
 
@@ -23,13 +25,16 @@ import Icons from "./Icons.astro";
 				</div>
 				<span id="user-name" class="text-sm font-medium text-muted-foreground font-mono"></span>
 			</div>
-			<button
+			<Separator orientation="vertical" class="h-6" />
+			<Button
 				id="btn-logout"
-				class="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+				variant="ghost"
+				size="sm"
+				class="gap-2"
 			>
 				<Icons name="logout" class="h-4 w-4" />
 				<span class="hidden sm:inline">Cerrar sesión</span>
-			</button>
+			</Button>
 		</div>
 	</div>
 </header>
