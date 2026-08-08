@@ -69,7 +69,7 @@ export const PUT: APIRoute = async ({ request, params }) => {
 		}
 
 		const body = await request.json();
-		const { name, description, storeData } = body;
+		const { name, description, storeData, categoryId } = body;
 
 		console.log(`[PUT /api/canvases/${canvasId}] Received:`, {
 			hasName: name !== undefined,
@@ -95,6 +95,15 @@ export const PUT: APIRoute = async ({ request, params }) => {
 				.where(eq(canvases.id, canvasId))
 				.run();
 			console.log(`[PUT /api/canvases/${canvasId}] Updated description`);
+		}
+
+		if (categoryId !== undefined) {
+			await db
+				.update(canvases)
+				.set({ categoryId: categoryId ?? null, updatedAt: new Date() })
+				.where(eq(canvases.id, canvasId))
+				.run();
+			console.log(`[PUT /api/canvases/${canvasId}] Updated categoryId`);
 		}
 
 		if (storeData !== undefined) {

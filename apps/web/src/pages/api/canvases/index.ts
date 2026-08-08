@@ -1,6 +1,6 @@
 import { canvasDocuments, canvases, images } from "@repo/db/schema";
 import type { APIRoute } from "astro";
-import { desc, eq, count } from "drizzle-orm";
+import { desc, eq, count, and, sql } from "drizzle-orm";
 import { authenticateRequest } from "@/shared/lib/api-auth";
 import { getDbInstance } from "@/shared/lib/db";
 
@@ -12,7 +12,16 @@ export const GET: APIRoute = async ({ request }) => {
 	}
 	const { user } = authResult;
 
+	const url = new URL(request.url);
+	const categoryId = url.searchParams.get("categoryId");
+
 	const db = getDbInstance();
+
+	// Build where conditions
+	const conditions = [eq(canvases.userId, user.id)];
+	if (categoryId) {
+		conditions.push(eq(canvases.categoryId, categoryId));
+	}
 
 	// Get canvases with element count and image count via subqueries
 	const userCanvases = await db
@@ -20,34 +29,19 @@ export const GET: APIRoute = async ({ request }) => {
 			id: canvases.id,
 			name: canvases.name,
 			description: canvases.description,
+			categoryId: canvases.categoryId,
 			thumbnail: canvases.thumbnail,
 			createdAt: canvases.createdAt,
 			updatedAt: canvases.updatedAt,
 		})
 		.from(canvases)
-		.where(eq(canvases.userId, user.id))
+		.where(and(...conditions))
 		.orderBy(desc(canvases.updatedAt))
 		.all();
 
-	// Enrich each canvas with element count and image count
+	// Enrich each canvas with image count
 	const enriched = await Promise.all(
 		userCanvases.map(async (canvas) => {
-			// Get element count from storeData
-			let elementCount = 0;
-			const doc = await db
-				.select()
-				.from(canvasDocuments)
-				.where(eq(canvasDocuments.canvasId, canvas.id))
-				.get();
-			if (doc?.storeData) {
-				try {
-					const parsed = JSON.parse(doc.storeData);
-					elementCount = parsed.elements?.length ?? 0;
-				} catch {
-					// ignore parse errors
-				}
-			}
-
 			// Get image count
 			const imageCount = await db
 				.select({ value: count() })
@@ -57,7 +51,6 @@ export const GET: APIRoute = async ({ request }) => {
 
 			return {
 				...canvas,
-				elementCount,
 				imageCount: imageCount?.value ?? 0,
 			};
 		}),
@@ -77,7 +70,7 @@ export const POST: APIRoute = async ({ request }) => {
 	const { user } = authResult;
 
 	const body = await request.json();
-	const { name = "Sin título", description } = body;
+	const { name = "Sin título", description, categoryId } = body;
 
 	const { nanoid } = await import("nanoid");
 	const canvasId = nanoid();
@@ -92,6 +85,7 @@ export const POST: APIRoute = async ({ request }) => {
 			name,
 			description: description ?? null,
 			userId: user.id,
+			categoryId: categoryId ?? null,
 		})
 		.run();
 
