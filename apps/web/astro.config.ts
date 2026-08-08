@@ -11,7 +11,7 @@ export default defineConfig({
 	vite: {
 		plugins: [tailwindcss(), svgr()],
 		build: {
-			chunkSizeWarningLimit: 800,
+			chunkSizeWarningLimit: 2000,
 		},
 	},
 	devToolbar: {
