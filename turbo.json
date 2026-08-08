@@ -7,7 +7,6 @@
 			"env": [
 				"TURSO_DB_URL",
 				"TURSO_SECRET",
-				"DATABASE_URL",
 				"BETTER_AUTH_URL",
 				"BETTER_AUTH_SECRET"
 			]
@@ -36,7 +35,13 @@
 			"persistent": true
 		},
 		"@repo/db#build": {
-			"outputs": []
+			"outputs": [],
+			"env": [
+				"TURSO_DB_URL",
+				"TURSO_SECRET",
+				"BETTER_AUTH_URL",
+				"BETTER_AUTH_SECRET"
+			]
 		},
 		"zip": {
 			"dependsOn": ["^build"],

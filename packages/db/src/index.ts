@@ -22,11 +22,11 @@ let _db: ReturnType<typeof createDb> | null = null;
 
 export function getDb(config?: { url?: string; authToken?: string }) {
 	if (!_db) {
-		const url = config?.url || process.env.TURSO_DB_URL || process.env.DATABASE_URL;
+		const url = config?.url || process.env.TURSO_DB_URL;
 		const authToken = config?.authToken || process.env.TURSO_SECRET;
 
 		if (!url) {
-			throw new Error("TURSO_DB_URL or DATABASE_URL environment variable is not set");
+			throw new Error("TURSO_DB_URL environment variable is not set");
 		}
 
 		_db = createDb({ url, authToken });
