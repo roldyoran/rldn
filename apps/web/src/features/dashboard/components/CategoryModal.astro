@@ -6,12 +6,9 @@ import { Separator } from "@/components/starwind/separator";
 import Icons from "./Icons.astro";
 ---
 
-<div
-	id="category-modal"
-	class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50"
->
+<div id="category-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
 	<div
-		class="w-full max-w-lg rounded-xl border border-border bg-background p-6 shadow-lg"
+		class="w-full max-w-lg mx-4 sm:mx-auto rounded-xl border border-border bg-background p-4 sm:p-6 shadow-lg"
 		role="dialog"
 		aria-labelledby="category-modal-title"
 	>
@@ -23,7 +20,7 @@ import Icons from "./Icons.astro";
 				class="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted"
 			>
 				<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-					<path d="M18 6L6 18M6 6l12 12" />
+					<path d="M18 6L6 18M6 6l12 12"></path>
 				</svg>
 			</button>
 		</div>
@@ -33,11 +30,7 @@ import Icons from "./Icons.astro";
 			<h3 class="mb-3 text-sm font-medium">Crear nueva categoría</h3>
 			<div class="flex gap-3">
 				<div class="flex-1">
-					<Input
-						id="new-category-name"
-						placeholder="Nombre de la categoría"
-						class="h-9"
-					/>
+					<Input id="new-category-name" placeholder="Nombre de la categoría" class="h-9" />
 				</div>
 				<div class="flex items-center gap-2">
 					<input
@@ -60,9 +53,7 @@ import Icons from "./Icons.astro";
 		<div>
 			<h3 class="mb-3 text-sm font-medium text-muted-foreground">Categorías existentes</h3>
 			<div id="category-list" class="max-h-64 space-y-2 overflow-y-auto">
-				<div class="py-4 text-center text-sm text-muted-foreground">
-					Cargando categorías...
-				</div>
+				<div class="py-4 text-center text-sm text-muted-foreground">Cargando categorías...</div>
 			</div>
 		</div>
 	</div>

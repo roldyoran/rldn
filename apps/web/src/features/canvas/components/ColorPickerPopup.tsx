@@ -83,8 +83,7 @@ export function ColorPickerPopup({
 	return (
 		<div
 			ref={popupRef}
-			className="absolute left-[50px] z-50 rounded-xl border border-[#373634] bg-[#232322] p-3 shadow-2xl"
-			style={{ top: 0 }}
+			className="relative z-50 w-[220px] rounded-xl border border-[#373634] bg-[#232322] p-3 shadow-2xl sm:left-[50px]"
 		>
 			<div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-[#928f89]">
 				{type === "stroke" ? "Color de trazo" : "Color de relleno"}

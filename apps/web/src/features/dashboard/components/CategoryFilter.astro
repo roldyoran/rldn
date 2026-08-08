@@ -44,6 +44,13 @@ import Icons from "./Icons.astro";
 	const allBtn = document.getElementById("filter-all")!;
 	const uncategorizedBtn = document.getElementById("filter-uncategorized")!;
 
+	// Expose categories globally so CanvasGrid can use them without a separate fetch
+	(window as any).__categories = categories;
+	(window as any).__setCategories = (cats: Category[]) => {
+		categories = cats;
+		(window as any).__categories = cats;
+	};
+
 	function renderFilters() {
 		filterContainer.innerHTML = "";
 		categories.forEach((cat) => {
@@ -95,9 +102,7 @@ import Icons from "./Icons.astro";
 		activeFilter = categoryId;
 		updateActiveStyles();
 		// Dispatch event for CanvasGrid to listen
-		window.dispatchEvent(
-			new CustomEvent("category-filter-change", { detail: { categoryId } }),
-		);
+		window.dispatchEvent(new CustomEvent("category-filter-change", { detail: { categoryId } }));
 	}
 
 	function escapeHtml(str: string) {
@@ -112,6 +117,7 @@ import Icons from "./Icons.astro";
 			const res = await fetch("/api/categories", { credentials: "include" });
 			if (res.ok) {
 				categories = await res.json();
+				(window as any).__categories = categories;
 				renderFilters();
 			}
 		} catch {}

@@ -15,7 +15,7 @@ const { id: canvasId } = Astro.params;
 	   Excalidraw variable overrides live in global.css.
 	   ======================================== */
 
-	/* Hide ALL Excalidraw built-in UI - we use our own */
+	/* Hide Excalidraw desktop UI - we use our own topbar and toolbar */
 	#canvas-wrap .excalidraw .App-menu_top,
 	#canvas-wrap .excalidraw .App-menu__left,
 	#canvas-wrap .excalidraw .App-menu__right,
@@ -25,9 +25,18 @@ const { id: canvasId } = Astro.params;
 	#canvas-wrap .excalidraw .ActionManager,
 	#canvas-wrap .excalidraw .HintViewer,
 	#canvas-wrap .excalidraw .welcome-screen,
-	#canvas-wrap .excalidraw .App-bottom-bar,
-	#canvas-wrap .excalidraw .App-mobile-menu {
+	#canvas-wrap .excalidraw .App-bottom-bar {
 		display: none !important;
+	}
+
+	/* Re-enable Excalidraw's mobile menu for touch device tool switching */
+	#canvas-wrap .excalidraw .App-mobile-menu {
+		display: flex !important;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 40;
 	}
 
 	/* Ensure Excalidraw's canvas is below our UI */
