@@ -169,6 +169,18 @@
 	height: 100% !important;
 }
 
+/* Mobile: prevent browser gestures from interfering with canvas drawing */
+#canvas-wrap {
+	touch-action: none;
+	overscroll-behavior: contain;
+}
+
+/* Allow scrolling on UI panels outside the canvas */
+#topbar,
+#toolbar {
+	touch-action: auto;
+}
+
 /* Hide the top menu bar since we have our own topbar */
 .excalidraw-wrapper .excalidraw .App-menu_top {
 	display: none !important;
