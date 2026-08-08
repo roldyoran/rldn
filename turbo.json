@@ -35,6 +35,9 @@
 			"cache": false,
 			"persistent": true
 		},
+		"@repo/db#build": {
+			"outputs": []
+		},
 		"zip": {
 			"dependsOn": ["^build"],
 			"outputs": [".output/**"]
