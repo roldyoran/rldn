@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { serializeAsJSON } from "@excalidraw/excalidraw";
+import { serializeAsJSON, exportToBlob } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { ExcalidrawEditor, type ExcalidrawEditorHandle } from "./ExcalidrawEditor";
 
@@ -199,7 +199,6 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 	const exportPNG = useCallback(async () => {
 		const currentApi = apiRef.current;
 		if (!currentApi) return;
-		const { exportToBlob } = await import("@excalidraw/excalidraw");
 		const elements = currentApi.getSceneElements();
 		const appState = currentApi.getAppState();
 		const files = currentApi.getFiles();
@@ -362,11 +361,11 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 			{/* Topbar */}
 			<div
 				id="topbar"
-				className="absolute top-0 left-0 right-0 z-30 flex h-[52px] items-center justify-between border-b border-[#373634] bg-[#232322] px-3"
+				className="absolute top-0 left-0 right-0 z-30 flex h-[48px] sm:h-[52px] items-center justify-between border-b border-[#373634] bg-[#232322] px-2 sm:px-3"
 			>
-				<div className="flex items-center gap-1.5">
+				<div className="flex items-center gap-1 sm:gap-1.5 min-w-0">
 					<button
-						className="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
+						className="icon-btn flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
 						onClick={() => {
 							window.location.href = "/dashboard";
 						}}
@@ -386,10 +385,10 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 								(e.target as HTMLInputElement).blur();
 							}
 						}}
-						className="rounded-md border-none bg-transparent px-2 py-1.5 text-sm font-semibold text-[#eae8e4] outline-none max-w-[220px] hover:bg-[#2a2926] focus:bg-[#2a2926]"
+						className="rounded-md border-none bg-transparent px-2 py-1.5 text-sm font-semibold text-[#eae8e4] outline-none max-w-[140px] sm:max-w-[220px] hover:bg-[#2a2926] focus:bg-[#2a2926]"
 					/>
 				</div>
-				<div className="flex items-center gap-1.5">
+				<div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
 					<button
 						className="icon-btn flex h-[34px] w-[34px] items-center justify-center rounded-lg text-[#928f89] hover:bg-[#2a2926] hover:text-[#eae8e4]"
 						onClick={fitToContent}
@@ -408,10 +407,10 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 				</div>
 			</div>
 
-			{/* Toolbar */}
+			{/* Toolbar - hidden on mobile, Excalidraw's native mobile menu handles tool switching */}
 			<div
 				id="toolbar"
-				className="absolute left-3 top-[70px] z-30 flex flex-col gap-0.5 rounded-xl border border-[#373634] bg-[#232322] p-1.5"
+				className="absolute left-3 top-[64px] sm:top-[70px] z-30 hidden sm:flex flex-col gap-0.5 rounded-xl border border-[#373634] bg-[#232322] p-1.5"
 			>
 				{[
 					{ tool: "selection", title: "Seleccionar (V)", icon: IconPointer },
@@ -562,7 +561,10 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 			</div>
 
 			{/* Canvas */}
-			<div id="canvas-wrap" className="absolute inset-0 top-[52px] bg-[#1b1b1a]">
+			<div
+				id="canvas-wrap"
+				className="absolute inset-0 top-[48px] sm:top-[52px] bottom-0 sm:bottom-0 bg-[#1b1b1a]"
+			>
 				<ExcalidrawEditor
 					ref={excalidrawRef}
 					canvasId={canvasId}
@@ -574,7 +576,7 @@ export default function CanvasPage({ canvasId }: CanvasPageProps) {
 
 			{/* Save indicator */}
 			<div
-				className={`absolute top-[72px] right-4 z-40 items-center gap-2 rounded-lg border border-[#373634] bg-[#232322]/90 px-3 py-2 text-xs text-[#928f89] shadow-lg backdrop-blur-sm transition-all duration-300 ${
+				className={`absolute top-[60px] sm:top-[72px] right-2 sm:right-4 z-40 items-center gap-2 rounded-lg border border-[#373634] bg-[#232322]/90 px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs text-[#928f89] shadow-lg backdrop-blur-sm transition-all duration-300 ${
 					saveState === "idle" ? "hidden" : "flex"
 				}`}
 			>

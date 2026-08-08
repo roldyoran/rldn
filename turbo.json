@@ -3,7 +3,13 @@
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
-			"outputs": ["dist/**"]
+			"outputs": ["dist/**"],
+			"env": [
+				"TURSO_DB_URL",
+				"TURSO_SECRET",
+				"BETTER_AUTH_URL",
+				"BETTER_AUTH_SECRET"
+			]
 		},
 		"dev": {
 			"cache": false,
@@ -27,6 +33,15 @@
 		"db:studio": {
 			"cache": false,
 			"persistent": true
+		},
+		"@repo/db#build": {
+			"outputs": [],
+			"env": [
+				"TURSO_DB_URL",
+				"TURSO_SECRET",
+				"BETTER_AUTH_URL",
+				"BETTER_AUTH_SECRET"
+			]
 		},
 		"zip": {
 			"dependsOn": ["^build"],

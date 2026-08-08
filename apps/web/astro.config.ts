@@ -10,6 +10,9 @@ export default defineConfig({
 	integrations: [react({ experimentalDisableStreaming: true })],
 	vite: {
 		plugins: [tailwindcss(), svgr()],
+		build: {
+			chunkSizeWarningLimit: 800,
+		},
 	},
 	devToolbar: {
 		enabled: false,

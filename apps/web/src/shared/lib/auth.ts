@@ -4,7 +4,7 @@ import { apiKey } from "@better-auth/api-key";
 import { getDbInstance } from "@/shared/lib/db";
 
 export const auth = betterAuth({
-	baseURL: import.meta.env.BETTER_AUTH_URL || "http://localhost:4321",
+	baseURL: process.env.BETTER_AUTH_URL || "http://localhost:4321",
 	database: drizzleAdapter(getDbInstance(), {
 		provider: "sqlite",
 	}),
