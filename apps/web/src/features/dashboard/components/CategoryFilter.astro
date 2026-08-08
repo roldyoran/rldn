@@ -1,0 +1,128 @@
+---
+import { Badge } from "@/components/starwind/badge";
+import { Button } from "@/components/starwind/button";
+import Icons from "./Icons.astro";
+---
+
+<div id="category-filter" class="flex flex-wrap items-center gap-2">
+	<Button
+		id="filter-all"
+		variant="outline"
+		size="sm"
+		class="category-filter-btn h-8 gap-1.5 rounded-full"
+		data-category-id=""
+	>
+		Todos
+	</Button>
+	<Button
+		id="filter-uncategorized"
+		variant="ghost"
+		size="sm"
+		class="category-filter-btn h-8 gap-1.5 rounded-full"
+		data-category-id="none"
+	>
+		<Icons name="canvas" class="h-3 w-3" />
+		Sin categoría
+	</Button>
+	<div id="filter-categories" class="contents"></div>
+</div>
+
+<script>
+	interface Category {
+		id: string;
+		name: string;
+		color: string;
+		userId: string;
+		createdAt: string;
+		updatedAt: string;
+	}
+
+	let categories: Category[] = [];
+	let activeFilter: string | null = null;
+
+	const filterContainer = document.getElementById("filter-categories")!;
+	const allBtn = document.getElementById("filter-all")!;
+	const uncategorizedBtn = document.getElementById("filter-uncategorized")!;
+
+	function renderFilters() {
+		filterContainer.innerHTML = "";
+		categories.forEach((cat) => {
+			const btn = document.createElement("button");
+			btn.className =
+				"category-filter-btn inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-sm font-medium transition-colors hover:opacity-80";
+			btn.dataset.categoryId = cat.id;
+			btn.style.borderColor = cat.color;
+			btn.style.color = cat.color;
+			btn.style.backgroundColor = `${cat.color}15`;
+			btn.innerHTML = `
+				<span class="size-2 rounded-full" style="background-color: ${cat.color}"></span>
+				${escapeHtml(cat.name)}
+			`;
+			btn.addEventListener("click", () => setFilter(cat.id));
+			filterContainer.appendChild(btn);
+		});
+
+		updateActiveStyles();
+	}
+
+	function updateActiveStyles() {
+		document.querySelectorAll<HTMLButtonElement>(".category-filter-btn").forEach((btn) => {
+			const id = btn.dataset.categoryId;
+			const isActive =
+				(id === "" && activeFilter === null) ||
+				(id === "none" && activeFilter === "none") ||
+				id === activeFilter;
+
+			if (id === "") {
+				btn.className = isActive
+					? "category-filter-btn inline-flex h-8 items-center gap-1.5 rounded-full border border-foreground bg-foreground px-3 text-sm font-medium text-background"
+					: "category-filter-btn inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-sm font-medium transition-colors hover:opacity-80";
+			} else if (id === "none") {
+				btn.className = isActive
+					? "category-filter-btn inline-flex h-8 items-center gap-1.5 rounded-full border border-muted-foreground bg-muted-foreground/10 px-3 text-sm font-medium text-foreground"
+					: "category-filter-btn inline-flex h-8 items-center gap-1.5 rounded-full border border-transparent bg-transparent px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted";
+			} else {
+				const cat = categories.find((c) => c.id === id);
+				if (cat) {
+					btn.style.backgroundColor = isActive ? `${cat.color}30` : `${cat.color}15`;
+					btn.style.fontWeight = isActive ? "600" : "500";
+				}
+			}
+		});
+	}
+
+	function setFilter(categoryId: string | null) {
+		activeFilter = categoryId;
+		updateActiveStyles();
+		// Dispatch event for CanvasGrid to listen
+		window.dispatchEvent(
+			new CustomEvent("category-filter-change", { detail: { categoryId } }),
+		);
+	}
+
+	function escapeHtml(str: string) {
+		const div = document.createElement("div");
+		div.textContent = str;
+		return div.innerHTML;
+	}
+
+	// Fetch categories
+	async function loadCategories() {
+		try {
+			const res = await fetch("/api/categories", { credentials: "include" });
+			if (res.ok) {
+				categories = await res.json();
+				renderFilters();
+			}
+		} catch {}
+	}
+
+	allBtn.addEventListener("click", () => setFilter(null));
+	uncategorizedBtn.addEventListener("click", () => setFilter("none"));
+
+	// Expose for external use
+	(window as any).loadCategories = loadCategories;
+	(window as any).getActiveCategoryFilter = () => activeFilter;
+
+	loadCategories();
+</script>

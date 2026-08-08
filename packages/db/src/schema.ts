@@ -30,6 +30,22 @@ export const documents = sqliteTable("documents", {
 // ============================================
 
 /**
+ * Categories table - User-defined categories for organizing canvases
+ */
+export const categories = sqliteTable("categories", {
+	id: text("id").primaryKey(),
+	name: text("name").notNull(),
+	color: text("color").notNull().default("#6b7280"),
+	userId: text("user_id").notNull(),
+	createdAt: integer("created_at", { mode: "timestamp" })
+		.notNull()
+		.default(sql`(unixepoch())`),
+	updatedAt: integer("updated_at", { mode: "timestamp" })
+		.notNull()
+		.default(sql`(unixepoch())`),
+});
+
+/**
  * Canvases table - Stores user canvases (legacy, kept for backward compat)
  */
 export const canvases = sqliteTable("canvases", {
@@ -37,6 +53,7 @@ export const canvases = sqliteTable("canvases", {
 	name: text("name").notNull(),
 	description: text("description"),
 	userId: text("user_id").notNull(),
+	categoryId: text("category_id").references(() => categories.id, { onDelete: "set null" }),
 	thumbnail: text("thumbnail"),
 	createdAt: integer("created_at", { mode: "timestamp" })
 		.notNull()
@@ -162,7 +179,15 @@ export const canvasesRelations = relations(canvases, ({ one, many }) => ({
 		fields: [canvases.id],
 		references: [canvasDocuments.canvasId],
 	}),
+	category: one(categories, {
+		fields: [canvases.categoryId],
+		references: [categories.id],
+	}),
 	images: many(images),
+}));
+
+export const categoriesRelations = relations(categories, ({ many }) => ({
+	canvases: many(canvases),
 }));
 
 export const canvasDocumentsRelations = relations(canvasDocuments, ({ one }) => ({
@@ -217,6 +242,10 @@ export type NewCanvasDocument = typeof canvasDocuments.$inferInsert;
 
 export type Image = typeof images.$inferSelect;
 export type NewImage = typeof images.$inferInsert;
+
+// Categories
+export type Category = typeof categories.$inferSelect;
+export type NewCategory = typeof categories.$inferInsert;
 
 // Kanban (future)
 export type KanbanData = typeof kanbanData.$inferSelect;

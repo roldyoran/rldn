@@ -1,5 +1,12 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import { Button } from "@/components/starwind/button";
+import { Card, CardContent } from "@/components/starwind/card";
+import { Input } from "@/components/starwind/input";
+import { Label } from "@/components/starwind/label";
+import { Spinner } from "@/components/starwind/spinner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/starwind/tabs";
+import { Alert, AlertDescription } from "@/components/starwind/alert";
 ---
 
 <Layout title="Iniciar Sesión - Canvas App">
@@ -8,10 +15,10 @@ import Layout from "@/layouts/Layout.astro";
 			<!-- Logo / Brand -->
 			<div class="text-center">
 				<div
-					class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-foreground text-background"
+					class="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-foreground text-background"
 				>
 					<svg
-						class="h-8 w-8"
+						class="size-8"
 						viewBox="0 0 24 24"
 						fill="none"
 						stroke="currentColor"
@@ -30,101 +37,99 @@ import Layout from "@/layouts/Layout.astro";
 				</p>
 			</div>
 
-			<!-- Auth Form -->
-			<div class="rounded-xl border border-border bg-card p-6 shadow-sm">
-				<!-- Tabs -->
-				<div class="mb-6 flex rounded-lg bg-muted p-1">
-					<button
-						id="tab-login"
-						class="auth-tab flex-1 rounded-md px-4 py-2 text-sm font-medium text-foreground shadow-sm"
-						data-tab="login"
-					>
-						Iniciar sesión
-					</button>
-					<button
-						id="tab-register"
-						class="auth-tab flex-1 rounded-md px-4 py-2 text-sm font-medium text-muted-foreground"
-						data-tab="register"
-					>
-						Registrarse
-					</button>
-				</div>
+			<!-- Auth Card -->
+			<Card>
+				<CardContent class="pt-6">
+					<Tabs defaultValue="login" class="w-full">
+						<TabsList class="mb-6 w-full">
+							<TabsTrigger value="login" class="flex-1">Iniciar sesión</TabsTrigger>
+							<TabsTrigger value="register" class="flex-1">Registrarse</TabsTrigger>
+						</TabsList>
 
-				<!-- Login Form -->
-				<form id="login-form" class="space-y-4">
-					<div>
-						<label for="login-email" class="block text-sm font-medium mb-1.5">Email</label>
-						<input
-							id="login-email"
-							type="email"
-							required
-							placeholder="tu@email.com"
-							class="w-full rounded-lg border border-input bg-background px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-ring focus:ring-1 focus:ring-ring"
-						/>
-					</div>
-					<div>
-						<label for="login-password" class="block text-sm font-medium mb-1.5">Contraseña</label>
-						<input
-							id="login-password"
-							type="password"
-							required
-							placeholder="••••••••"
-							class="w-full rounded-lg border border-input bg-background px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-ring focus:ring-1 focus:ring-ring"
-						/>
-					</div>
-					<div id="login-error" class="hidden text-sm text-destructive"></div>
-					<button
-						type="submit"
-						class="w-full rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
-					>
-						Iniciar sesión
-					</button>
-				</form>
+						<!-- Login Form -->
+						<TabsContent value="login">
+							<form id="login-form" class="space-y-4">
+								<div class="grid gap-2">
+									<Label for="login-email">Email</Label>
+									<Input
+										id="login-email"
+										type="email"
+										name="email"
+										required
+										placeholder="tu@email.com"
+										autocomplete="email"
+									/>
+								</div>
+								<div class="grid gap-2">
+									<Label for="login-password">Contraseña</Label>
+									<Input
+										id="login-password"
+										type="password"
+										name="password"
+										required
+										placeholder="••••••••"
+										autocomplete="current-password"
+									/>
+								</div>
+								<Alert id="login-error" variant="error" class="hidden">
+									<AlertDescription></AlertDescription>
+								</Alert>
+								<Button type="submit" id="login-btn" class="w-full" size="lg">
+									<Spinner id="login-spinner" class="hidden" />
+									<span id="login-btn-text">Iniciar sesión</span>
+								</Button>
+							</form>
+						</TabsContent>
 
-				<!-- Register Form -->
-				<form id="register-form" class="hidden space-y-4">
-					<div>
-						<label for="register-name" class="block text-sm font-medium mb-1.5">Nombre</label>
-						<input
-							id="register-name"
-							type="text"
-							required
-							placeholder="Tu nombre"
-							class="w-full rounded-lg border border-input bg-background px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-ring focus:ring-1 focus:ring-ring"
-						/>
-					</div>
-					<div>
-						<label for="register-email" class="block text-sm font-medium mb-1.5">Email</label>
-						<input
-							id="register-email"
-							type="email"
-							required
-							placeholder="tu@email.com"
-							class="w-full rounded-lg border border-input bg-background px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-ring focus:ring-1 focus:ring-ring"
-						/>
-					</div>
-					<div>
-						<label for="register-password" class="block text-sm font-medium mb-1.5"
-							>Contraseña</label
-						>
-						<input
-							id="register-password"
-							type="password"
-							required
-							minlength={6}
-							placeholder="Mínimo 6 caracteres"
-							class="w-full rounded-lg border border-input bg-background px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-ring focus:ring-1 focus:ring-ring"
-						/>
-					</div>
-					<div id="register-error" class="hidden text-sm text-destructive"></div>
-					<button
-						type="submit"
-						class="w-full rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
-					>
-						Crear cuenta
-					</button>
-				</form>
-			</div>
+						<!-- Register Form -->
+						<TabsContent value="register">
+							<form id="register-form" class="space-y-4">
+								<div class="grid gap-2">
+									<Label for="register-name">Nombre</Label>
+									<Input
+										id="register-name"
+										type="text"
+										name="name"
+										required
+										placeholder="Tu nombre"
+										autocomplete="name"
+									/>
+								</div>
+								<div class="grid gap-2">
+									<Label for="register-email">Email</Label>
+									<Input
+										id="register-email"
+										type="email"
+										name="email"
+										required
+										placeholder="tu@email.com"
+										autocomplete="email"
+									/>
+								</div>
+								<div class="grid gap-2">
+									<Label for="register-password">Contraseña</Label>
+									<Input
+										id="register-password"
+										type="password"
+										name="password"
+										required
+										minlength={6}
+										placeholder="Mínimo 6 caracteres"
+										autocomplete="new-password"
+									/>
+								</div>
+								<Alert id="register-error" variant="error" class="hidden">
+									<AlertDescription></AlertDescription>
+								</Alert>
+								<Button type="submit" id="register-btn" class="w-full" size="lg">
+									<Spinner id="register-spinner" class="hidden" />
+									<span id="register-btn-text">Crear cuenta</span>
+								</Button>
+							</form>
+						</TabsContent>
+					</Tabs>
+				</CardContent>
+			</Card>
 
 			<!-- Back to home -->
 			<p class="text-center text-sm text-muted-foreground">
@@ -136,30 +141,38 @@ import Layout from "@/layouts/Layout.astro";
 	</main>
 
 	<script>
-		const tabs = document.querySelectorAll<HTMLButtonElement>(".auth-tab");
 		const loginForm = document.getElementById("login-form") as HTMLFormElement;
 		const registerForm = document.getElementById("register-form") as HTMLFormElement;
 		const loginError = document.getElementById("login-error")!;
 		const registerError = document.getElementById("register-error")!;
+		const loginBtn = document.getElementById("login-btn") as HTMLButtonElement;
+		const registerBtn = document.getElementById("register-btn") as HTMLButtonElement;
+		const loginSpinner = document.getElementById("login-spinner")!;
+		const registerSpinner = document.getElementById("register-spinner")!;
+		const loginBtnText = document.getElementById("login-btn-text")!;
+		const registerBtnText = document.getElementById("register-btn-text")!;
 
-		// Tab switching
-		tabs.forEach((tab) => {
-			tab.addEventListener("click", () => {
-				const target = tab.dataset.tab;
-				tabs.forEach((t) => {
-					t.classList.toggle("text-foreground", t.dataset.tab === target);
-					t.classList.toggle("text-muted-foreground", t.dataset.tab !== target);
-					t.classList.toggle("shadow-sm", t.dataset.tab === target);
-				});
-				loginForm.classList.toggle("hidden", target !== "login");
-				registerForm.classList.toggle("hidden", target !== "register");
-				loginError.classList.add("hidden");
-				registerError.classList.add("hidden");
-			});
-		});
+		function setLoading(
+			btn: HTMLButtonElement,
+			spinner: HTMLElement,
+			textEl: HTMLElement,
+			loading: boolean,
+		) {
+			btn.disabled = loading;
+			btn.setAttribute("aria-busy", loading.toString());
+			spinner.classList.toggle("hidden", !loading);
+			textEl.textContent = loading
+				? btn.id === "login-btn"
+					? "Iniciando sesión..."
+					: "Creando cuenta..."
+				: btn.id === "login-btn"
+					? "Iniciar sesión"
+					: "Crear cuenta";
+		}
 
 		function showError(el: HTMLElement, msg: string) {
-			el.textContent = msg;
+			const desc = el.querySelector("[data-slot='alert-description']") || el.querySelector("p");
+			if (desc) desc.textContent = msg;
 			el.classList.remove("hidden");
 		}
 
@@ -170,6 +183,7 @@ import Layout from "@/layouts/Layout.astro";
 			const email = (document.getElementById("login-email") as HTMLInputElement).value;
 			const password = (document.getElementById("login-password") as HTMLInputElement).value;
 
+			setLoading(loginBtn, loginSpinner, loginBtnText, true);
 			try {
 				const res = await fetch("/api/auth/sign-in/email", {
 					method: "POST",
@@ -194,6 +208,8 @@ import Layout from "@/layouts/Layout.astro";
 				window.location.href = "/dashboard";
 			} catch {
 				showError(loginError, "Error de conexión");
+			} finally {
+				setLoading(loginBtn, loginSpinner, loginBtnText, false);
 			}
 		});
 
@@ -205,6 +221,7 @@ import Layout from "@/layouts/Layout.astro";
 			const email = (document.getElementById("register-email") as HTMLInputElement).value;
 			const password = (document.getElementById("register-password") as HTMLInputElement).value;
 
+			setLoading(registerBtn, registerSpinner, registerBtnText, true);
 			try {
 				const res = await fetch("/api/auth/sign-up/email", {
 					method: "POST",
@@ -229,6 +246,8 @@ import Layout from "@/layouts/Layout.astro";
 				window.location.href = "/dashboard";
 			} catch {
 				showError(registerError, "Error de conexión");
+			} finally {
+				setLoading(registerBtn, registerSpinner, registerBtnText, false);
 			}
 		});
 	</script>
