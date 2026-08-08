@@ -17,7 +17,7 @@ import Icons from "./Icons.astro";
 ---
 
 <AlertDialog id="api-keys-modal">
-	<AlertDialogContent class="max-w-lg">
+	<AlertDialogContent class="max-w-lg mx-4 sm:mx-auto">
 		<AlertDialogHeader>
 			<div class="flex items-center justify-between">
 				<div class="flex items-center gap-3">
@@ -61,7 +61,7 @@ import Icons from "./Icons.astro";
 
 			<!-- Create Form -->
 			<div class="space-y-4">
-				<div class="grid grid-cols-2 gap-3">
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 					<div>
 						<label for="api-key-name" class="block text-xs font-medium text-muted-foreground mb-1"
 							>Nombre</label
@@ -154,7 +154,7 @@ import Icons from "./Icons.astro";
 						>
 					</summary>
 					<div class="mt-3 space-y-3 pl-5.5">
-						<div class="grid grid-cols-2 gap-3">
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 							<div>
 								<label for="api-key-prefix" class="block text-xs text-muted-foreground mb-1"
 									>Prefijo</label
@@ -178,7 +178,7 @@ import Icons from "./Icons.astro";
 								/>
 							</div>
 						</div>
-						<div class="grid grid-cols-2 gap-3">
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 							<div class="flex items-center gap-2">
 								<input
 									type="checkbox"

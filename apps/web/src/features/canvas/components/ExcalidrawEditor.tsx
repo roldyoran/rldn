@@ -451,7 +451,7 @@ export const ExcalidrawEditor = forwardRef<ExcalidrawEditorHandle, ExcalidrawEdi
 				/>
 				{/* Color Picker Popup */}
 				{colorPicker.open && (
-					<div className="absolute left-[70px] top-[160px] z-50">
+					<div className="absolute left-[70px] top-[160px] z-50 max-sm:left-1/2 max-sm:top-auto max-sm:bottom-20 max-sm:-translate-x-1/2">
 						<ColorPickerPopup
 							type={colorPicker.type}
 							initialColor={colorPicker.color}
@@ -462,7 +462,7 @@ export const ExcalidrawEditor = forwardRef<ExcalidrawEditorHandle, ExcalidrawEdi
 				)}
 				{/* Image URL Dialog */}
 				{imageDialog.open && (
-					<div className="absolute left-[70px] top-[280px] z-50">
+					<div className="absolute left-[70px] top-[280px] z-50 max-sm:left-1/2 max-sm:top-auto max-sm:bottom-20 max-sm:-translate-x-1/2">
 						<ImageUrlDialog
 							onInsert={handleImageInsert}
 							onClose={() => setImageDialog({ open: false, error: null, loading: false })}
