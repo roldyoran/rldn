@@ -23,3 +23,4 @@ apps/web/.astro
 prompt.md
 skills-lock.json
 scripts/
+.vercel
