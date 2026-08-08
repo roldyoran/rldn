@@ -3,7 +3,14 @@
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
-			"outputs": ["dist/**"]
+			"outputs": ["dist/**"],
+			"env": [
+				"TURSO_DB_URL",
+				"TURSO_SECRET",
+				"DATABASE_URL",
+				"BETTER_AUTH_URL",
+				"BETTER_AUTH_SECRET"
+			]
 		},
 		"dev": {
 			"cache": false,
